@@ -159,7 +159,7 @@
         }
 
         /* --- ESTILOS DAS TELAS SECUNDÁRIAS --- */
-        /* CORREÇÃO: Cabeçalho fixo com z-index alto */
+        /* Cabeçalho da tela fixo no topo */
         .tela-header {
             display: flex;
             align-items: center;
@@ -170,7 +170,7 @@
             position: sticky;
             top: 0;
             background: white;
-            z-index: 10; /* Mais alto que o cabeçalho da tabela */
+            z-index: 10;
         }
 
         .btn-voltar {
@@ -199,7 +199,7 @@
             margin: 0;
         }
 
-        /* NOVOS ESTILOS - Barra de pesquisa e totais */
+        /* Barra de pesquisa */
         .search-box {
             width: 100%;
             padding: 10px 12px;
@@ -217,6 +217,7 @@
             box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
         }
         
+        /* Cards de totais */
         .totais-container {
             display: flex;
             gap: 12px;
@@ -250,7 +251,7 @@
             font-weight: bold;
         }
 
-        /* NOVO ESTILO: Botão Nova Venda na tela de estoque */
+        /* Botão Nova Venda na tela de estoque */
         .btn-nova-venda-estoque {
             width: 100%;
             padding: 12px;
@@ -271,28 +272,28 @@
             background: #0f3e6b;
         }
 
-        /* CORREÇÃO: Cabeçalho da tabela com sticky ajustado */
+        /* Container da tabela com scroll */
         .estoque-container {
             flex: 1;
             overflow-y: auto;
             position: relative;
         }
         
+        /* Estilos da tabela corrigidos */
         .estoque-tabela {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.75rem;
         }
         
-        /* CORREÇÃO CRÍTICA: thead fica abaixo do header da tela */
+        /* CORREÇÃO: Cabeçalho da tabela fixo abaixo de todos os elementos */
         .estoque-tabela thead {
             position: sticky;
-            top: 57px; /* Altura do .tela-header (approx 45px) + margens */
+            top: 125px; /* Altura total do header + search + totais + botão */
             background: #1E5A99;
-            z-index: 9; /* Abaixo do cabeçalho da tela (z-index: 10) */
+            z-index: 9;
         }
         
-        /* Garantir que as células do cabeçalho tenham fundo sólido */
         .estoque-tabela th {
             background: #1E5A99;
             color: white;
@@ -367,9 +368,9 @@
             .total-value {
                 font-size: 1rem;
             }
-            /* CORREÇÃO: Ajustar top do thead para mobile */
+            /* Ajuste para mobile */
             .estoque-tabela thead {
-                top: 52px;
+                top: 118px;
             }
         }
 
@@ -400,16 +401,12 @@
     <!-- ============================================ -->
     <!-- TELA 0 - MENU INICIAL (CAPA) - APROVADO      -->
     <!-- ============================================ -->
-    <!-- NÃO MODIFICAR: estrutura, textos, botões     -->
-    <!-- ============================================ -->
     <div class="tela" id="telaMenu" style="display: flex;">
         <div class="card-content">
-            <!-- APROVADO: Logo da empresa -->
             <div class="logo-area">
                 <img src="https://i.imgur.com/1BQJhXp.png" alt="Logo TT Distribuidor" class="logo">
             </div>
 
-            <!-- APROVADO: Dados da empresa (texto oficial) -->
             <div class="empresa-dados">
                 <p><strong>TT DISTRIBUIDOR DE ALIMENTOS LTDA</strong></p>
                 <p>CNPJ: 08.381.919/0001-84 | I.E: 194591832</p>
@@ -417,14 +414,11 @@
                 <p>PEDRA MIUDA - TERESINA - PI - 64038030</p>
             </div>
 
-            <!-- APROVADO: Títulos principais -->
             <div class="capa-titulo">Venda de mercadorias mobile – TT DISTRIBUIDOR</div>
             <div class="capa-subtitulo">Aplicativo de controle e venda de mercadorias por indústrias</div>
             
-            <!-- APROVADO: Data atual (gerada via JS) -->
             <div class="data-ref" id="dataAtual"></div>
 
-            <!-- APROVADO: Três botões principais -->
             <div class="menu-botao" data-tela="telaEstoque">
                 <i class="fas fa-boxes"></i>
                 <span>Consultar Estoque</span>
@@ -445,7 +439,6 @@
     <!-- ============================================ -->
     <div class="tela" id="telaEstoque" style="display: none;">
         <div class="card-content">
-            <!-- APROVADO: Cabeçalho fixo -->
             <div class="tela-header">
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
@@ -453,10 +446,8 @@
                 <h2><i class="fas fa-boxes" style="margin-right: 8px;"></i> Estoque</h2>
             </div>
             
-            <!-- NOVIDADE: Barra de pesquisa -->
             <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
             
-            <!-- NOVIDADE: Cards de totais -->
             <div class="totais-container">
                 <div class="total-card">
                     <i class="fas fa-dollar-sign"></i>
@@ -470,12 +461,10 @@
                 </div>
             </div>
             
-            <!-- NOVIDADE: Botão Efetuar Nova Venda na tela de Estoque -->
             <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque">
                 <i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Efetuar Nova Venda
             </button>
             
-            <!-- EXPANSÍVEL: Container da tabela com scroll -->
             <div id="estoqueContainer" class="estoque-container">
                 <div class="placeholder-mensagem">
                     <i class="fas fa-database"></i>
@@ -530,7 +519,6 @@
     // APROVADO - NÃO MODIFICAR - LÓGICA DE TROCAR TELAS
     // ============================================
     
-    // APROVADO: Função principal para trocar de tela
     function mostrarTela(telaId) {
         const todasTelas = document.querySelectorAll('.tela');
         todasTelas.forEach(tela => {
@@ -546,9 +534,7 @@
                 appContainer.scrollTop = 0;
             }
             
-            // EXPANSÃO: Carregar estoque quando a tela for aberta
             if (telaId === 'telaEstoque') {
-                // Reset da pesquisa ao abrir a tela
                 const searchInput = document.getElementById('pesquisaEstoque');
                 if (searchInput) {
                     searchInput.value = '';
@@ -558,7 +544,6 @@
         }
     }
 
-    // APROVADO: Configurar a data atual no menu inicial
     function exibirDataAtual() {
         const dataElement = document.getElementById('dataAtual');
         if (dataElement) {
@@ -568,7 +553,6 @@
         }
     }
 
-    // APROVADO: Adicionar eventos aos botões do menu
     function configurarBotoesMenu() {
         const botoesMenu = document.querySelectorAll('.menu-botao');
         botoesMenu.forEach(botao => {
@@ -584,7 +568,6 @@
         });
     }
 
-    // APROVADO: Garantir que os botões voltar funcionem
     function garantirBotoesVoltar() {
         const botoesVoltar = document.querySelectorAll('.btn-voltar');
         botoesVoltar.forEach(btn => {
@@ -598,7 +581,6 @@
         });
     }
 
-    // NOVIDADE: Configurar o botão Nova Venda na tela de Estoque
     function configurarBotaoNovaVendaEstoque() {
         const btnNovaVenda = document.getElementById('btnNovaVendaEstoque');
         if (btnNovaVenda && !btnNovaVenda.hasAttribute('data-listener')) {
@@ -609,7 +591,6 @@
         }
     }
 
-    // APROVADO: Inicialização do app
     function init() {
         exibirDataAtual();
         configurarBotoesMenu();
@@ -627,15 +608,13 @@
     };
     
     // ============================================
-    // ÁREA PARA EXPANSÃO - INTEGRAÇÃO COM GOOGLE SHEETS + MELHORIAS
+    // ÁREA PARA EXPANSÃO - INTEGRAÇÃO COM GOOGLE SHEETS
     // ============================================
     
-    // URL definitivo do Google Apps Script
     const API_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
     
-    let produtosOriginais = []; // Armazena os produtos originais
+    let produtosOriginais = [];
     
-    // Função para buscar os produtos do Google Sheets
     async function carregarEstoque() {
         try {
             const resposta = await fetch(API_URL);
@@ -651,7 +630,6 @@
         }
     }
     
-    // Função para calcular e atualizar os totais
     function atualizarTotais(produtos) {
         let valorTotal = 0;
         let quantidadeTotal = 0;
@@ -663,7 +641,6 @@
             quantidadeTotal += quantidade;
         });
         
-        // Atualizar os elementos na tela
         const valorTotalElement = document.getElementById('valorTotal');
         const qtTotalElement = document.getElementById('qtTotal');
         
@@ -675,7 +652,6 @@
         }
     }
     
-    // Função para filtrar produtos baseado no termo de pesquisa
     function filtrarProdutos(termo) {
         if (!termo || termo.trim() === '') {
             return produtosOriginais;
@@ -689,7 +665,7 @@
         });
     }
     
-    // Função para renderizar a tabela com os produtos filtrados
+    // CORREÇÃO CRÍTICA: Função renderizarTabela com estrutura correta de células
     function renderizarTabela(produtos) {
         if (!produtos || produtos.length === 0) {
             return `
@@ -710,6 +686,7 @@
         html += '<th>Qtd</th>';
         html += '</tr></thead><tbody>';
         
+        // CORREÇÃO: Cada dado dentro de sua própria tag <td>
         produtos.forEach(produto => {
             html += '<tr>';
             html += `<td>${produto.id || produto.CODPROD || '-'}</td>`;
@@ -717,19 +694,18 @@
             html += `<td>${produto.fornecedor || '-'}</td>`;
             html += `<td>R$ ${(typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0).toFixed(2)}`;
             html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
-            html += '</table>';
+            html += '</tr>';
         });
         
         html += '</tbody></table>';
         return html;
     }
     
-    // Função principal para exibir o estoque com pesquisa e totais
+    // CORREÇÃO CRÍTICA: Função mostrarEstoque corrigida
     async function mostrarEstoque() {
         const container = document.getElementById('estoqueContainer');
         if (!container) return;
         
-        // Mostrar loading
         container.innerHTML = `
             <div class="loading-message">
                 <i class="fas fa-spinner fa-pulse" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
@@ -738,20 +714,15 @@
         `;
         
         try {
-            // Carregar produtos se ainda não foram carregados
             if (produtosOriginais.length === 0) {
                 await carregarEstoque();
             }
             
-            // Filtrar produtos baseado na pesquisa atual
             const searchInput = document.getElementById('pesquisaEstoque');
             const termo = searchInput ? searchInput.value : '';
             const produtosFiltrados = filtrarProdutos(termo);
             
-            // Atualizar totais
             atualizarTotais(produtosFiltrados);
-            
-            // Renderizar tabela
             container.innerHTML = renderizarTabela(produtosFiltrados);
             
         } catch (erro) {
@@ -766,18 +737,13 @@
         }
     }
     
-    // Configurar o evento de pesquisa em tempo real
     function configurarPesquisa() {
         const searchInput = document.getElementById('pesquisaEstoque');
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const termo = this.value;
                 const produtosFiltrados = filtrarProdutos(termo);
-                
-                // Atualizar totais
                 atualizarTotais(produtosFiltrados);
-                
-                // Atualizar tabela
                 const container = document.getElementById('estoqueContainer');
                 if (container) {
                     container.innerHTML = renderizarTabela(produtosFiltrados);
@@ -786,7 +752,6 @@
         }
     }
     
-    // Inicializar a pesquisa quando a página carregar
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', configurarPesquisa);
     } else {
