@@ -1,524 +1,91 @@
 /* ============================================ */
-/* APROVADO - NÃO MEXER - ESTILOS APROVADOS      */
+/* NOVOS ESTILOS PARA TELA DE CLIENTES          */
 /* ============================================ */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-.app-container {
-    width: 100%;
-    max-width: 500px;
-    height: 100vh;
-    background: white;
-    box-shadow: 0 0 30px rgba(0,0,0,0.1);
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border-radius: 0;
-}
-
-.tela {
-    width: 100%;
-    min-height: 100vh;
-    padding: 20px 16px 25px 16px;
-    display: flex;
-    flex-direction: column;
-    background: white;
-}
-
-#telaMenu {
-    justify-content: space-between;
-}
-
-.card-content {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-/* --- ESTILOS DO MENU INICIAL --- */
-.logo-area {
-    text-align: center;
-    margin-bottom: 12px;
-}
-
-.logo {
-    max-width: 90px;
-    height: auto;
-    margin-bottom: 8px;
-}
-
-.empresa-dados {
-    font-size: 0.65rem;
-    color: #5a6e85;
-    text-align: center;
-    line-height: 1.3;
-    background: #f8fafc;
-    padding: 8px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-}
-
-.empresa-dados p {
-    margin: 2px 0;
-}
-
-.capa-titulo {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #1E5A99;
-    text-align: center;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-}
-
-.capa-subtitulo {
-    font-size: 0.85rem;
-    color: #2B7BC9;
-    text-align: center;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-
-.data-ref {
-    font-size: 0.7rem;
-    color: #7f8c8d;
-    text-align: center;
-    margin-bottom: 1rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #e0e6ed;
-}
-
-.menu-botao {
-    width: 100%;
-    background: white;
-    border: 2px solid #1E5A99;
-    border-radius: 16px;
-    padding: 0 18px;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-}
-
-.menu-botao:last-child {
-    margin-bottom: 0;
-}
-
-.menu-botao i {
-    font-size: 1.8rem;
-    color: #1E5A99;
-    width: 36px;
-    text-align: center;
-}
-
-.menu-botao span {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1E5A99;
-    flex: 1;
-}
-
-.menu-botao:active {
-    transform: scale(0.97);
-    background: #f0f7ff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* ============================================ */
-/* ESTILOS DA TELA DE ESTOQUE                   */
-/* ============================================ */
-
-#telaEstoque {
-    height: 100vh;
-    padding: 0;
-}
-
-#telaEstoque .card-content {
-    height: 100%;
-    padding: 20px 16px 25px 16px;
-}
-
-.estoque-fixed-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: white;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
-
-.tela-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.btn-voltar {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #1E5A99;
-    cursor: pointer;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background 0.2s;
-}
-
-.btn-voltar:active {
-    background: #eef2f8;
-}
-
-.tela-header h2 {
-    font-size: 1.4rem;
-    color: #1E5A99;
-    font-weight: 700;
-    margin: 0;
-}
-
-.search-box {
-    width: 100%;
-    padding: 10px 12px;
-    margin: 8px 0 12px 0;
-    border-radius: 10px;
-    border: 1.5px solid #cbd5e0;
-    font-size: 0.9rem;
-    background: white;
-    transition: all 0.2s;
-}
-
-.search-box:focus {
-    outline: none;
-    border-color: #1E5A99;
-    box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
-}
-
-.totais-container {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.total-card {
-    flex: 1;
-    background: linear-gradient(135deg, #1E5A99 0%, #2B7BC9 100%);
-    color: white;
-    padding: 12px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.total-card i {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    display: block;
-}
-
-.total-label {
-    font-size: 0.7rem;
-    opacity: 0.9;
-    margin-bottom: 3px;
-}
-
-.total-value {
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.btn-nova-venda-estoque {
-    width: 100%;
-    padding: 12px;
-    background: #1E5A99;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 10px 0 5px 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.btn-nova-venda-estoque:active {
-    transform: scale(0.98);
-    background: #0f3e6b;
-}
-
-.estoque-container {
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-    min-height: 0;
-}
-
-.estoque-tabela {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.75rem;
-}
-
-.estoque-tabela thead {
-    position: sticky;
-    top: 0;
-    z-index: 9;
-}
-
-.estoque-tabela th {
-    background: #1E5A99;
-    color: white;
-    padding: 10px 6px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 0.75rem;
-}
-
-.estoque-tabela td {
-    padding: 8px 6px;
-    border-bottom: 1px solid #e2e8f0;
-    color: #2d3748;
-    background: white;
-}
-
-.estoque-tabela tr:hover td {
-    background: #f7fafc;
-}
-
-/* ============================================ */
-/* ESTILOS DA TELA DE VENDAS E CLIENTES         */
-/* ============================================ */
-
-.tela-header-nofixed {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.cliente-selecionado {
-    background: #e8f0fe;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 10px 0;
-    font-size: 0.9rem;
-    color: #1E5A99;
-    font-weight: 500;
-}
-
-.lista-clientes {
-    max-height: 300px;
+.clientes-lista-cadastro {
+    max-height: 200px;
     overflow-y: auto;
     margin: 10px 0;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
-.cliente-item {
+.cliente-item-cadastro {
     padding: 12px;
     border-bottom: 1px solid #e2e8f0;
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.cliente-item:hover {
+.cliente-item-cadastro:hover {
     background: #f0f7ff;
 }
 
-.cliente-item:active {
+.cliente-item-cadastro:active {
     background: #e0edf9;
 }
 
-.cliente-nome {
+.cliente-item-cadastro .cliente-nome {
     font-weight: 600;
     color: #1E5A99;
+    margin-bottom: 4px;
 }
 
-.cliente-cpf {
+.cliente-item-cadastro .cliente-info {
     font-size: 0.7rem;
     color: #7f8c8d;
 }
 
-.form-cliente {
-    margin-top: 15px;
+.lista-clientes-cadastro {
+    display: flex;
+    flex-direction: column;
 }
 
-.form-group {
-    margin-bottom: 12px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #1E5A99;
-    margin-bottom: 3px;
-}
-
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #cbd5e0;
-    border-radius: 8px;
-    font-size: 0.85rem;
-}
-
-.botoes-form {
+.form-row {
     display: flex;
     gap: 10px;
-    margin-top: 15px;
-    flex-wrap: wrap;
 }
 
-.btn-form {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-form:active {
-    transform: scale(0.98);
-}
-
-.btn-salvar {
-    background: #1E5A99;
-    color: white;
-}
-
-.btn-editar {
-    background: #2B7BC9;
-    color: white;
-}
-
-.btn-excluir {
-    background: #e53e3e;
-    color: white;
-}
-
-.btn-cancelar {
-    background: #a0aec0;
-    color: white;
-}
-
-.btn-inserir-cliente {
-    width: 100%;
-    padding: 12px;
-    background: #1E5A99;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 10px 0;
-    cursor: pointer;
-}
-
-.loading-message {
-    text-align: center;
-    padding: 40px;
-    color: #1E5A99;
-}
-
-.error-message {
-    text-align: center;
-    padding: 40px;
-    color: #e53e3e;
-    background: #fff5f5;
-    border-radius: 12px;
-}
-
-.placeholder-mensagem {
-    background: #f8fafc;
-    border-radius: 24px;
-    padding: 40px 20px;
-    text-align: center;
-    border: 1px dashed #bdd4e7;
-    color: #4b6b8f;
-    font-size: 0.95rem;
-}
-
-.placeholder-mensagem i {
-    font-size: 2.5rem;
-    color: #90aec9;
-    margin-bottom: 12px;
-    display: block;
-}
-
-/* Responsividade */
 @media (max-width: 480px) {
-    .tela {
-        padding: 15px 12px 20px 12px;
+    .form-row {
+        flex-direction: column;
+        gap: 0;
     }
-    .capa-titulo {
-        font-size: 1.3rem;
-    }
-    .menu-botao {
-        height: 58px;
-    }
-    .menu-botao i {
-        font-size: 1.5rem;
-    }
-    .menu-botao span {
-        font-size: 0.95rem;
-    }
-    .tela-header h2 {
-        font-size: 1.2rem;
-    }
-    .total-value {
-        font-size: 1rem;
-    }
+    
     .botoes-form {
         flex-direction: column;
     }
+    
+    .btn-form {
+        width: 100%;
+    }
 }
 
-/* Scroll suave */
-.app-container::-webkit-scrollbar,
-.estoque-container::-webkit-scrollbar,
-.lista-clientes::-webkit-scrollbar {
-    width: 5px;
+/* Garantir que nenhum elemento tenha fundo preto */
+.btn-form,
+.btn-nova-venda-estoque,
+.btn-pesquisar-cliente,
+.btn-inserir-cliente,
+.btn-selecionar-cliente,
+.menu-botao,
+.total-card,
+.estoque-tabela th,
+.tela-header,
+.tela-header-nofixed {
+    background-color: #1E5A99 !important; /* Forçar azul em botões principais */
 }
 
-.app-container::-webkit-scrollbar-track,
-.estoque-container::-webkit-scrollbar-track,
-.lista-clientes::-webkit-scrollbar-track {
-    background: #e2e8f0;
+.btn-sair,
+.btn-voltar {
+    background: transparent !important;
+    color: #1E5A99 !important;
 }
 
-.app-container::-webkit-scrollbar-thumb,
-.estoque-container::-webkit-scrollbar-thumb,
-.lista-clientes::-webkit-scrollbar-thumb {
-    background: #1E5A99;
-    border-radius: 10px;
+/* Cor de texto padrão nunca preta */
+body, .tela, .card-content, .cliente-nome, .cliente-info {
+    color: #2d3748;
+}
+
+h1, h2, h3, h4, .capa-titulo, .capa-subtitulo {
+    color: #1E5A99;
 }
