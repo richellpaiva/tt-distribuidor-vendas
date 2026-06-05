@@ -159,6 +159,7 @@
         }
 
         /* --- ESTILOS DAS TELAS SECUNDÁRIAS --- */
+        /* CORREÇÃO: Cabeçalho fixo com z-index alto */
         .tela-header {
             display: flex;
             align-items: center;
@@ -166,11 +167,10 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px solid #e2e8f0;
-            /* APROVADO: Cabeçalho fixo no topo */
             position: sticky;
             top: 0;
             background: white;
-            z-index: 10;
+            z-index: 10; /* Mais alto que o cabeçalho da tabela */
         }
 
         .btn-voltar {
@@ -220,7 +220,7 @@
         .totais-container {
             display: flex;
             gap: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .total-card {
@@ -250,10 +250,32 @@
             font-weight: bold;
         }
 
-        /* APROVADO: Estilos da tabela de estoque com cabeçalho fixo */
+        /* NOVO ESTILO: Botão Nova Venda na tela de estoque */
+        .btn-nova-venda-estoque {
+            width: 100%;
+            padding: 12px;
+            background: #1E5A99;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-nova-venda-estoque:active {
+            transform: scale(0.98);
+            background: #0f3e6b;
+        }
+
+        /* CORREÇÃO: Cabeçalho da tabela com sticky ajustado */
         .estoque-container {
             flex: 1;
             overflow-y: auto;
+            position: relative;
         }
         
         .estoque-tabela {
@@ -262,13 +284,15 @@
             font-size: 0.75rem;
         }
         
+        /* CORREÇÃO CRÍTICA: thead fica abaixo do header da tela */
         .estoque-tabela thead {
             position: sticky;
-            top: 60px; /* Altura do cabeçalho da tela */
+            top: 57px; /* Altura do .tela-header (approx 45px) + margens */
             background: #1E5A99;
-            z-index: 9;
+            z-index: 9; /* Abaixo do cabeçalho da tela (z-index: 10) */
         }
         
+        /* Garantir que as células do cabeçalho tenham fundo sólido */
         .estoque-tabela th {
             background: #1E5A99;
             color: white;
@@ -282,9 +306,10 @@
             padding: 8px 6px;
             border-bottom: 1px solid #e2e8f0;
             color: #2d3748;
+            background: white;
         }
         
-        .estoque-tabela tr:hover {
+        .estoque-tabela tr:hover td {
             background: #f7fafc;
         }
         
@@ -342,8 +367,9 @@
             .total-value {
                 font-size: 1rem;
             }
+            /* CORREÇÃO: Ajustar top do thead para mobile */
             .estoque-tabela thead {
-                top: 55px;
+                top: 52px;
             }
         }
 
@@ -443,6 +469,11 @@
                     <div class="total-value" id="qtTotal">0</div>
                 </div>
             </div>
+            
+            <!-- NOVIDADE: Botão Efetuar Nova Venda na tela de Estoque -->
+            <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque">
+                <i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Efetuar Nova Venda
+            </button>
             
             <!-- EXPANSÍVEL: Container da tabela com scroll -->
             <div id="estoqueContainer" class="estoque-container">
@@ -567,11 +598,23 @@
         });
     }
 
+    // NOVIDADE: Configurar o botão Nova Venda na tela de Estoque
+    function configurarBotaoNovaVendaEstoque() {
+        const btnNovaVenda = document.getElementById('btnNovaVendaEstoque');
+        if (btnNovaVenda && !btnNovaVenda.hasAttribute('data-listener')) {
+            btnNovaVenda.setAttribute('data-listener', 'true');
+            btnNovaVenda.addEventListener('click', function() {
+                mostrarTela('telaVenda');
+            });
+        }
+    }
+
     // APROVADO: Inicialização do app
     function init() {
         exibirDataAtual();
         configurarBotoesMenu();
         garantirBotoesVoltar();
+        configurarBotaoNovaVendaEstoque();
         mostrarTela('telaMenu');
     }
 
@@ -580,6 +623,7 @@
         if (document.getElementById('telaMenu').style.display === 'none') {
             mostrarTela('telaMenu');
         }
+        configurarBotaoNovaVendaEstoque();
     };
     
     // ============================================
@@ -607,7 +651,7 @@
         }
     }
     
-    // NOVIDADE: Função para calcular e atualizar os totais
+    // Função para calcular e atualizar os totais
     function atualizarTotais(produtos) {
         let valorTotal = 0;
         let quantidadeTotal = 0;
@@ -631,7 +675,7 @@
         }
     }
     
-    // NOVIDADE: Função para filtrar produtos baseado no termo de pesquisa
+    // Função para filtrar produtos baseado no termo de pesquisa
     function filtrarProdutos(termo) {
         if (!termo || termo.trim() === '') {
             return produtosOriginais;
@@ -645,7 +689,7 @@
         });
     }
     
-    // NOVIDADE: Função para renderizar a tabela com os produtos filtrados
+    // Função para renderizar a tabela com os produtos filtrados
     function renderizarTabela(produtos) {
         if (!produtos || produtos.length === 0) {
             return `
@@ -673,7 +717,7 @@
             html += `<td>${produto.fornecedor || '-'}</td>`;
             html += `<td>R$ ${(typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0).toFixed(2)}`;
             html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
-            html += '</tr>';
+            html += '</table>';
         });
         
         html += '</tbody></table>';
@@ -722,7 +766,7 @@
         }
     }
     
-    // NOVIDADE: Configurar o evento de pesquisa em tempo real
+    // Configurar o evento de pesquisa em tempo real
     function configurarPesquisa() {
         const searchInput = document.getElementById('pesquisaEstoque');
         if (searchInput) {
