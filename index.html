@@ -85,6 +85,27 @@
         .acoes-venda { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .acoes-venda .btn-form { font-size: 0.8rem; padding: 8px; }
 
+        /* Estilos do modal */
+        #modalQuantidade {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 90%;
+            width: 300px;
+        }
+
         /* Responsividade */
         @media (max-width: 480px) {
             .tela { padding: 15px 12px 20px; }
@@ -163,7 +184,7 @@
         </div>
     </div>
 
-    <!-- CADASTRO DE CLIENTES (COM CAMPOS TRAVADOS POR PADRÃO) -->
+    <!-- CADASTRO DE CLIENTES (COM CAMPOS TRAVADOS) -->
     <div class="tela" id="telaClientes" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
@@ -197,21 +218,23 @@
         </div>
     </div>
 
-    <!-- ========== NOVAS TELAS ========== -->
-    <!-- LANÇAR PRODUTOS (TOTAIS NO TOPO) -->
+    <!-- LANÇAR PRODUTOS (COM LAYOUT ESTÁTICO) -->
     <div class="tela" id="telaLancarProdutos" style="display: none;">
-        <div class="card-content">
+        <div class="card-content" style="height: 100%; display: flex; flex-direction: column;">
             <div class="tela-header-nofixed">
                 <button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button>
                 <h2 style="color: #1E5A99;"><i class="fas fa-cube"></i> Lançar Produtos</h2>
             </div>
-            <input type="text" id="pesquisaProdutoLancamento" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
-            <!-- TOTAIS NO TOPO -->
-            <div class="totais-container" id="totaisLancamento" style="margin-bottom: 10px;">
-                <div class="total-card"><i class="fas fa-boxes"></i><div class="total-label">Qtde Total</div><div class="total-value" id="lancQtdeTotal">0</div></div>
-                <div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="lancValorTotal">R$ 0,00</div></div>
+            <!-- ÁREA ESTÁTICA NO TOPO -->
+            <div style="flex-shrink: 0;">
+                <input type="text" id="pesquisaProdutoLancamento" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+                <div class="totais-container" id="totaisLancamento" style="margin-bottom: 10px;">
+                    <div class="total-card"><i class="fas fa-boxes"></i><div class="total-label">Qtde Total</div><div class="total-value" id="lancQtdeTotal">0</div></div>
+                    <div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="lancValorTotal">R$ 0,00</div></div>
+                </div>
             </div>
-            <div class="estoque-container" id="tabelaLancamentoContainer">
+            <!-- ÁREA ROLÁVEL (TABELA) -->
+            <div class="estoque-container" id="tabelaLancamentoContainer" style="flex: 1; overflow-y: auto;">
                 <div class="loading-message">Carregando produtos...</div>
             </div>
         </div>
@@ -230,18 +253,35 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL DE QUANTIDADE -->
+    <div id="modalQuantidade" style="display: none;">
+        <div class="modal-content">
+            <h4 style="color:#1E5A99; margin-bottom:10px;">Informe a quantidade</h4>
+            <input type="number" id="inputQuantidade" min="1" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px;">
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button id="btnConfirmarLancamento" class="btn-form btn-salvar">Confirmar</button>
+                <button id="btnCancelarLancamento" class="btn-form btn-cancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     /* ============================================
        APROVADO - NÃO MEXER: CONFIGURAÇÕES GLOBAIS
        ============================================ */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwCC3cN-zvxGjGw5QmlFsC7KMmFjgJFiBq6y6RikxExv_N7SqSDoewvzVIdn1NzF0Lfsw/exec';
+    // NOVA URL DO APPS SCRIPT
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzaUReQ2E9c_HRnXVuZKBjhVODWdrtbWcH_woZwRLCQN506U8VIgbYBdRJWyOLkZxarAA/exec';
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
     let sortStateEstoque = { col: -1, asc: true };
     let produtosFiltradosAtuais = [];
 
-    // ========== TROCA DE TELAS (APROVADO) ==========
+    // Variáveis para o modal de lançamento
+    let produtoSelecionado = null;
+    let estoqueAtual = 0;
+
+    // ========== TROCA DE TELAS ==========
     function mostrarTela(id) {
         const tela = document.getElementById(id);
         if (!tela) {
@@ -252,28 +292,24 @@
         tela.style.display = 'flex';
     }
 
-    // ========== DELEGAÇÃO DE EVENTOS ROBUSTA ==========
+    // ========== DELEGAÇÃO DE EVENTOS ==========
     document.addEventListener('click', function(e) {
-        // Botões de voltar (classe .btn-voltar)
+        // Botões de voltar
         const voltarBtn = e.target.closest('.btn-voltar');
         if (voltarBtn) {
             e.preventDefault();
             const destino = voltarBtn.getAttribute('data-voltar');
-            if (destino) {
-                mostrarTela(destino);
-            }
+            if (destino) mostrarTela(destino);
             return;
         }
-
-        // Botões do menu principal
+        // Menu principal
         const menuBtn = e.target.closest('.menu-botao');
         if (menuBtn) {
             const destino = menuBtn.getAttribute('data-tela');
             if (destino) mostrarTela(destino);
             return;
         }
-
-        // Botão de selecionar cliente (dinâmico)
+        // Seleção de cliente
         if (e.target.classList && e.target.classList.contains('btn-selecionar-cliente')) {
             const id = e.target.getAttribute('data-id');
             const nome = e.target.getAttribute('data-nome');
@@ -285,56 +321,40 @@
             }
             return;
         }
-
         // Tela de Estoque
-        if (e.target.id === 'btnNovaVendaEstoque') {
-            mostrarTela('telaVenda');
-            return;
-        }
-        if (e.target.id === 'btnExportarExcel') {
-            exportarParaExcel();
-            return;
-        }
-
+        if (e.target.id === 'btnNovaVendaEstoque') mostrarTela('telaVenda');
+        if (e.target.id === 'btnExportarExcel') exportarParaExcel();
         // Tela de Venda
         if (e.target.id === 'btnLancarProdutos') {
             mostrarTela('telaLancarProdutos');
             setTimeout(() => carregarProdutosLancamento(), 100);
-            return;
         }
         if (e.target.id === 'btnPesquisarVendas') {
             mostrarTela('telaHistoricoVendas');
             setTimeout(() => carregarHistoricoVendas(), 100);
-            return;
         }
         if (e.target.id === 'btnCadastrarClienteVenda') {
             editandoClienteId = null;
             limparFormCliente();
             habilitarEdicao(false);
             mostrarTela('telaClientes');
-            return;
         }
-
         // Tela de Seleção de Cliente
         if (e.target.id === 'btnPesquisarCliente') {
             mostrarTela('telaSelecionarCliente');
             carregarClientes();
-            return;
         }
         if (e.target.id === 'btnCadastrarNovoCliente') {
             editandoClienteId = null;
             limparFormCliente();
             habilitarEdicao(false);
             mostrarTela('telaClientes');
-            return;
         }
-
         // Tela de Cadastro de Cliente
         if (e.target.id === 'btnCriarNovoCliente') {
             limparFormCliente();
             habilitarEdicao(true);
             editandoClienteId = null;
-            return;
         }
         if (e.target.id === 'btnEditarCliente') {
             if (!editandoClienteId) {
@@ -342,49 +362,27 @@
                 return;
             }
             habilitarEdicao(true);
-            return;
         }
-        if (e.target.id === 'btnSalvarCliente') {
-            salvarCliente();
-            return;
-        }
-        if (e.target.id === 'btnExcluirCliente') {
-            excluirCliente();
-            return;
-        }
+        if (e.target.id === 'btnSalvarCliente') salvarCliente();
+        if (e.target.id === 'btnExcluirCliente') excluirCliente();
         if (e.target.id === 'btnCancelarCliente') {
             habilitarEdicao(false);
             limparFormCliente();
-            return;
         }
-
         // Ações placeholder da venda
-        if (e.target.id === 'btnAdicionarVenda') {
-            alert('Funcionalidade "Adicionar venda" em desenvolvimento');
-            return;
-        }
-        if (e.target.id === 'btnEditarVenda') {
-            alert('Funcionalidade "Editar venda" em desenvolvimento');
-            return;
-        }
-        if (e.target.id === 'btnExcluirVenda') {
-            alert('Funcionalidade "Excluir venda" em desenvolvimento');
-            return;
-        }
-        if (e.target.id === 'btnCancelarVenda') {
-            alert('Funcionalidade "Cancelar venda" em desenvolvimento');
-            return;
-        }
+        if (e.target.id === 'btnAdicionarVenda') alert('Funcionalidade "Adicionar venda" em desenvolvimento');
+        if (e.target.id === 'btnEditarVenda') alert('Funcionalidade "Editar venda" em desenvolvimento');
+        if (e.target.id === 'btnExcluirVenda') alert('Funcionalidade "Excluir venda" em desenvolvimento');
+        if (e.target.id === 'btnCancelarVenda') alert('Funcionalidade "Cancelar venda" em desenvolvimento');
     });
 
-    // Função para habilitar/desabilitar campos do formulário de clientes
+    // ========== FUNÇÕES AUXILIARES ==========
     function habilitarEdicao(habilitar) {
         document.querySelectorAll('#telaClientes input[type="text"]').forEach(input => {
             input.disabled = !habilitar;
         });
     }
 
-    // Data atual
     document.getElementById('dataAtual').innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${new Date().toLocaleDateString('pt-BR', { year:'numeric', month:'long', day:'numeric' })}`;
 
     // ========== ESTOQUE ==========
@@ -401,12 +399,10 @@
     function atualizarEstoque() {
         const termo = document.getElementById('pesquisaEstoque').value.toLowerCase();
         produtosFiltradosAtuais = produtosOriginais.filter(p => 
-            (p.CODPROD || '').toString().toLowerCase().includes(termo) || 
-            (p.DESCRICAO || '').toString().toLowerCase().includes(termo)
+            String(p.CODPROD || '').toLowerCase().includes(termo) || 
+            String(p.DESCRICAO || '').toLowerCase().includes(termo)
         );
-        if (sortStateEstoque.col !== -1) {
-            ordenarDados(produtosFiltradosAtuais, sortStateEstoque.col, sortStateEstoque.asc);
-        }
+        if (sortStateEstoque.col !== -1) ordenarDados(produtosFiltradosAtuais, sortStateEstoque.col, sortStateEstoque.asc);
         atualizarTotaisEstoque(produtosFiltradosAtuais);
         document.getElementById('estoqueContainer').innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
     }
@@ -448,7 +444,7 @@
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             html += `<tr><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
         });
-        html += '</tbody></table>';
+        html += '</tbody></td>';
         return html;
     }
 
@@ -517,7 +513,7 @@
         document.getElementById('editNumeroCliente').value = cliente.numero || '';
         document.getElementById('editComplementoCliente').value = cliente.complemento || '';
         document.getElementById('editCepCliente').value = cliente.cep || '';
-        habilitarEdicao(false); // Mantém travado, só libera via botão EDITAR
+        habilitarEdicao(false);
     }
 
     function limparFormCliente() { 
@@ -579,22 +575,45 @@
         let filtrados = produtos;
         if (termo) {
             const low = termo.toLowerCase();
-            filtrados = produtos.filter(p => (p.CODPROD || '').toLowerCase().includes(low) || (p.DESCRICAO || '').toLowerCase().includes(low));
+            filtrados = produtos.filter(p => 
+                String(p.CODPROD || '').toLowerCase().includes(low) || 
+                String(p.DESCRICAO || '').toLowerCase().includes(low)
+            );
         }
         if (!filtrados.length) { container.innerHTML = '<div class="placeholder-mensagem">Nenhum produto encontrado</div>'; atualizarTotaisLancamento([]); return; }
 
-        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
-        filtrados.forEach(p => {
+        let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
+        filtrados.forEach((p, idx) => {
             const cod = p.CODPROD || '-';
             const desc = p.DESCRICAO || '-';
             const dtval = p.DTVAL || '-';
             const qtd = Number(p.QT).toLocaleString('pt-BR');
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            html += `<tr><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${dtval}</td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
+            html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-descricao="${p.DESCRICAO}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
+                        <td style="white-space:nowrap">${cod}</td>
+                        <td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td>
+                        <td style="white-space:nowrap">${dtval}</td>
+                        <td style="white-space:nowrap">${qtd}</td>
+                        <td style="white-space:nowrap">${preco}</td>
+                     </tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
         atualizarTotaisLancamento(filtrados);
+
+        // Adicionar evento de clique nas linhas da tabela
+        document.querySelectorAll('#tabelaLancamento tbody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                const codprod = this.getAttribute('data-codprod');
+                const descricao = this.getAttribute('data-descricao');
+                const estoque = parseInt(this.getAttribute('data-estoque')) || 0;
+                const preco = parseFloat(this.getAttribute('data-preco')) || 0;
+                produtoSelecionado = { codprod, descricao, preco };
+                estoqueAtual = estoque;
+                document.getElementById('inputQuantidade').value = 1;
+                document.getElementById('modalQuantidade').style.display = 'flex';
+            });
+        });
     }
 
     function atualizarTotaisLancamento(produtos) {
@@ -608,13 +627,69 @@
         if (window.produtosLancamento) renderizarTabelaLancamento(window.produtosLancamento, e.target.value);
     });
 
+    // ========== MODAL DE QUANTIDADE ==========
+    function fecharModal() {
+        document.getElementById('modalQuantidade').style.display = 'none';
+        produtoSelecionado = null;
+        estoqueAtual = 0;
+    }
+
+    document.getElementById('btnCancelarLancamento').addEventListener('click', fecharModal);
+
+    document.getElementById('btnConfirmarLancamento').addEventListener('click', async function() {
+        const quantidade = parseInt(document.getElementById('inputQuantidade').value);
+        if (isNaN(quantidade) || quantidade <= 0) {
+            alert('Informe uma quantidade válida.');
+            return;
+        }
+        if (quantidade > estoqueAtual) {
+            alert(`Estoque insuficiente! Saldo disponível: ${estoqueAtual}`);
+            return;
+        }
+        if (!clienteSelecionado) {
+            alert('Nenhum cliente selecionado. Volte para a tela de vendas e selecione um cliente.');
+            fecharModal();
+            mostrarTela('telaVenda');
+            return;
+        }
+        // Enviar venda para o backend
+        const venda = {
+            acao: 'venda',
+            cliente_id: clienteSelecionado.id,
+            cliente_nome: clienteSelecionado.nome,
+            produto_codprod: produtoSelecionado.codprod,
+            produto_descricao: produtoSelecionado.descricao,
+            quantidade: quantidade,
+            preco_unitario: produtoSelecionado.preco,
+            valor_total: quantidade * produtoSelecionado.preco
+        };
+        try {
+            const formData = new FormData();
+            formData.append('dados', JSON.stringify(venda));
+            const res = await fetch(API_URL, { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.status === 'ok') {
+                alert(`Produto adicionado à venda!\nQuantidade: ${quantidade}\nValor: R$ ${(quantidade * produtoSelecionado.preco).toFixed(2)}`);
+                // Marcar visualmente o produto como "vendido" (opcional: mudar a cor da linha)
+                fecharModal();
+                // Recarregar a lista de produtos para mostrar o novo estoque
+                await carregarProdutosLancamento();
+            } else {
+                alert('Erro ao registrar venda: ' + (data.erro || 'desconhecido'));
+            }
+        } catch(e) {
+            alert('Erro de conexão ao registrar venda.');
+            console.error(e);
+        }
+    });
+
     // ========== TELA: HISTÓRICO DE VENDAS ==========
     async function carregarHistoricoVendas() {
         const container = document.getElementById('tabelaHistoricoContainer');
         if (!container) return;
         container.innerHTML = '<div class="loading-message">Carregando histórico...</div>';
         try {
-            // Simulação - substituir por chamada real
+            // Simulação - substituir por chamada real ao endpoint de histórico
             const vendas = [
                 { id: 1, data: '15/06/2024', cliente: 'João Silva', valorTotal: 1250.90, itens: [{produto:'Produto A', qtd:2, preco:50.00}] },
                 { id: 2, data: '14/06/2024', cliente: 'Maria Oliveira', valorTotal: 89.50, itens: [{produto:'Produto B', qtd:1, preco:89.50}] },
@@ -637,7 +712,7 @@
         let html = '<table class="estoque-tabela"><thead><tr><th>ID Venda</th><th>Data</th><th>Cliente</th><th>Valor Total</th><th>Ações</th></tr></thead><tbody>';
         filtrados.forEach(v => {
             const valorFormatado = Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            html += `<td><td style="white-space:nowrap">${v.id}</td><td style="white-space:nowrap">${v.data}</td><td style="white-space:nowrap">${v.cliente}</td><td style="white-space:nowrap">${valorFormatado}</td><td style="white-space:nowrap"><button class="btn-ver-detalhes" data-id="${v.id}">Ver Detalhes</button></td></tr>`;
+            html += `<tr><td style="white-space:nowrap">${v.id}</td><td style="white-space:nowrap">${v.data}</td><td style="white-space:nowrap">${v.cliente}</td><td style="white-space:nowrap">${valorFormatado}</td><td style="white-space:nowrap"><button class="btn-ver-detalhes" data-id="${v.id}">Ver Detalhes</button></td></tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
