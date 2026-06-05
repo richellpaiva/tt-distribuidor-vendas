@@ -7,7 +7,7 @@
     <!-- APROVADO - NÃO MEXER: Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== APROVADO - NÃO MEXER ========== */
+        /* ========== APROVADO - NÃO MEXER (BASE) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
         .app-container { width: 100%; max-width: 500px; height: 100vh; background: white; box-shadow: 0 0 30px rgba(0,0,0,0.1); overflow-y: auto; overflow-x: hidden; position: relative; }
@@ -27,7 +27,7 @@
         .menu-botao span { font-size: 1rem; font-weight: 600; color: #1E5A99; flex: 1; }
         .menu-botao:active { transform: scale(0.97); background: #f0f7ff; }
 
-        /* Estoque - cabeçalho fixo */
+        /* Estoque - cabeçalho fixo (APROVADO) */
         #telaEstoque { height: 100vh; padding: 0; }
         #telaEstoque .card-content { height: 100%; padding: 20px 16px 25px; display: flex; flex-direction: column; }
         .estoque-fixed-header { position: sticky; top: 0; z-index: 10; background: white; padding-bottom: 10px; margin-bottom: 10px; flex-shrink: 0; }
@@ -51,36 +51,9 @@
         .estoque-tabela th { background: #1E5A99; color: white; padding: 10px 6px; text-align: left; cursor: pointer; user-select: none; }
         .estoque-tabela th i { margin-left: 5px; font-size: 0.7rem; }
         .estoque-tabela td { padding: 8px 6px; border-bottom: 1px solid #e2e8f0; color: #2d3748; background: white; white-space: nowrap; }
-        /* Quebra de linha apenas na coluna de descrição (segunda coluna) */
         .estoque-tabela td:nth-child(2) { white-space: normal !important; word-break: break-word; }
-        /* Botões de navegação flutuantes */
-        .nav-slide-buttons {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-        }
-        .nav-slide-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #1E5A99;
-            color: white;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        .nav-slide-btn:active { transform: scale(0.95); background: #0f3e6b; }
-        .nav-slide-btn.disabled { opacity: 0.5; pointer-events: none; }
 
-        /* Telas de cliente e venda */
+        /* Telas de cliente e venda (APROVADO) */
         .tela-header-nofixed { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
         .cliente-selecionado-box { background: #e8f0fe; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center; color: #1E5A99; font-weight: 500; }
         .btn-pesquisar-cliente { width: 100%; padding: 12px; background: #1E5A99; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; margin: 10px 0; cursor: pointer; }
@@ -105,6 +78,12 @@
         .error-message { color: #e53e3e; background: #fff5f5; }
         .placeholder-mensagem { background: #f8fafc; border: 1px dashed #bdd4e7; color: #4b6b8f; }
         .placeholder-mensagem i { font-size: 2.5rem; color: #90aec9; margin-bottom: 12px; display: block; }
+
+        /* Novos estilos para ações da venda */
+        .acoes-venda { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .acoes-venda .btn-form { font-size: 0.8rem; padding: 8px; }
+
+        /* Responsividade */
         @media (max-width: 480px) {
             .tela { padding: 15px 12px 20px; }
             .capa-titulo { font-size: 1.3rem; }
@@ -113,8 +92,8 @@
             .botoes-form { flex-direction: column; }
             .cliente-card { flex-direction: column; gap: 10px; text-align: center; }
             .btn-selecionar-cliente { width: 100%; }
-            .nav-slide-buttons { bottom: 15px; right: 15px; }
-            .nav-slide-btn { width: 45px; height: 45px; font-size: 1.2rem; }
+            .acoes-venda { gap: 5px; }
+            .acoes-venda .btn-form { padding: 6px; font-size: 0.7rem; }
         }
         .app-container::-webkit-scrollbar, .estoque-container::-webkit-scrollbar, .clientes-lista::-webkit-scrollbar { width: 5px; }
         .app-container::-webkit-scrollbar-track, .estoque-container::-webkit-scrollbar-track, .clientes-lista::-webkit-scrollbar-track { background: #e2e8f0; }
@@ -123,6 +102,7 @@
 </head>
 <body>
 <div class="app-container">
+    <!-- ========== TELAS APROVADAS (MENU, ESTOQUE, CLIENTES, CONFIG) ========== -->
     <!-- MENU PRINCIPAL -->
     <div class="tela" id="telaMenu" style="display: flex;">
         <div class="card-content">
@@ -151,18 +131,24 @@
         </div>
     </div>
 
-    <!-- VENDA -->
+    <!-- VENDA (REFINADA) -->
     <div class="tela" id="telaVenda" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-cart-plus"></i> Nova Venda</h2></div>
             <div class="cliente-selecionado-box" id="clienteSelecionadoDisplay"><strong>Nenhum cliente selecionado</strong></div>
-            <button id="btnPesquisarCliente" class="btn-pesquisar-cliente"><i class="fas fa-search"></i> Pesquisar Cliente</button>
-            <div class="placeholder-mensagem" style="margin-top:20px;"><i class="fas fa-receipt"></i> Adicionar produtos à venda<br><span style="font-size:0.85rem">Em breve</span></div>
-            <button id="btnFinalizarVenda" class="btn-nova-venda-estoque" style="background:#28a745; margin-top:20px;" disabled><i class="fas fa-check-circle"></i> Finalizar Venda</button>
+            <!-- Ações da venda -->
+            <div class="acoes-venda">
+                <button id="btnAdicionarVenda" class="btn-form btn-novo"><i class="fas fa-plus"></i> Adicionar</button>
+                <button id="btnEditarVenda" class="btn-form btn-salvar"><i class="fas fa-edit"></i> Editar</button>
+                <button id="btnExcluirVenda" class="btn-form btn-excluir"><i class="fas fa-trash"></i> Excluir</button>
+                <button id="btnCancelarVenda" class="btn-form btn-cancelar"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+            <button id="btnLancarProdutos" class="btn-nova-venda-estoque"><i class="fas fa-cube"></i> Lançar Produtos</button>
+            <button id="btnPesquisarVendas" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-search"></i> Pesquisar Vendas</button>
         </div>
     </div>
 
-    <!-- SELEÇÃO DE CLIENTE -->
+    <!-- SELEÇÃO DE CLIENTE (APROVADO) -->
     <div class="tela" id="telaSelecionarCliente" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-users"></i> Selecionar Cliente</h2></div>
@@ -172,7 +158,7 @@
         </div>
     </div>
 
-    <!-- CADASTRO DE CLIENTES -->
+    <!-- CADASTRO DE CLIENTES (APROVADO) -->
     <div class="tela" id="telaClientes" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
@@ -192,82 +178,65 @@
         </div>
     </div>
 
-    <!-- CONFIGURAÇÕES -->
+    <!-- CONFIGURAÇÕES (APROVADO) -->
     <div class="tela" id="telaConfig" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-cog"></i> Configurações</h2></div>
             <div class="placeholder-mensagem"><i class="fas fa-sliders-h"></i> Ajustes do sistema<br><span style="font-size:0.85rem">Personalização futura</span></div>
         </div>
     </div>
-</div>
 
-<!-- Botões de navegação flutuantes (setas) -->
-<div class="nav-slide-buttons">
-    <button id="btnSlidePrev" class="nav-slide-btn disabled" disabled><i class="fas fa-chevron-left"></i></button>
-    <button id="btnSlideNext" class="nav-slide-btn"><i class="fas fa-chevron-right"></i></button>
+    <!-- ========== NOVAS TELAS ========== -->
+    <!-- LANÇAR PRODUTOS -->
+    <div class="tela" id="telaLancarProdutos" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button>
+                <h2><i class="fas fa-cube"></i> Lançar Produtos</h2>
+            </div>
+            <input type="text" id="pesquisaProdutoLancamento" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+            <div class="estoque-container" id="tabelaLancamentoContainer">
+                <div class="loading-message">Carregando produtos...</div>
+            </div>
+            <div class="totais-container" id="totaisLancamento" style="margin-top: 10px;">
+                <div class="total-card"><i class="fas fa-boxes"></i><div class="total-label">Qtde Total</div><div class="total-value" id="lancQtdeTotal">0</div></div>
+                <div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="lancValorTotal">R$ 0,00</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTÓRICO DE VENDAS -->
+    <div class="tela" id="telaHistoricoVendas" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button>
+                <h2><i class="fas fa-search"></i> Histórico de Vendas</h2>
+            </div>
+            <input type="text" id="pesquisaHistoricoVendas" class="search-box" placeholder="🔍 Pesquisar por ID, Cliente ou Data...">
+            <div class="estoque-container" id="tabelaHistoricoContainer">
+                <div class="loading-message">Carregando histórico...</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     /* ============================================
-       MÓDULO DE ESTOQUE - BACKEND
+       APROVADO - NÃO MEXER: CONFIGURAÇÕES GLOBAIS
        ============================================ */
-    
-    // URL FINAL DO GOOGLE APPS SCRIPT (FORNECIDO PELO USUÁRIO)
     const API_URL = 'https://script.google.com/macros/s/AKfycbwCC3cN-zvxGjGw5QmlFsC7KMmFjgJFiBq6y6RikxExv_N7SqSDoewvzVIdn1NzF0Lfsw/exec';
-    
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
-    // Estado da ordenação da tabela de estoque
     let sortStateEstoque = { col: -1, asc: true };
     let produtosFiltradosAtuais = [];
 
-    // ========== NAVEGAÇÃO ENTRE TELAS (LINEAR COM SETAS) ==========
-    const ordemTelas = ['telaMenu', 'telaEstoque', 'telaVenda', 'telaClientes', 'telaConfig'];
-    let indiceAtual = 0;
-
+    // ========== TROCA DE TELAS (APROVADO) ==========
     function mostrarTela(id) {
         document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
         const tela = document.getElementById(id);
         if (tela) tela.style.display = 'flex';
-        // Atualiza índice atual
-        indiceAtual = ordemTelas.indexOf(id);
-        atualizarBotoesNavegacao();
     }
 
-    function navegarSlide(direcao) {
-        const novoIndice = indiceAtual + direcao;
-        if (novoIndice >= 0 && novoIndice < ordemTelas.length) {
-            mostrarTela(ordemTelas[novoIndice]);
-        }
-    }
-
-    function atualizarBotoesNavegacao() {
-        const btnPrev = document.getElementById('btnSlidePrev');
-        const btnNext = document.getElementById('btnSlideNext');
-        if (btnPrev) {
-            if (indiceAtual <= 0) {
-                btnPrev.classList.add('disabled');
-                btnPrev.disabled = true;
-            } else {
-                btnPrev.classList.remove('disabled');
-                btnPrev.disabled = false;
-            }
-        }
-        if (btnNext) {
-            if (indiceAtual >= ordemTelas.length - 1) {
-                btnNext.classList.add('disabled');
-                btnNext.disabled = true;
-            } else {
-                btnNext.classList.remove('disabled');
-                btnNext.disabled = false;
-            }
-        }
-    }
-
-    // Eventos dos botões de navegação
-    document.getElementById('btnSlidePrev').addEventListener('click', () => navegarSlide(-1));
-    document.getElementById('btnSlideNext').addEventListener('click', () => navegarSlide(1));
-
-    // Botões de voltar (data-voltar) – já existentes, precisamos garantir que atualizem a navegação
+    // Configuração dos botões voltar e menu (APROVADO)
     document.querySelectorAll('.btn-voltar').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -275,19 +244,15 @@
             if (destino) mostrarTela(destino);
         });
     });
-
-    // Botões do menu principal
     document.querySelectorAll('.menu-botao').forEach(btn => {
         btn.addEventListener('click', () => {
             const destino = btn.getAttribute('data-tela');
             if (destino) mostrarTela(destino);
         });
     });
-
-    // Data atual
     document.getElementById('dataAtual').innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${new Date().toLocaleDateString('pt-BR', { year:'numeric', month:'long', day:'numeric' })}`;
 
-    // ========== ESTOQUE ==========
+    // ========== ESTOQUE (APROVADO) ==========
     async function carregarEstoque() {
         const container = document.getElementById('estoqueContainer');
         container.innerHTML = '<div class="loading-message">Carregando...</div>';
@@ -298,23 +263,17 @@
         } catch(e) { container.innerHTML = '<div class="error-message">Erro ao carregar estoque</div>'; }
     }
 
-    // Função chamada quando a pesquisa ou ordenação muda
     function atualizarEstoque() {
         const termo = document.getElementById('pesquisaEstoque').value.toLowerCase();
-        // Filtrar dados
         produtosFiltradosAtuais = produtosOriginais.filter(p => 
             (p.CODPROD || '').toString().toLowerCase().includes(termo) || 
             (p.DESCRICAO || '').toString().toLowerCase().includes(termo)
         );
-        // Ordenar se necessário
         if (sortStateEstoque.col !== -1) {
             ordenarDados(produtosFiltradosAtuais, sortStateEstoque.col, sortStateEstoque.asc);
         }
-        // Atualizar totais
         atualizarTotaisEstoque(produtosFiltradosAtuais);
-        // Renderizar tabela
-        const container = document.getElementById('estoqueContainer');
-        container.innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
+        document.getElementById('estoqueContainer').innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
     }
 
     function ordenarDados(dados, colIndex, asc) {
@@ -323,11 +282,8 @@
             let va = a[chaves[colIndex]], vb = b[chaves[colIndex]];
             if (va === undefined) va = '';
             if (vb === undefined) vb = '';
-            if (typeof va === 'string') {
-                return asc ? va.localeCompare(vb) : vb.localeCompare(va);
-            } else {
-                return asc ? va - vb : vb - va;
-            }
+            if (typeof va === 'string') return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+            else return asc ? va - vb : vb - va;
         });
     }
 
@@ -336,90 +292,52 @@
         if (sortStateEstoque.col === colIndex) sortStateEstoque.asc = !sortStateEstoque.asc;
         else { sortStateEstoque.col = colIndex; sortStateEstoque.asc = true; }
         ordenarDados(produtosFiltradosAtuais, sortStateEstoque.col, sortStateEstoque.asc);
-        const container = document.getElementById('estoqueContainer');
-        container.innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
-        // Atualizar totais (opcional, pois os dados são os mesmos)
+        document.getElementById('estoqueContainer').innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
         atualizarTotaisEstoque(produtosFiltradosAtuais);
     }
 
     function atualizarTotaisEstoque(produtos) {
         let valorTotal = 0, qtdTotal = 0;
-        produtos.forEach(p => { 
-            let preco = parseFloat(p.VLCMVCUSTO) || 0; 
-            let qtd = parseInt(p.QT) || 0; 
-            valorTotal += preco * qtd; 
-            qtdTotal += qtd; 
-        });
+        produtos.forEach(p => { let preco = parseFloat(p.VLCMVCUSTO) || 0; let qtd = parseInt(p.QT) || 0; valorTotal += preco * qtd; qtdTotal += qtd; });
         document.getElementById('valorTotal').innerText = Number(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('qtTotal').innerText = qtdTotal.toLocaleString('pt-BR');
     }
 
     function renderizarTabelaEstoque(produtos) {
-        if (!produtos || produtos.length === 0) {
-            return `<div class="placeholder-mensagem"><i class="fas fa-box-open"></i>Nenhum produto encontrado</div>`;
-        }
-
-        let html = '<table class="estoque-tabela">';
-        html += `<thead><tr>
-                    <th onclick="ordenarTabelaEstoque(0)">Código <i class="fas fa-sort"></i></th>
-                    <th onclick="ordenarTabelaEstoque(1)">Produto <i class="fas fa-sort"></i></th>
-                    <th onclick="ordenarTabelaEstoque(2)">Quantidade <i class="fas fa-sort"></i></th>
-                    <th onclick="ordenarTabelaEstoque(3)">Preço <i class="fas fa-sort"></i></th>
-                 </tr></thead><tbody>`;
-
-        produtos.forEach(produto => {
-            const cod = produto.CODPROD || '-';
-            const desc = produto.DESCRICAO || '-';
-            const qtd = Number(produto.QT).toLocaleString('pt-BR');
-            const preco = Number(produto.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-            html += `<tr>
-                        <td>${cod}</td>
-                        <td><strong>${desc}</strong></td>
-                        <td>${qtd}</td>
-                        <td>${preco}</td>
-                    </tr>`;
+        if (!produtos || produtos.length === 0) return `<div class="placeholder-mensagem"><i class="fas fa-box-open"></i>Nenhum produto encontrado</div>`;
+        let html = '<table class="estoque-tabela"><thead><tr><th onclick="ordenarTabelaEstoque(0)">Código <i class="fas fa-sort"></i></th><th onclick="ordenarTabelaEstoque(1)">Produto <i class="fas fa-sort"></i></th><th onclick="ordenarTabelaEstoque(2)">Quantidade <i class="fas fa-sort"></i></th><th onclick="ordenarTabelaEstoque(3)">Preço <i class="fas fa-sort"></i></th></tr></thead><tbody>';
+        produtos.forEach(p => {
+            const cod = p.CODPROD || '-';
+            const desc = p.DESCRICAO || '-';
+            const qtd = Number(p.QT).toLocaleString('pt-BR');
+            const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            html += `<tr><td>${cod}</td><td><strong>${desc}</strong></td><td>${qtd}</td><td>${preco}</td></tr>`;
         });
-
-        html += '</tbody></td>';
+        html += '</tbody></table>';
         return html;
     }
 
-    // Exportar para CSV
     function exportarParaExcel() {
-        if (!produtosFiltradosAtuais || produtosFiltradosAtuais.length === 0) {
-            alert('Nenhum dado para exportar.');
-            return;
-        }
+        if (!produtosFiltradosAtuais || produtosFiltradosAtuais.length === 0) { alert('Nenhum dado para exportar.'); return; }
         let csv = 'Código;Produto;Quantidade;Preço (R$)\n';
         produtosFiltradosAtuais.forEach(p => {
-            const cod = p.CODPROD || '';
-            const desc = p.DESCRICAO || '';
-            const qtd = p.QT || 0;
-            const preco = parseFloat(p.VLCMVCUSTO) || 0;
-            csv += `"${cod}";"${desc}";${qtd};${preco.toFixed(2).replace('.', ',')}\n`;
+            csv += `"${p.CODPROD || ''}";"${p.DESCRICAO || ''}";${p.QT || 0};${(parseFloat(p.VLCMVCUSTO) || 0).toFixed(2).replace('.', ',')}\n`;
         });
         const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
         link.href = url;
         link.download = 'estoque_filtrado.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
         URL.revokeObjectURL(url);
     }
 
-    document.getElementById('pesquisaEstoque').addEventListener('input', function() {
-        // Resetar ordenação ao pesquisar
-        sortStateEstoque = { col: -1, asc: true };
-        atualizarEstoque();
-    });
+    document.getElementById('pesquisaEstoque').addEventListener('input', () => { sortStateEstoque = { col: -1, asc: true }; atualizarEstoque(); });
     document.getElementById('btnNovaVendaEstoque').addEventListener('click', () => mostrarTela('telaVenda'));
     document.getElementById('btnExportarExcel').addEventListener('click', exportarParaExcel);
-    window.ordenarTabelaEstoque = ordenarTabelaEstoque; // Para onclick global
+    window.ordenarTabelaEstoque = ordenarTabelaEstoque;
 
-    // ========== CLIENTES - seleção e cadastro ==========
+    // ========== CLIENTES (APROVADO) ==========
     async function carregarClientes() {
         try {
             const res = await fetch(`${API_URL}?tipo=clientes`);
@@ -436,10 +354,9 @@
         if (!filtrados.length) { container.innerHTML = '<div class="placeholder-mensagem">Nenhum cliente encontrado</div>'; return; }
         let html = '<div class="lista-clientes">';
         filtrados.forEach(c => { html += `<div class="cliente-card"><div><strong>${c.nome}</strong><br><span class="cliente-info">CPF: ${c.cpf||'-'} | Tel: ${c.telefone||'-'}</span></div><button class="btn-selecionar-cliente" data-id="${c.id}" data-nome="${c.nome.replace(/'/g, "\\'")}">Selecionar</button></div>`; });
-        html += '</div>';
         container.innerHTML = html;
         document.querySelectorAll('.btn-selecionar-cliente').forEach(btn => {
-            btn.addEventListener('click', () => { clienteSelecionado = { id: btn.dataset.id, nome: btn.dataset.nome }; mostrarTela('telaVenda'); document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${clienteSelecionado.nome} (ID: ${clienteSelecionado.id})`; document.getElementById('btnFinalizarVenda').disabled = false; });
+            btn.addEventListener('click', () => { clienteSelecionado = { id: btn.dataset.id, nome: btn.dataset.nome }; mostrarTela('telaVenda'); document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${clienteSelecionado.nome} (ID: ${clienteSelecionado.id})`; });
         });
     }
 
@@ -447,7 +364,6 @@
     document.getElementById('btnCadastrarNovoCliente').addEventListener('click', () => mostrarTela('telaClientes'));
     document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
 
-    // Funções de cadastro de clientes (CRUD) - usando FormData
     function atualizarListaClientesCadastro() {
         const termo = document.getElementById('pesquisaClientesCadastro')?.value || '';
         let filtrados = clientesOriginais;
@@ -456,7 +372,6 @@
         if (!filtrados.length) { container.innerHTML = '<div class="placeholder-mensagem">Nenhum cliente encontrado</div>'; return; }
         let html = '<div class="lista-clientes">';
         filtrados.forEach(c => { html += `<div class="cliente-card" data-id="${c.id}"><div><strong>${c.nome}</strong><br><span class="cliente-info">CPF: ${c.cpf||'-'} | ID: ${c.id}</span></div></div>`; });
-        html += '</div>';
         container.innerHTML = html;
         document.querySelectorAll('#listaClientesCadastro .cliente-card').forEach(card => {
             card.addEventListener('click', () => { const id = parseInt(card.dataset.id); const cliente = clientesOriginais.find(c => c.id == id); if (cliente) preencherFormCliente(cliente); });
@@ -499,7 +414,7 @@
             formData.append('dados', JSON.stringify({ acao: 'cliente', modo: 'excluir', id: editandoClienteId }));
             const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
-            if (data.status === 'ok') { alert('Cliente excluído'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado = null; document.getElementById('clienteSelecionadoDisplay').innerHTML = '<strong>Nenhum cliente selecionado</strong>'; document.getElementById('btnFinalizarVenda').disabled = true; } }
+            if (data.status === 'ok') { alert('Cliente excluído'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado = null; document.getElementById('clienteSelecionadoDisplay').innerHTML = '<strong>Nenhum cliente selecionado</strong>'; } }
             else alert('Erro ao excluir');
         } catch(e) { alert('Erro de conexão'); }
     }
@@ -510,7 +425,119 @@
     document.getElementById('btnExcluirCliente').addEventListener('click', excluirCliente);
     document.getElementById('btnCancelarCliente').addEventListener('click', limparFormCliente);
 
-    // Inicialização
+    // ========== NOVAS FUNCIONALIDADES ==========
+    // Ações da tela de venda (apenas navegação)
+    document.getElementById('btnLancarProdutos').addEventListener('click', () => mostrarTela('telaLancarProdutos'));
+    document.getElementById('btnPesquisarVendas').addEventListener('click', () => mostrarTela('telaHistoricoVendas'));
+    // Placeholders para ações da venda (futuro)
+    document.getElementById('btnAdicionarVenda').addEventListener('click', () => alert('Funcionalidade "Adicionar venda" em desenvolvimento'));
+    document.getElementById('btnEditarVenda').addEventListener('click', () => alert('Funcionalidade "Editar venda" em desenvolvimento'));
+    document.getElementById('btnExcluirVenda').addEventListener('click', () => alert('Funcionalidade "Excluir venda" em desenvolvimento'));
+    document.getElementById('btnCancelarVenda').addEventListener('click', () => alert('Funcionalidade "Cancelar venda" em desenvolvimento'));
+
+    // ========== TELA: LANÇAR PRODUTOS ==========
+    async function carregarProdutosLancamento() {
+        const container = document.getElementById('tabelaLancamentoContainer');
+        container.innerHTML = '<div class="loading-message">Carregando produtos...</div>';
+        try {
+            const res = await fetch(`${API_URL}?tipo=estoque`);
+            const produtos = await res.json();
+            window.produtosLancamento = produtos; // guarda globalmente
+            renderizarTabelaLancamento(produtos);
+        } catch(e) { container.innerHTML = '<div class="error-message">Erro ao carregar produtos</div>'; }
+    }
+
+    function renderizarTabelaLancamento(produtos, termo = '') {
+        const container = document.getElementById('tabelaLancamentoContainer');
+        let filtrados = produtos;
+        if (termo) {
+            const low = termo.toLowerCase();
+            filtrados = produtos.filter(p => (p.CODPROD || '').toLowerCase().includes(low) || (p.DESCRICAO || '').toLowerCase().includes(low));
+        }
+        if (!filtrados.length) { container.innerHTML = '<div class="placeholder-mensagem">Nenhum produto encontrado</div>'; atualizarTotaisLancamento([]); return; }
+
+        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
+        filtrados.forEach(p => {
+            const cod = p.CODPROD || '-';
+            const desc = p.DESCRICAO || '-';
+            const dtval = p.DTVAL || '-';
+            const qtd = Number(p.QT).toLocaleString('pt-BR');
+            const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            html += `<tr><td>${cod}</td><td><strong>${desc}</strong></td><td>${dtval}</td><td>${qtd}</td><td>${preco}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        atualizarTotaisLancamento(filtrados);
+    }
+
+    function atualizarTotaisLancamento(produtos) {
+        let qtdeTotal = 0, valorTotal = 0;
+        produtos.forEach(p => { qtdeTotal += parseInt(p.QT) || 0; valorTotal += (parseFloat(p.VLCMVCUSTO) || 0) * (parseInt(p.QT) || 0); });
+        document.getElementById('lancQtdeTotal').innerText = qtdeTotal.toLocaleString('pt-BR');
+        document.getElementById('lancValorTotal').innerText = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    document.getElementById('pesquisaProdutoLancamento').addEventListener('input', (e) => {
+        if (window.produtosLancamento) renderizarTabelaLancamento(window.produtosLancamento, e.target.value);
+    });
+
+    // ========== TELA: HISTÓRICO DE VENDAS ==========
+    // Simulação de histórico (apenas exemplo visual)
+    async function carregarHistoricoVendas() {
+        const container = document.getElementById('tabelaHistoricoContainer');
+        container.innerHTML = '<div class="loading-message">Carregando histórico...</div>';
+        try {
+            // Aqui você deve conectar com o backend real de vendas.
+            // Por enquanto, geramos dados fictícios para demonstrar a estrutura.
+            const vendas = [
+                { id: 1, data: '15/06/2024', cliente: 'João Silva', valorTotal: 1250.90, itens: [{produto:'Produto A', qtd:2, preco:50.00}] },
+                { id: 2, data: '14/06/2024', cliente: 'Maria Oliveira', valorTotal: 89.50, itens: [{produto:'Produto B', qtd:1, preco:89.50}] },
+                { id: 3, data: '13/06/2024', cliente: 'Carlos Souza', valorTotal: 350.00, itens: [{produto:'Produto C', qtd:5, preco:70.00}] }
+            ];
+            window.vendasHistorico = vendas;
+            renderizarHistoricoVendas(vendas);
+        } catch(e) { container.innerHTML = '<div class="error-message">Erro ao carregar histórico</div>'; }
+    }
+
+    function renderizarHistoricoVendas(vendas, termo = '') {
+        const container = document.getElementById('tabelaHistoricoContainer');
+        let filtrados = vendas;
+        if (termo) {
+            const low = termo.toLowerCase();
+            filtrados = vendas.filter(v => v.id.toString().includes(low) || v.cliente.toLowerCase().includes(low) || v.data.includes(low));
+        }
+        if (!filtrados.length) { container.innerHTML = '<div class="placeholder-mensagem">Nenhuma venda encontrada</div>'; return; }
+
+        let html = '<table class="estoque-tabela"><thead><td><th>ID Venda</th><th>Data</th><th>Cliente</th><th>Valor Total</th><th>Ações</th></tr></thead><tbody>';
+        filtrados.forEach(v => {
+            const valorFormatado = Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            html += `<tr><td>${v.id}</td><td>${v.data}</td><td>${v.cliente}</td><td>${valorFormatado}</td><td><button class="btn-ver-detalhes" data-id="${v.id}">Ver Detalhes</button></td></tr>`;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+
+        document.querySelectorAll('.btn-ver-detalhes').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                const venda = vendas.find(v => v.id === id);
+                if (venda) {
+                    let msg = `Itens da venda ${venda.id}:\n`;
+                    venda.itens.forEach(i => { msg += `- ${i.produto}: ${i.qtd} x ${i.preco.toFixed(2)} = ${(i.qtd*i.preco).toFixed(2)}\n`; });
+                    alert(msg);
+                }
+            });
+        });
+    }
+
+    document.getElementById('pesquisaHistoricoVendas').addEventListener('input', (e) => {
+        if (window.vendasHistorico) renderizarHistoricoVendas(window.vendasHistorico, e.target.value);
+    });
+
+    // Eventos de navegação para as novas telas
+    document.getElementById('telaLancarProdutos').addEventListener('click', () => carregarProdutosLancamento(), { once: true });
+    document.getElementById('telaHistoricoVendas').addEventListener('click', () => carregarHistoricoVendas(), { once: true });
+
+    // ========== INICIALIZAÇÃO ==========
     carregarEstoque();
     carregarClientes();
     mostrarTela('telaMenu');
