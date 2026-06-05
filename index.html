@@ -171,7 +171,7 @@
 <script>
     // ========== APROVADO - NÃO MEXER ==========
     // NOVO URL DO GOOGLE APPS SCRIPT (FORNECIDO PELO USUÁRIO)
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzC7Z8Bkzcv5RFEmD_Ztwb9Zi-oJ6M1wfBlyD_WvLqT-Ddr80LhQIbAtdJ4aKljbhEaWA/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzEeW-EYM1yYyecUYyO3njj4-6xYlDFIgVBVHasID5-hHbSEvljH_zy56TiKuP1o7et-Q/exec';
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
 
     function mostrarTela(id) { document.querySelectorAll('.tela').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'flex'; }
@@ -197,7 +197,7 @@
         document.getElementById('valorTotal').innerText = `R$ ${valorTotal.toFixed(2)}`;
         document.getElementById('qtTotal').innerText = qtdTotal;
         let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Fornecedor</th><th>Preço</th><th>Qtd</th></tr></thead><tbody>';
-        filtrados.forEach(p => { html += `<td><td>${p.id || '-'}</td><td><strong>${p.nome || '-'}</strong></td><td>${p.fornecedor || '-'}</td><td>R$ ${(parseFloat(p.preco)||0).toFixed(2)}</td><td>${p.quantidade||0}</td></table>`; });
+        filtrados.forEach(p => { html += `<tr><td>${p.id || '-'}</td><td><strong>${p.nome || '-'}</strong></td><td>${p.fornecedor || '-'}</td><td>R$ ${(parseFloat(p.preco)||0).toFixed(2)}</td><td>${p.quantidade||0}</td></tr>`; });
         html += '</tbody></table>';
         document.getElementById('estoqueContainer').innerHTML = html;
     }
