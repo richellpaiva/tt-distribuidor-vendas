@@ -10,7 +10,6 @@
         /* ============================================ */
         /* APROVADO - NÃO MEXER - ESTILOS APROVADOS      */
         /* ============================================ */
-        /* Qualquer alteração nestes estilos pode quebrar o layout aprovado */
         
         * {
             margin: 0;
@@ -28,7 +27,6 @@
             min-height: 100vh;
         }
 
-        /* Container principal que simula a tela do celular */
         .app-container {
             width: 100%;
             max-width: 500px;
@@ -41,7 +39,6 @@
             border-radius: 0;
         }
 
-        /* Cada tela ocupa toda a área do container */
         .tela {
             width: 100%;
             min-height: 100vh;
@@ -51,12 +48,10 @@
             background: white;
         }
 
-        /* APROVADO: Tela menu inicial com altura total sem rolagem */
         #telaMenu {
             justify-content: space-between;
         }
 
-        /* Container interno para conteúdo */
         .card-content {
             width: 100%;
             flex: 1;
@@ -64,7 +59,7 @@
             flex-direction: column;
         }
 
-        /* --- ESTILOS DO MENU INICIAL (TELA 0) - OTIMIZADO --- */
+        /* --- ESTILOS DO MENU INICIAL --- */
         .logo-area {
             text-align: center;
             margin-bottom: 12px;
@@ -117,7 +112,6 @@
             border-top: 1px solid #e0e6ed;
         }
 
-        /* Botões grandes estilo card - OTIMIZADOS */
         .menu-botao {
             width: 100%;
             background: white;
@@ -158,8 +152,16 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* --- ESTILOS DAS TELAS SECUNDÁRIAS --- */
-        /* Cabeçalho da tela fixo no topo */
+        /* --- ESTILOS DA TELA DE ESTOQUE --- */
+        /* CORREÇÃO DEFINITIVA: Contêiner fixo para todos os elementos do topo */
+        .estoque-fixed-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            padding-bottom: 10px;
+        }
+
         .tela-header {
             display: flex;
             align-items: center;
@@ -167,10 +169,6 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px solid #e2e8f0;
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
         }
 
         .btn-voltar {
@@ -199,7 +197,6 @@
             margin: 0;
         }
 
-        /* Barra de pesquisa */
         .search-box {
             width: 100%;
             padding: 10px 12px;
@@ -217,7 +214,6 @@
             box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
         }
         
-        /* Cards de totais */
         .totais-container {
             display: flex;
             gap: 12px;
@@ -251,7 +247,6 @@
             font-weight: bold;
         }
 
-        /* Botão Nova Venda na tela de estoque */
         .btn-nova-venda-estoque {
             width: 100%;
             padding: 12px;
@@ -261,7 +256,7 @@
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
-            margin: 10px 0;
+            margin: 10px 0 5px 0;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -279,17 +274,18 @@
             position: relative;
         }
         
-        /* Estilos da tabela corrigidos */
+        /* Estilos da tabela */
         .estoque-tabela {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.75rem;
         }
         
-        /* CORREÇÃO: Cabeçalho da tabela fixo abaixo de todos os elementos */
+        /* CORREÇÃO DEFINITIVA: Cabeçalho da tabela com top:0 
+           pois agora está dentro do container de scroll, abaixo do fixed-header */
         .estoque-tabela thead {
             position: sticky;
-            top: 125px; /* Altura total do header + search + totais + botão */
+            top: 0;
             background: #1E5A99;
             z-index: 9;
         }
@@ -345,6 +341,16 @@
             display: block;
         }
 
+        /* ESTILOS DAS OUTRAS TELAS */
+        .tela-header-nofixed {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
         /* Responsividade */
         @media (max-width: 480px) {
             .tela {
@@ -368,10 +374,6 @@
             .total-value {
                 font-size: 1rem;
             }
-            /* Ajuste para mobile */
-            .estoque-tabela thead {
-                top: 118px;
-            }
         }
 
         /* Scroll suave */
@@ -390,10 +392,6 @@
             background: #1E5A99;
             border-radius: 10px;
         }
-        
-        /* ============================================ */
-        /* FIM DOS ESTILOS APROVADOS                    */
-        /* ============================================ */
     </style>
 </head>
 <body>
@@ -435,36 +433,40 @@
     </div>
 
     <!-- ============================================ -->
-    <!-- TELA 1 - ESTOQUE - APROVADO (estrutura)     -->
+    <!-- TELA 1 - ESTOQUE - CORRIGIDA DEFINITIVAMENTE -->
     <!-- ============================================ -->
     <div class="tela" id="telaEstoque" style="display: none;">
         <div class="card-content">
-            <div class="tela-header">
-                <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
-                    <i class="fas fa-arrow-left"></i>
+            <!-- CORREÇÃO: Contêiner fixo com TODOS os elementos do topo -->
+            <div class="estoque-fixed-header">
+                <div class="tela-header">
+                    <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2><i class="fas fa-boxes" style="margin-right: 8px;"></i> Estoque</h2>
+                </div>
+                
+                <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+                
+                <div class="totais-container">
+                    <div class="total-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div class="total-label">Valor Total</div>
+                        <div class="total-value" id="valorTotal">R$ 0,00</div>
+                    </div>
+                    <div class="total-card">
+                        <i class="fas fa-boxes"></i>
+                        <div class="total-label">Quantidade Total</div>
+                        <div class="total-value" id="qtTotal">0</div>
+                    </div>
+                </div>
+                
+                <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque">
+                    <i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Efetuar Nova Venda
                 </button>
-                <h2><i class="fas fa-boxes" style="margin-right: 8px;"></i> Estoque</h2>
             </div>
             
-            <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
-            
-            <div class="totais-container">
-                <div class="total-card">
-                    <i class="fas fa-dollar-sign"></i>
-                    <div class="total-label">Valor Total</div>
-                    <div class="total-value" id="valorTotal">R$ 0,00</div>
-                </div>
-                <div class="total-card">
-                    <i class="fas fa-boxes"></i>
-                    <div class="total-label">Quantidade Total</div>
-                    <div class="total-value" id="qtTotal">0</div>
-                </div>
-            </div>
-            
-            <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque">
-                <i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Efetuar Nova Venda
-            </button>
-            
+            <!-- Container da tabela (rolável) -->
             <div id="estoqueContainer" class="estoque-container">
                 <div class="placeholder-mensagem">
                     <i class="fas fa-database"></i>
@@ -476,11 +478,11 @@
     </div>
 
     <!-- ============================================ -->
-    <!-- TELA 2 - NOVA VENDA - APROVADO (estrutura)  -->
+    <!-- TELA 2 - NOVA VENDA - APROVADO               -->
     <!-- ============================================ -->
     <div class="tela" id="telaVenda" style="display: none;">
         <div class="card-content">
-            <div class="tela-header">
+            <div class="tela-header-nofixed">
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
                 </button>
@@ -499,7 +501,7 @@
     <!-- ============================================ -->
     <div class="tela" id="telaConfig" style="display: none;">
         <div class="card-content">
-            <div class="tela-header">
+            <div class="tela-header-nofixed">
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
                 </button>
@@ -516,7 +518,7 @@
 
 <script>
     // ============================================
-    // APROVADO - NÃO MODIFICAR - LÓGICA DE TROCAR TELAS
+    // APROVADO - LÓGICA DE TROCAR TELAS
     // ============================================
     
     function mostrarTela(telaId) {
@@ -608,7 +610,7 @@
     };
     
     // ============================================
-    // ÁREA PARA EXPANSÃO - INTEGRAÇÃO COM GOOGLE SHEETS
+    // INTEGRAÇÃO COM GOOGLE SHEETS
     // ============================================
     
     const API_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
@@ -665,7 +667,6 @@
         });
     }
     
-    // CORREÇÃO CRÍTICA: Função renderizarTabela com estrutura correta de células
     function renderizarTabela(produtos) {
         if (!produtos || produtos.length === 0) {
             return `
@@ -684,9 +685,8 @@
         html += '<th>Fornecedor</th>';
         html += '<th>Preço</th>';
         html += '<th>Qtd</th>';
-        html += '</tr></thead><tbody>';
+        html += '</table></thead><tbody>';
         
-        // CORREÇÃO: Cada dado dentro de sua própria tag <td>
         produtos.forEach(produto => {
             html += '<tr>';
             html += `<td>${produto.id || produto.CODPROD || '-'}</td>`;
@@ -701,7 +701,6 @@
         return html;
     }
     
-    // CORREÇÃO CRÍTICA: Função mostrarEstoque corrigida
     async function mostrarEstoque() {
         const container = document.getElementById('estoqueContainer');
         if (!container) return;
@@ -757,10 +756,6 @@
     } else {
         configurarPesquisa();
     }
-    
-    // ============================================
-    // FIM DA EXPANSÃO - Google Sheets integrado
-    // ============================================
 </script>
 </body>
 </html>
