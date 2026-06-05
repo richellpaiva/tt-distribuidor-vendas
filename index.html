@@ -10,7 +10,7 @@
         /* ========== APROVADO - NÃO MEXER ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .app-container { width: 100%; max-width: 500px; height: 100vh; background: white; box-shadow: 0 0 30px rgba(0,0,0,0.1); overflow-y: auto; overflow-x: hidden; }
+        .app-container { width: 100%; max-width: 500px; height: 100vh; background: white; box-shadow: 0 0 30px rgba(0,0,0,0.1); overflow-y: auto; overflow-x: hidden; position: relative; }
         .tela { width: 100%; min-height: 100vh; padding: 20px 16px 25px; display: flex; flex-direction: column; background: white; }
         #telaMenu { justify-content: space-between; }
         .card-content { width: 100%; flex: 1; display: flex; flex-direction: column; }
@@ -44,11 +44,41 @@
         .total-value { font-size: 1.1rem; font-weight: bold; }
         .btn-nova-venda-estoque { width: 100%; padding: 12px; background: #1E5A99; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; margin: 10px 0 5px; cursor: pointer; }
         .btn-nova-venda-estoque:active { transform: scale(0.98); background: #0f3e6b; }
+        .btn-exportar-excel { background-color: #28a745 !important; }
         .estoque-container { flex: 1; overflow-y: auto; min-height: 0; }
         .estoque-tabela { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
         .estoque-tabela thead { position: sticky; top: 0; z-index: 9; background: #1E5A99; }
-        .estoque-tabela th { background: #1E5A99; color: white; padding: 10px 6px; text-align: left; }
-        .estoque-tabela td { padding: 8px 6px; border-bottom: 1px solid #e2e8f0; color: #2d3748; background: white; }
+        .estoque-tabela th { background: #1E5A99; color: white; padding: 10px 6px; text-align: left; cursor: pointer; user-select: none; }
+        .estoque-tabela th i { margin-left: 5px; font-size: 0.7rem; }
+        .estoque-tabela td { padding: 8px 6px; border-bottom: 1px solid #e2e8f0; color: #2d3748; background: white; white-space: nowrap; }
+        /* Quebra de linha apenas na coluna de descrição (segunda coluna) */
+        .estoque-tabela td:nth-child(2) { white-space: normal !important; word-break: break-word; }
+        /* Botões de navegação flutuantes */
+        .nav-slide-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .nav-slide-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1E5A99;
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .nav-slide-btn:active { transform: scale(0.95); background: #0f3e6b; }
+        .nav-slide-btn.disabled { opacity: 0.5; pointer-events: none; }
 
         /* Telas de cliente e venda */
         .tela-header-nofixed { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
@@ -83,6 +113,8 @@
             .botoes-form { flex-direction: column; }
             .cliente-card { flex-direction: column; gap: 10px; text-align: center; }
             .btn-selecionar-cliente { width: 100%; }
+            .nav-slide-buttons { bottom: 15px; right: 15px; }
+            .nav-slide-btn { width: 45px; height: 45px; font-size: 1.2rem; }
         }
         .app-container::-webkit-scrollbar, .estoque-container::-webkit-scrollbar, .clientes-lista::-webkit-scrollbar { width: 5px; }
         .app-container::-webkit-scrollbar-track, .estoque-container::-webkit-scrollbar-track, .clientes-lista::-webkit-scrollbar-track { background: #e2e8f0; }
@@ -112,6 +144,7 @@
                 <div class="tela-header"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-boxes"></i> Estoque</h2></div>
                 <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
                 <div class="totais-container"><div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="valorTotal">R$ 0,00</div></div><div class="total-card"><i class="fas fa-boxes"></i><div class="total-label">Quantidade Total</div><div class="total-value" id="qtTotal">0</div></div></div>
+                <button id="btnExportarExcel" class="btn-nova-venda-estoque btn-exportar-excel"><i class="fas fa-file-excel"></i> Exportar para Excel</button>
                 <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque"><i class="fas fa-cart-plus"></i> Efetuar Nova Venda</button>
             </div>
             <div id="estoqueContainer" class="estoque-container"><div class="placeholder-mensagem">Carregando estoque...</div></div>
@@ -168,34 +201,90 @@
     </div>
 </div>
 
+<!-- Botões de navegação flutuantes (setas) -->
+<div class="nav-slide-buttons">
+    <button id="btnSlidePrev" class="nav-slide-btn disabled" disabled><i class="fas fa-chevron-left"></i></button>
+    <button id="btnSlideNext" class="nav-slide-btn"><i class="fas fa-chevron-right"></i></button>
+</div>
+
 <script>
     /* ============================================
        MÓDULO DE ESTOQUE - BACKEND
-       ============================================
-       Este módulo depende do Google Apps Script que lê a aba 'PL_ESTOQUE'.
-    
-       O fluxo de dados é:
-       1. Frontend faz `fetch` para o endpoint do Apps Script.
-       2. Apps Script lê a planilha, mapeia pelas colunas e retorna JSON.
-       3. Frontend renderiza a tabela com base nos dados recebidos.
-    
-       As propriedades recebidas são: `CODPROD`, `DESCRICAO`, `QT`, `VLCMVCUSTO`, `FORNECEDOR`.
-    
-       PARA MANTER O FUNCIONAMENTO:
-       - Não altere os nomes das propriedades no frontend ou no backend sem sincronizar ambos.
-       - Se o URL da API mudar, atualize a variável `API_URL`.
-       - Mantenha a função de pesquisa por `CODPROD` e `DESCRICAO` como está.
-    
        ============================================ */
     
     // URL FINAL DO GOOGLE APPS SCRIPT (FORNECIDO PELO USUÁRIO)
     const API_URL = 'https://script.google.com/macros/s/AKfycbwCC3cN-zvxGjGw5QmlFsC7KMmFjgJFiBq6y6RikxExv_N7SqSDoewvzVIdn1NzF0Lfsw/exec';
     
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
+    // Estado da ordenação da tabela de estoque
+    let sortStateEstoque = { col: -1, asc: true };
+    let produtosFiltradosAtuais = [];
 
-    function mostrarTela(id) { document.querySelectorAll('.tela').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'flex'; }
-    document.querySelectorAll('.btn-voltar').forEach(btn => btn.addEventListener('click', () => mostrarTela(btn.getAttribute('data-voltar'))));
-    document.querySelectorAll('.menu-botao').forEach(btn => btn.addEventListener('click', () => mostrarTela(btn.getAttribute('data-tela'))));
+    // ========== NAVEGAÇÃO ENTRE TELAS (LINEAR COM SETAS) ==========
+    const ordemTelas = ['telaMenu', 'telaEstoque', 'telaVenda', 'telaClientes', 'telaConfig'];
+    let indiceAtual = 0;
+
+    function mostrarTela(id) {
+        document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
+        const tela = document.getElementById(id);
+        if (tela) tela.style.display = 'flex';
+        // Atualiza índice atual
+        indiceAtual = ordemTelas.indexOf(id);
+        atualizarBotoesNavegacao();
+    }
+
+    function navegarSlide(direcao) {
+        const novoIndice = indiceAtual + direcao;
+        if (novoIndice >= 0 && novoIndice < ordemTelas.length) {
+            mostrarTela(ordemTelas[novoIndice]);
+        }
+    }
+
+    function atualizarBotoesNavegacao() {
+        const btnPrev = document.getElementById('btnSlidePrev');
+        const btnNext = document.getElementById('btnSlideNext');
+        if (btnPrev) {
+            if (indiceAtual <= 0) {
+                btnPrev.classList.add('disabled');
+                btnPrev.disabled = true;
+            } else {
+                btnPrev.classList.remove('disabled');
+                btnPrev.disabled = false;
+            }
+        }
+        if (btnNext) {
+            if (indiceAtual >= ordemTelas.length - 1) {
+                btnNext.classList.add('disabled');
+                btnNext.disabled = true;
+            } else {
+                btnNext.classList.remove('disabled');
+                btnNext.disabled = false;
+            }
+        }
+    }
+
+    // Eventos dos botões de navegação
+    document.getElementById('btnSlidePrev').addEventListener('click', () => navegarSlide(-1));
+    document.getElementById('btnSlideNext').addEventListener('click', () => navegarSlide(1));
+
+    // Botões de voltar (data-voltar) – já existentes, precisamos garantir que atualizem a navegação
+    document.querySelectorAll('.btn-voltar').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const destino = btn.getAttribute('data-voltar');
+            if (destino) mostrarTela(destino);
+        });
+    });
+
+    // Botões do menu principal
+    document.querySelectorAll('.menu-botao').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const destino = btn.getAttribute('data-tela');
+            if (destino) mostrarTela(destino);
+        });
+    });
+
+    // Data atual
     document.getElementById('dataAtual').innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${new Date().toLocaleDateString('pt-BR', { year:'numeric', month:'long', day:'numeric' })}`;
 
     // ========== ESTOQUE ==========
@@ -208,32 +297,127 @@
             atualizarEstoque();
         } catch(e) { container.innerHTML = '<div class="error-message">Erro ao carregar estoque</div>'; }
     }
-    
+
+    // Função chamada quando a pesquisa ou ordenação muda
     function atualizarEstoque() {
         const termo = document.getElementById('pesquisaEstoque').value.toLowerCase();
-        // Filtra por CODPROD ou DESCRICAO
-        const filtrados = produtosOriginais.filter(p => (p.CODPROD || '').toString().toLowerCase().includes(termo) || (p.DESCRICAO || '').toString().toLowerCase().includes(termo));
+        // Filtrar dados
+        produtosFiltradosAtuais = produtosOriginais.filter(p => 
+            (p.CODPROD || '').toString().toLowerCase().includes(termo) || 
+            (p.DESCRICAO || '').toString().toLowerCase().includes(termo)
+        );
+        // Ordenar se necessário
+        if (sortStateEstoque.col !== -1) {
+            ordenarDados(produtosFiltradosAtuais, sortStateEstoque.col, sortStateEstoque.asc);
+        }
+        // Atualizar totais
+        atualizarTotaisEstoque(produtosFiltradosAtuais);
+        // Renderizar tabela
+        const container = document.getElementById('estoqueContainer');
+        container.innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
+    }
+
+    function ordenarDados(dados, colIndex, asc) {
+        const chaves = ['CODPROD', 'DESCRICAO', 'QT', 'VLCMVCUSTO'];
+        dados.sort((a, b) => {
+            let va = a[chaves[colIndex]], vb = b[chaves[colIndex]];
+            if (va === undefined) va = '';
+            if (vb === undefined) vb = '';
+            if (typeof va === 'string') {
+                return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+            } else {
+                return asc ? va - vb : vb - va;
+            }
+        });
+    }
+
+    function ordenarTabelaEstoque(colIndex) {
+        if (!produtosFiltradosAtuais || produtosFiltradosAtuais.length === 0) return;
+        if (sortStateEstoque.col === colIndex) sortStateEstoque.asc = !sortStateEstoque.asc;
+        else { sortStateEstoque.col = colIndex; sortStateEstoque.asc = true; }
+        ordenarDados(produtosFiltradosAtuais, sortStateEstoque.col, sortStateEstoque.asc);
+        const container = document.getElementById('estoqueContainer');
+        container.innerHTML = renderizarTabelaEstoque(produtosFiltradosAtuais);
+        // Atualizar totais (opcional, pois os dados são os mesmos)
+        atualizarTotaisEstoque(produtosFiltradosAtuais);
+    }
+
+    function atualizarTotaisEstoque(produtos) {
         let valorTotal = 0, qtdTotal = 0;
-        filtrados.forEach(p => { let preco = parseFloat(p.VLCMVCUSTO) || 0; let qtd = parseInt(p.QT) || 0; valorTotal += preco * qtd; qtdTotal += qtd; });
-        document.getElementById('valorTotal').innerText = `R$ ${valorTotal.toFixed(2)}`;
-        document.getElementById('qtTotal').innerText = qtdTotal;
-        
-        // Renderiza tabela com colunas: Código, Produto, Quantidade, Preço
-        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th></tr></thead><tbody>';
-        filtrados.forEach(p => {
+        produtos.forEach(p => { 
+            let preco = parseFloat(p.VLCMVCUSTO) || 0; 
+            let qtd = parseInt(p.QT) || 0; 
+            valorTotal += preco * qtd; 
+            qtdTotal += qtd; 
+        });
+        document.getElementById('valorTotal').innerText = Number(valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('qtTotal').innerText = qtdTotal.toLocaleString('pt-BR');
+    }
+
+    function renderizarTabelaEstoque(produtos) {
+        if (!produtos || produtos.length === 0) {
+            return `<div class="placeholder-mensagem"><i class="fas fa-box-open"></i>Nenhum produto encontrado</div>`;
+        }
+
+        let html = '<table class="estoque-tabela">';
+        html += `<thead><tr>
+                    <th onclick="ordenarTabelaEstoque(0)">Código <i class="fas fa-sort"></i></th>
+                    <th onclick="ordenarTabelaEstoque(1)">Produto <i class="fas fa-sort"></i></th>
+                    <th onclick="ordenarTabelaEstoque(2)">Quantidade <i class="fas fa-sort"></i></th>
+                    <th onclick="ordenarTabelaEstoque(3)">Preço <i class="fas fa-sort"></i></th>
+                 </tr></thead><tbody>`;
+
+        produtos.forEach(produto => {
+            const cod = produto.CODPROD || '-';
+            const desc = produto.DESCRICAO || '-';
+            const qtd = Number(produto.QT).toLocaleString('pt-BR');
+            const preco = Number(produto.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
             html += `<tr>
-                        <td>${p.CODPROD || '-'}</td>
-                        <td><strong>${p.DESCRICAO || '-'}</strong></td>
-                        <td>${p.QT || 0}</td>
-                        <td>R$ ${(parseFloat(p.VLCMVCUSTO) || 0).toFixed(2)}</td>
+                        <td>${cod}</td>
+                        <td><strong>${desc}</strong></td>
+                        <td>${qtd}</td>
+                        <td>${preco}</td>
                     </tr>`;
         });
-        html += '</tbody></table>';
-        document.getElementById('estoqueContainer').innerHTML = html;
+
+        html += '</tbody></td>';
+        return html;
     }
-    
-    document.getElementById('pesquisaEstoque').addEventListener('input', atualizarEstoque);
+
+    // Exportar para CSV
+    function exportarParaExcel() {
+        if (!produtosFiltradosAtuais || produtosFiltradosAtuais.length === 0) {
+            alert('Nenhum dado para exportar.');
+            return;
+        }
+        let csv = 'Código;Produto;Quantidade;Preço (R$)\n';
+        produtosFiltradosAtuais.forEach(p => {
+            const cod = p.CODPROD || '';
+            const desc = p.DESCRICAO || '';
+            const qtd = p.QT || 0;
+            const preco = parseFloat(p.VLCMVCUSTO) || 0;
+            csv += `"${cod}";"${desc}";${qtd};${preco.toFixed(2).replace('.', ',')}\n`;
+        });
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'estoque_filtrado.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('pesquisaEstoque').addEventListener('input', function() {
+        // Resetar ordenação ao pesquisar
+        sortStateEstoque = { col: -1, asc: true };
+        atualizarEstoque();
+    });
     document.getElementById('btnNovaVendaEstoque').addEventListener('click', () => mostrarTela('telaVenda'));
+    document.getElementById('btnExportarExcel').addEventListener('click', exportarParaExcel);
+    window.ordenarTabelaEstoque = ordenarTabelaEstoque; // Para onclick global
 
     // ========== CLIENTES - seleção e cadastro ==========
     async function carregarClientes() {
@@ -244,7 +428,7 @@
             if (document.getElementById('listaClientesCadastro')) atualizarListaClientesCadastro();
         } catch(e) { console.error(e); }
     }
-    
+
     function exibirListaClientes(termo) {
         const container = document.getElementById('listaClientesContainer');
         let filtrados = clientesOriginais;
@@ -258,12 +442,12 @@
             btn.addEventListener('click', () => { clienteSelecionado = { id: btn.dataset.id, nome: btn.dataset.nome }; mostrarTela('telaVenda'); document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${clienteSelecionado.nome} (ID: ${clienteSelecionado.id})`; document.getElementById('btnFinalizarVenda').disabled = false; });
         });
     }
-    
+
     document.getElementById('btnPesquisarCliente').addEventListener('click', () => { mostrarTela('telaSelecionarCliente'); carregarClientes(); });
     document.getElementById('btnCadastrarNovoCliente').addEventListener('click', () => mostrarTela('telaClientes'));
     document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
 
-    // Funções de cadastro de clientes (CRUD) - CORRIGIDAS PARA USAR FormData
+    // Funções de cadastro de clientes (CRUD) - usando FormData
     function atualizarListaClientesCadastro() {
         const termo = document.getElementById('pesquisaClientesCadastro')?.value || '';
         let filtrados = clientesOriginais;
@@ -278,7 +462,7 @@
             card.addEventListener('click', () => { const id = parseInt(card.dataset.id); const cliente = clientesOriginais.find(c => c.id == id); if (cliente) preencherFormCliente(cliente); });
         });
     }
-    
+
     function preencherFormCliente(cliente) {
         editandoClienteId = cliente.id;
         document.getElementById('editNomeCliente').value = cliente.nome || '';
@@ -291,9 +475,9 @@
         document.getElementById('editComplementoCliente').value = cliente.complemento || '';
         document.getElementById('editCepCliente').value = cliente.cep || '';
     }
-    
+
     function limparFormCliente() { editandoClienteId = null; document.querySelectorAll('#telaClientes input[type="text"]').forEach(inp => inp.value = ''); }
-    
+
     async function salvarCliente() {
         const cliente = { acao: 'cliente', modo: editandoClienteId ? 'editar' : 'novo', id: editandoClienteId, nome: document.getElementById('editNomeCliente').value, cpf: document.getElementById('editCpfCliente').value, telefone: document.getElementById('editTelefoneCliente').value, uf: document.getElementById('editUfCliente').value, cidade: document.getElementById('editCidadeCliente').value, endereco: document.getElementById('editEnderecoCliente').value, numero: document.getElementById('editNumeroCliente').value, complemento: document.getElementById('editComplementoCliente').value, cep: document.getElementById('editCepCliente').value };
         if (!cliente.nome) { alert('Nome é obrigatório'); return; }
@@ -306,7 +490,7 @@
             else alert('Erro ao salvar');
         } catch(e) { alert('Erro de conexão'); }
     }
-    
+
     async function excluirCliente() {
         if (!editandoClienteId) { alert('Selecione um cliente'); return; }
         if (!confirm('Excluir permanentemente?')) return;
@@ -319,7 +503,7 @@
             else alert('Erro ao excluir');
         } catch(e) { alert('Erro de conexão'); }
     }
-    
+
     document.getElementById('pesquisaClientesCadastro').addEventListener('input', () => atualizarListaClientesCadastro());
     document.getElementById('btnCriarNovoCliente').addEventListener('click', limparFormCliente);
     document.getElementById('btnSalvarCliente').addEventListener('click', salvarCliente);
