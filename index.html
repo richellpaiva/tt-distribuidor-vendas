@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    <!-- ESTOQUE -->
+    <!-- ESTOQUE (APROVADO) -->
     <div class="tela" id="telaEstoque" style="display: none;">
         <div class="card-content">
             <div class="estoque-fixed-header">
@@ -131,10 +131,13 @@
         </div>
     </div>
 
-    <!-- VENDA (REFINADA) -->
+    <!-- VENDA (REFINADA COM CORREÇÕES) -->
     <div class="tela" id="telaVenda" style="display: none;">
         <div class="card-content">
-            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-cart-plus"></i> Nova Venda</h2></div>
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button>
+                <h2 style="color: #1E5A99;"><i class="fas fa-cart-plus"></i> Nova Venda</h2>
+            </div>
             <div class="cliente-selecionado-box" id="clienteSelecionadoDisplay"><strong>Nenhum cliente selecionado</strong></div>
             <!-- Ações da venda -->
             <div class="acoes-venda">
@@ -143,15 +146,18 @@
                 <button id="btnExcluirVenda" class="btn-form btn-excluir"><i class="fas fa-trash"></i> Excluir</button>
                 <button id="btnCancelarVenda" class="btn-form btn-cancelar"><i class="fas fa-times"></i> Cancelar</button>
             </div>
+            <!-- Botões principais (Lançar Produtos no topo, como solicitado) -->
             <button id="btnLancarProdutos" class="btn-nova-venda-estoque"><i class="fas fa-cube"></i> Lançar Produtos</button>
             <button id="btnPesquisarVendas" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-search"></i> Pesquisar Vendas</button>
+            <!-- Botão Cadastrar Cliente adicionado -->
+            <button id="btnCadastrarClienteVenda" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-user-plus"></i> Cadastrar Cliente</button>
         </div>
     </div>
 
     <!-- SELEÇÃO DE CLIENTE (APROVADO) -->
     <div class="tela" id="telaSelecionarCliente" style="display: none;">
         <div class="card-content">
-            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-users"></i> Selecionar Cliente</h2></div>
+            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Selecionar Cliente</h2></div>
             <input type="text" id="pesquisaCliente" class="search-box" placeholder="🔍 Pesquisar por Nome, CPF ou Telefone">
             <div id="listaClientesContainer" class="clientes-lista"><div class="loading-message">Carregando clientes...</div></div>
             <button id="btnCadastrarNovoCliente" class="btn-nova-venda-estoque" style="margin-top:15px;"><i class="fas fa-user-plus"></i> Cadastrar Novo Cliente</button>
@@ -161,7 +167,7 @@
     <!-- CADASTRO DE CLIENTES (APROVADO) -->
     <div class="tela" id="telaClientes" style="display: none;">
         <div class="card-content">
-            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
+            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
             <input type="text" id="pesquisaClientesCadastro" class="search-box" placeholder="🔍 Pesquisar por nome ou CPF">
             <div id="listaClientesCadastro" class="clientes-lista" style="max-height:200px; margin:10px 0; border:1px solid #e2e8f0; border-radius:12px;"><div class="loading-message">Carregando clientes...</div></div>
             <div class="form-cliente">
@@ -181,18 +187,18 @@
     <!-- CONFIGURAÇÕES (APROVADO) -->
     <div class="tela" id="telaConfig" style="display: none;">
         <div class="card-content">
-            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2><i class="fas fa-cog"></i> Configurações</h2></div>
+            <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-cog"></i> Configurações</h2></div>
             <div class="placeholder-mensagem"><i class="fas fa-sliders-h"></i> Ajustes do sistema<br><span style="font-size:0.85rem">Personalização futura</span></div>
         </div>
     </div>
 
     <!-- ========== NOVAS TELAS ========== -->
-    <!-- LANÇAR PRODUTOS -->
+    <!-- LANÇAR PRODUTOS (com coluna DTVAL) -->
     <div class="tela" id="telaLancarProdutos" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed">
                 <button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button>
-                <h2><i class="fas fa-cube"></i> Lançar Produtos</h2>
+                <h2 style="color: #1E5A99;"><i class="fas fa-cube"></i> Lançar Produtos</h2>
             </div>
             <input type="text" id="pesquisaProdutoLancamento" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
             <div class="estoque-container" id="tabelaLancamentoContainer">
@@ -210,7 +216,7 @@
         <div class="card-content">
             <div class="tela-header-nofixed">
                 <button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button>
-                <h2><i class="fas fa-search"></i> Histórico de Vendas</h2>
+                <h2 style="color: #1E5A99;"><i class="fas fa-search"></i> Histórico de Vendas</h2>
             </div>
             <input type="text" id="pesquisaHistoricoVendas" class="search-box" placeholder="🔍 Pesquisar por ID, Cliente ou Data...">
             <div class="estoque-container" id="tabelaHistoricoContainer">
@@ -236,8 +242,38 @@
         if (tela) tela.style.display = 'flex';
     }
 
-    // ========== DELEGAÇÃO DE EVENTOS - RESOLVE O ERRO DE 'addEventListener' ==========
+    // ========== DELEGAÇÃO DE EVENTOS - RESOLVE TODOS OS CLICK ==========
     document.addEventListener('click', function(e) {
+        // Botões de voltar (qualquer elemento com a classe .btn-voltar)
+        if (e.target.closest('.btn-voltar')) {
+            const btn = e.target.closest('.btn-voltar');
+            const destino = btn.getAttribute('data-voltar');
+            if (destino) {
+                mostrarTela(destino);
+                return;
+            }
+        }
+
+        // Botões do menu principal
+        if (e.target.closest('.menu-botao')) {
+            const btn = e.target.closest('.menu-botao');
+            const destino = btn.getAttribute('data-tela');
+            if (destino) mostrarTela(destino);
+            return;
+        }
+
+        // Botão de selecionar cliente (dinâmico)
+        if (e.target.classList && e.target.classList.contains('btn-selecionar-cliente')) {
+            const id = e.target.getAttribute('data-id');
+            const nome = e.target.getAttribute('data-nome');
+            if (id && nome) {
+                clienteSelecionado = { id: id, nome: nome };
+                mostrarTela('telaVenda');
+                document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${nome} (ID: ${id})`;
+            }
+            return;
+        }
+
         // Tela de Estoque
         if (e.target.id === 'btnNovaVendaEstoque') {
             mostrarTela('telaVenda');
@@ -248,21 +284,21 @@
             return;
         }
 
-        // Tela de Venda
+        // Tela de Venda (ações principais)
         if (e.target.id === 'btnLancarProdutos') {
             mostrarTela('telaLancarProdutos');
-            // Carrega os produtos ao abrir
-            setTimeout(() => {
-                carregarProdutosLancamento();
-            }, 100);
+            setTimeout(() => { carregarProdutosLancamento(); }, 100);
             return;
         }
         if (e.target.id === 'btnPesquisarVendas') {
             mostrarTela('telaHistoricoVendas');
-            // Carrega o histórico ao abrir
-            setTimeout(() => {
-                carregarHistoricoVendas();
-            }, 100);
+            setTimeout(() => { carregarHistoricoVendas(); }, 100);
+            return;
+        }
+        if (e.target.id === 'btnCadastrarClienteVenda') {
+            editandoClienteId = null;
+            limparFormCliente();
+            mostrarTela('telaClientes');
             return;
         }
 
@@ -297,7 +333,7 @@
             return;
         }
 
-        // Tela de Venda (ações placeholder - futuro)
+        // Ações placeholder da venda (futuro)
         if (e.target.id === 'btnAdicionarVenda') {
             alert('Funcionalidade "Adicionar venda" em desenvolvimento');
             return;
@@ -314,28 +350,6 @@
             alert('Funcionalidade "Cancelar venda" em desenvolvimento');
             return;
         }
-
-        // Botões de voltar (data-voltar) - já tratados pelo listener direto
-        // Os botões .btn-voltar têm o atributo data-voltar, mas também são clicáveis.
-        // Vamos permitir que o clique neles siga o fluxo normal (já configurado abaixo).
-        // Apenas garantir que não haja conflito.
-    });
-
-    // Configuração dos botões voltar (mantida para compatibilidade, mas a delegação também funciona)
-    document.querySelectorAll('.btn-voltar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const destino = btn.getAttribute('data-voltar');
-            if (destino) mostrarTela(destino);
-        });
-    });
-
-    // Botões do menu principal (também podem ser tratados pela delegação, mas mantemos por clareza)
-    document.querySelectorAll('.menu-botao').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const destino = btn.getAttribute('data-tela');
-            if (destino) mostrarTela(destino);
-        });
     });
 
     // Data atual
@@ -400,7 +414,7 @@
             const desc = p.DESCRICAO || '-';
             const qtd = Number(p.QT).toLocaleString('pt-BR');
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            html += `<tr><td>${cod}</td><td><strong>${desc}</strong></td><td>${qtd}</td><td>${preco}</td></tr>`;
+            html += `<tr><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
         });
         html += '</tbody></table>';
         return html;
@@ -421,10 +435,10 @@
         URL.revokeObjectURL(url);
     }
 
-    // Evento de pesquisa do estoque (input não é problema, o elemento sempre existe)
+    // Evento de pesquisa do estoque (input)
     document.getElementById('pesquisaEstoque').addEventListener('input', () => { sortStateEstoque = { col: -1, asc: true }; atualizarEstoque(); });
 
-    // Função global para ordenação chamada pelo onclick da tabela
+    // Função global para ordenação
     window.ordenarTabelaEstoque = ordenarTabelaEstoque;
 
     // ========== CLIENTES ==========
@@ -445,23 +459,7 @@
         let html = '<div class="lista-clientes">';
         filtrados.forEach(c => { html += `<div class="cliente-card"><div><strong>${c.nome}</strong><br><span class="cliente-info">CPF: ${c.cpf||'-'} | Tel: ${c.telefone||'-'}</span></div><button class="btn-selecionar-cliente" data-id="${c.id}" data-nome="${c.nome.replace(/'/g, "\\'")}">Selecionar</button></div>`; });
         container.innerHTML = html;
-        // Para os botões de seleção de cliente, usamos delegação também. Mas como são criados dinamicamente, vamos adicionar o listener via delegation.
-        // Como já estamos usando event delegation no documento, podemos remover este loop e confiar na delegação.
-        // No entanto, para evitar duplicidade, vamos apenas registrar um listener para .btn-selecionar-cliente no documento (já feito abaixo).
     }
-
-    // Delegando a seleção de cliente
-    document.addEventListener('click', function(e) {
-        if (e.target.classList && e.target.classList.contains('btn-selecionar-cliente')) {
-            const id = e.target.getAttribute('data-id');
-            const nome = e.target.getAttribute('data-nome');
-            if (id && nome) {
-                clienteSelecionado = { id: id, nome: nome };
-                mostrarTela('telaVenda');
-                document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${nome} (ID: ${id})`;
-            }
-        }
-    });
 
     document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
 
@@ -523,7 +521,7 @@
     document.getElementById('pesquisaClientesCadastro').addEventListener('input', () => atualizarListaClientesCadastro());
 
     // ========== NOVAS FUNCIONALIDADES ==========
-    // Tela: Lançar Produtos
+    // Tela: Lançar Produtos (com coluna DTVAL)
     async function carregarProdutosLancamento() {
         const container = document.getElementById('tabelaLancamentoContainer');
         if (!container) return;
@@ -552,7 +550,7 @@
             const dtval = p.DTVAL || '-';
             const qtd = Number(p.QT).toLocaleString('pt-BR');
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            html += `<tr><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${dtval}</td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
+            html += `<td><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${dtval}</td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
@@ -576,7 +574,7 @@
         if (!container) return;
         container.innerHTML = '<div class="loading-message">Carregando histórico...</div>';
         try {
-            // Simulação de dados - substituir por chamada real ao backend
+            // Simulação - substituir por chamada real
             const vendas = [
                 { id: 1, data: '15/06/2024', cliente: 'João Silva', valorTotal: 1250.90, itens: [{produto:'Produto A', qtd:2, preco:50.00}] },
                 { id: 2, data: '14/06/2024', cliente: 'Maria Oliveira', valorTotal: 89.50, itens: [{produto:'Produto B', qtd:1, preco:89.50}] },
@@ -603,8 +601,6 @@
         });
         html += '</tbody></table>';
         container.innerHTML = html;
-
-        // Delegar clique nos botões "Ver Detalhes" (usando delegação de eventos)
         document.querySelectorAll('.btn-ver-detalhes').forEach(btn => {
             btn.removeEventListener('click', handleDetalhesVenda);
             btn.addEventListener('click', handleDetalhesVenda);
