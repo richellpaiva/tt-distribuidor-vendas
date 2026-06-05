@@ -45,105 +45,108 @@
         .tela {
             width: 100%;
             min-height: 100vh;
-            padding: 25px 20px 30px 20px;
+            padding: 20px 16px 25px 16px;
             display: flex;
             flex-direction: column;
             background: white;
+        }
+
+        /* APROVADO: Tela menu inicial com altura total sem rolagem */
+        #telaMenu {
+            justify-content: space-between;
         }
 
         /* Container interno para conteúdo */
         .card-content {
             width: 100%;
             flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- ESTILOS DO MENU INICIAL (TELA 0) --- */
+        /* --- ESTILOS DO MENU INICIAL (TELA 0) - OTIMIZADO --- */
         .logo-area {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .logo {
-            max-width: 120px;
+            max-width: 90px;
             height: auto;
-            margin-bottom: 15px;
-        }
-
-        .empresa-nome {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #1E5A99;
-            text-align: center;
             margin-bottom: 8px;
         }
 
         .empresa-dados {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #5a6e85;
             text-align: center;
-            line-height: 1.4;
+            line-height: 1.3;
             background: #f8fafc;
-            padding: 10px;
+            padding: 8px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .empresa-dados p {
-            margin: 3px 0;
+            margin: 2px 0;
         }
 
         .capa-titulo {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: #1E5A99;
             text-align: center;
             line-height: 1.2;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
         }
 
         .capa-subtitulo {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #2B7BC9;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             font-weight: 500;
         }
 
         .data-ref {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #7f8c8d;
             text-align: center;
-            margin-bottom: 2rem;
-            padding-top: 0.8rem;
+            margin-bottom: 1rem;
+            padding-top: 0.5rem;
             border-top: 1px solid #e0e6ed;
         }
 
-        /* Botões grandes estilo card */
+        /* Botões grandes estilo card - OTIMIZADOS */
         .menu-botao {
             width: 100%;
             background: white;
             border: 2px solid #1E5A99;
-            border-radius: 20px;
-            padding: 0 20px;
-            height: 70px;
+            border-radius: 16px;
+            padding: 0 18px;
+            height: 65px;
             display: flex;
             align-items: center;
-            gap: 18px;
-            margin-bottom: 18px;
+            gap: 15px;
+            margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .menu-botao:last-child {
+            margin-bottom: 0;
         }
 
         .menu-botao i {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #1E5A99;
-            width: 40px;
+            width: 36px;
             text-align: center;
         }
 
         .menu-botao span {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #1E5A99;
             flex: 1;
@@ -160,19 +163,24 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 15px;
+            /* APROVADO: Cabeçalho fixo no topo */
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
         }
 
         .btn-voltar {
             background: none;
             border: none;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: #1E5A99;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -185,18 +193,80 @@
         }
 
         .tela-header h2 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: #1E5A99;
             font-weight: 700;
             margin: 0;
         }
 
-        /* APROVADO: Estilos da tabela de estoque (NOVO - mas necessário para exibição) */
+        /* NOVOS ESTILOS - Barra de pesquisa e totais */
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 8px 0 12px 0;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e0;
+            font-size: 0.9rem;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #1E5A99;
+            box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
+        }
+        
+        .totais-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .total-card {
+            flex: 1;
+            background: linear-gradient(135deg, #1E5A99 0%, #2B7BC9 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .total-card i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .total-label {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+        
+        .total-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* APROVADO: Estilos da tabela de estoque com cabeçalho fixo */
+        .estoque-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
         .estoque-tabela {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.75rem;
-            margin-top: 15px;
+        }
+        
+        .estoque-tabela thead {
+            position: sticky;
+            top: 60px; /* Altura do cabeçalho da tela */
+            background: #1E5A99;
+            z-index: 9;
         }
         
         .estoque-tabela th {
@@ -205,8 +275,7 @@
             padding: 10px 6px;
             text-align: left;
             font-weight: 600;
-            position: sticky;
-            top: 0;
+            font-size: 0.75rem;
         }
         
         .estoque-tabela td {
@@ -236,60 +305,61 @@
         .placeholder-mensagem {
             background: #f8fafc;
             border-radius: 24px;
-            padding: 50px 25px;
+            padding: 40px 20px;
             text-align: center;
             border: 1px dashed #bdd4e7;
             color: #4b6b8f;
-            font-size: 1rem;
-            margin-top: 30px;
+            font-size: 0.95rem;
         }
 
         .placeholder-mensagem i {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: #90aec9;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: block;
         }
 
-        /* Responsividade para telas pequenas */
+        /* Responsividade */
         @media (max-width: 480px) {
             .tela {
-                padding: 20px 16px 30px 16px;
+                padding: 15px 12px 20px 12px;
             }
             .capa-titulo {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
             .menu-botao {
-                height: 60px;
+                height: 58px;
             }
             .menu-botao i {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
             }
             .menu-botao span {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
             .tela-header h2 {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
             }
-            .estoque-tabela {
-                font-size: 0.7rem;
+            .total-value {
+                font-size: 1rem;
             }
-            .estoque-tabela th, 
-            .estoque-tabela td {
-                padding: 6px 4px;
+            .estoque-tabela thead {
+                top: 55px;
             }
         }
 
         /* Scroll suave */
-        .app-container::-webkit-scrollbar {
+        .app-container::-webkit-scrollbar,
+        .estoque-container::-webkit-scrollbar {
             width: 5px;
         }
 
-        .app-container::-webkit-scrollbar-track {
+        .app-container::-webkit-scrollbar-track,
+        .estoque-container::-webkit-scrollbar-track {
             background: #e2e8f0;
         }
 
-        .app-container::-webkit-scrollbar-thumb {
+        .app-container::-webkit-scrollbar-thumb,
+        .estoque-container::-webkit-scrollbar-thumb {
             background: #1E5A99;
             border-radius: 10px;
         }
@@ -305,8 +375,6 @@
     <!-- TELA 0 - MENU INICIAL (CAPA) - APROVADO      -->
     <!-- ============================================ -->
     <!-- NÃO MODIFICAR: estrutura, textos, botões     -->
-    <!-- Apenas o conteúdo do placeholder pode ser    -->
-    <!-- substituído futuramente                      -->
     <!-- ============================================ -->
     <div class="tela" id="telaMenu" style="display: flex;">
         <div class="card-content">
@@ -327,11 +395,10 @@
             <div class="capa-titulo">Venda de mercadorias mobile – TT DISTRIBUIDOR</div>
             <div class="capa-subtitulo">Aplicativo de controle e venda de mercadorias por indústrias</div>
             
-            <!-- APROVADO: Data atual (gerada via JS, não modificar estrutura) -->
+            <!-- APROVADO: Data atual (gerada via JS) -->
             <div class="data-ref" id="dataAtual"></div>
 
             <!-- APROVADO: Três botões principais -->
-            <!-- ATENÇÃO: Não alterar os valores de data-tela -->
             <div class="menu-botao" data-tela="telaEstoque">
                 <i class="fas fa-boxes"></i>
                 <span>Consultar Estoque</span>
@@ -350,28 +417,39 @@
     <!-- ============================================ -->
     <!-- TELA 1 - ESTOQUE - APROVADO (estrutura)     -->
     <!-- ============================================ -->
-    <!-- ATENÇÃO: Esta tela receberá a integração    -->
-    <!-- com Google Sheets. O conteúdo do            -->
-    <!-- placeholder-mensagem será substituído.      -->
-    <!-- A estrutura (header, botão voltar) deve ser -->
-    <!-- preservada.                                 -->
-    <!-- ============================================ -->
     <div class="tela" id="telaEstoque" style="display: none;">
         <div class="card-content">
+            <!-- APROVADO: Cabeçalho fixo -->
             <div class="tela-header">
-                <!-- APROVADO: Botão voltar - NÃO REMOVER -->
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <!-- APROVADO: Título da tela -->
-                <h2><i class="fas fa-boxes" style="margin-right: 10px;"></i> Estoque</h2>
+                <h2><i class="fas fa-boxes" style="margin-right: 8px;"></i> Estoque</h2>
             </div>
-            <!-- EXPANSÍVEL: Esta div receberá a lista de produtos do Google Sheets -->
-            <div id="estoqueContainer">
+            
+            <!-- NOVIDADE: Barra de pesquisa -->
+            <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+            
+            <!-- NOVIDADE: Cards de totais -->
+            <div class="totais-container">
+                <div class="total-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="total-label">Valor Total</div>
+                    <div class="total-value" id="valorTotal">R$ 0,00</div>
+                </div>
+                <div class="total-card">
+                    <i class="fas fa-boxes"></i>
+                    <div class="total-label">Quantidade Total</div>
+                    <div class="total-value" id="qtTotal">0</div>
+                </div>
+            </div>
+            
+            <!-- EXPANSÍVEL: Container da tabela com scroll -->
+            <div id="estoqueContainer" class="estoque-container">
                 <div class="placeholder-mensagem">
                     <i class="fas fa-database"></i>
                     Carregando estoque...<br>
-                    <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Aguarde um momento</span>
+                    <span style="font-size: 0.85rem;">Aguarde um momento</span>
                 </div>
             </div>
         </div>
@@ -380,26 +458,18 @@
     <!-- ============================================ -->
     <!-- TELA 2 - NOVA VENDA - APROVADO (estrutura)  -->
     <!-- ============================================ -->
-    <!-- ATENÇÃO: Esta tela receberá o formulário    -->
-    <!-- de venda e integração com Google Sheets.    -->
-    <!-- A estrutura (header, botão voltar) deve ser -->
-    <!-- preservada.                                 -->
-    <!-- ============================================ -->
     <div class="tela" id="telaVenda" style="display: none;">
         <div class="card-content">
             <div class="tela-header">
-                <!-- APROVADO: Botão voltar - NÃO REMOVER -->
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <!-- APROVADO: Título da tela -->
-                <h2><i class="fas fa-cart-plus" style="margin-right: 10px;"></i> Nova Venda</h2>
+                <h2><i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Nova Venda</h2>
             </div>
-            <!-- EXPANSÍVEL: Esta div será substituída pelo formulário de venda -->
             <div class="placeholder-mensagem">
                 <i class="fas fa-receipt"></i>
                 Módulo de vendas em construção<br>
-                <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Interface completa em breve</span>
+                <span style="font-size: 0.85rem;">Interface completa em breve</span>
             </div>
         </div>
     </div>
@@ -407,24 +477,18 @@
     <!-- ============================================ -->
     <!-- TELA 3 - CONFIGURAÇÕES - APROVADO           -->
     <!-- ============================================ -->
-    <!-- Esta tela manterá o placeholder até que     -->
-    <!-- configurações sejam definidas               -->
-    <!-- ============================================ -->
     <div class="tela" id="telaConfig" style="display: none;">
         <div class="card-content">
             <div class="tela-header">
-                <!-- APROVADO: Botão voltar - NÃO REMOVER -->
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <!-- APROVADO: Título da tela -->
-                <h2><i class="fas fa-cog" style="margin-right: 10px;"></i> Configurações</h2>
+                <h2><i class="fas fa-cog" style="margin-right: 8px;"></i> Configurações</h2>
             </div>
-            <!-- EXPANSÍVEL: Futuras opções de configuração -->
             <div class="placeholder-mensagem">
                 <i class="fas fa-sliders-h"></i>
                 Ajustes do sistema<br>
-                <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Personalização futura</span>
+                <span style="font-size: 0.85rem;">Personalização futura</span>
             </div>
         </div>
     </div>
@@ -434,33 +498,30 @@
     // ============================================
     // APROVADO - NÃO MODIFICAR - LÓGICA DE TROCAR TELAS
     // ============================================
-    // Esta função é CRÍTICA para a navegação do app
-    // Qualquer alteração pode quebrar os botões e a navegação
-    // ============================================
     
-    // APROVADO: Função principal para trocar de tela (mostrar/ocultar)
+    // APROVADO: Função principal para trocar de tela
     function mostrarTela(telaId) {
-        // Oculta todas as telas
         const todasTelas = document.querySelectorAll('.tela');
         todasTelas.forEach(tela => {
             tela.style.display = 'none';
         });
         
-        // Mostra a tela solicitada
         const telaSelecionada = document.getElementById(telaId);
         if (telaSelecionada) {
             telaSelecionada.style.display = 'flex';
             
-            // APROVADO: Rolagem automática para o topo ao trocar de tela
             const appContainer = document.querySelector('.app-container');
             if (appContainer) {
                 appContainer.scrollTop = 0;
             }
             
-            // ========================================
             // EXPANSÃO: Carregar estoque quando a tela for aberta
-            // ========================================
             if (telaId === 'telaEstoque') {
+                // Reset da pesquisa ao abrir a tela
+                const searchInput = document.getElementById('pesquisaEstoque');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
                 mostrarEstoque();
             }
         }
@@ -480,7 +541,6 @@
     function configurarBotoesMenu() {
         const botoesMenu = document.querySelectorAll('.menu-botao');
         botoesMenu.forEach(botao => {
-            // Remove event listeners antigos se houver (evita duplicação)
             const novoBotao = botao.cloneNode(true);
             botao.parentNode.replaceChild(novoBotao, botao);
             
@@ -499,7 +559,6 @@
         botoesVoltar.forEach(btn => {
             if (!btn.hasAttribute('data-listener')) {
                 btn.setAttribute('data-listener', 'true');
-                // O onclick já está definido no HTML, mas garantimos via JS também
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     mostrarTela('telaMenu');
@@ -513,15 +572,10 @@
         exibirDataAtual();
         configurarBotoesMenu();
         garantirBotoesVoltar();
-        
-        // Garantir que o menu inicial está visível (fallback)
         mostrarTela('telaMenu');
     }
 
-    // APROVADO: Executar quando a página carregar completamente
     window.addEventListener('DOMContentLoaded', init);
-    
-    // APROVADO: Fallback para segurança
     window.onload = function() {
         if (document.getElementById('telaMenu').style.display === 'none') {
             mostrarTela('telaMenu');
@@ -529,16 +583,13 @@
     };
     
     // ============================================
-    // ÁREA PARA EXPANSÃO - INTEGRAÇÃO COM GOOGLE SHEETS
-    // ============================================
-    // ATENÇÃO: Todo o código acima está APROVADO e NÃO DEVE SER MODIFICADO
-    // 
-    // O código abaixo foi ADICIONADO para integrar com Google Sheets
-    // Nenhuma linha do código aprovado foi alterada
+    // ÁREA PARA EXPANSÃO - INTEGRAÇÃO COM GOOGLE SHEETS + MELHORIAS
     // ============================================
     
-    // URL definitivo do Google Apps Script (APROVADO PARA USO)
+    // URL definitivo do Google Apps Script
     const API_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
+    
+    let produtosOriginais = []; // Armazena os produtos originais
     
     // Função para buscar os produtos do Google Sheets
     async function carregarEstoque() {
@@ -548,6 +599,7 @@
                 throw new Error(`HTTP error! status: ${resposta.status}`);
             }
             const dados = await resposta.json();
+            produtosOriginais = dados;
             return dados;
         } catch (erro) {
             console.error('Erro ao carregar estoque:', erro);
@@ -555,7 +607,80 @@
         }
     }
     
-    // Função para exibir a tabela de estoque na tela
+    // NOVIDADE: Função para calcular e atualizar os totais
+    function atualizarTotais(produtos) {
+        let valorTotal = 0;
+        let quantidadeTotal = 0;
+        
+        produtos.forEach(produto => {
+            const preco = typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0;
+            const quantidade = typeof produto.quantidade === 'number' ? produto.quantidade : parseInt(produto.quantidade) || 0;
+            valorTotal += preco * quantidade;
+            quantidadeTotal += quantidade;
+        });
+        
+        // Atualizar os elementos na tela
+        const valorTotalElement = document.getElementById('valorTotal');
+        const qtTotalElement = document.getElementById('qtTotal');
+        
+        if (valorTotalElement) {
+            valorTotalElement.textContent = `R$ ${valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        if (qtTotalElement) {
+            qtTotalElement.textContent = quantidadeTotal.toLocaleString('pt-BR');
+        }
+    }
+    
+    // NOVIDADE: Função para filtrar produtos baseado no termo de pesquisa
+    function filtrarProdutos(termo) {
+        if (!termo || termo.trim() === '') {
+            return produtosOriginais;
+        }
+        
+        const termoLower = termo.toLowerCase().trim();
+        return produtosOriginais.filter(produto => {
+            const id = (produto.id || produto.CODPROD || '').toString().toLowerCase();
+            const nome = (produto.nome || produto.DESCRICAO || '').toString().toLowerCase();
+            return id.includes(termoLower) || nome.includes(termoLower);
+        });
+    }
+    
+    // NOVIDADE: Função para renderizar a tabela com os produtos filtrados
+    function renderizarTabela(produtos) {
+        if (!produtos || produtos.length === 0) {
+            return `
+                <div class="placeholder-mensagem">
+                    <i class="fas fa-box-open"></i>
+                    Nenhum produto encontrado<br>
+                    <span style="font-size: 0.85rem;">Tente outro termo de pesquisa</span>
+                </div>
+            `;
+        }
+        
+        let html = '<table class="estoque-tabela">';
+        html += '<thead><tr>';
+        html += '<th>Código</th>';
+        html += '<th>Produto</th>';
+        html += '<th>Fornecedor</th>';
+        html += '<th>Preço</th>';
+        html += '<th>Qtd</th>';
+        html += '</tr></thead><tbody>';
+        
+        produtos.forEach(produto => {
+            html += '<tr>';
+            html += `<td>${produto.id || produto.CODPROD || '-'}</td>`;
+            html += `<td><strong>${produto.nome || produto.DESCRICAO || '-'}</strong></td>`;
+            html += `<td>${produto.fornecedor || '-'}</td>`;
+            html += `<td>R$ ${(typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0).toFixed(2)}`;
+            html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table>';
+        return html;
+    }
+    
+    // Função principal para exibir o estoque com pesquisa e totais
     async function mostrarEstoque() {
         const container = document.getElementById('estoqueContainer');
         if (!container) return;
@@ -569,42 +694,21 @@
         `;
         
         try {
-            const produtos = await carregarEstoque();
-            
-            // Verificar se os dados foram carregados corretamente
-            if (!produtos || produtos.length === 0) {
-                container.innerHTML = `
-                    <div class="placeholder-mensagem">
-                        <i class="fas fa-box-open"></i>
-                        Nenhum produto encontrado no estoque<br>
-                        <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Verifique a planilha</span>
-                    </div>
-                `;
-                return;
+            // Carregar produtos se ainda não foram carregados
+            if (produtosOriginais.length === 0) {
+                await carregarEstoque();
             }
             
-            // Criar tabela com os dados
-            let html = '<table class="estoque-tabela">';
-            html += '<thead><tr>';
-            html += '<th>ID</th>';
-            html += '<th>Produto</th>';
-            html += '<th>Fornecedor</th>';
-            html += '<th>Preço</th>';
-            html += '<th>Qtd</th>';
-            html += '</tr></thead><tbody>';
+            // Filtrar produtos baseado na pesquisa atual
+            const searchInput = document.getElementById('pesquisaEstoque');
+            const termo = searchInput ? searchInput.value : '';
+            const produtosFiltrados = filtrarProdutos(termo);
             
-            produtos.forEach(produto => {
-                html += '<tr>';
-                html += `<td>${produto.id || '-'}</td>`;
-                html += `<td><strong>${produto.nome || produto.produto || '-'}</strong></td>`;
-                html += `<td>${produto.fornecedor || '-'}</td>`;
-                html += `<td>R$ ${typeof produto.preco === 'number' ? produto.preco.toFixed(2) : produto.preco || '0,00'}</td>`;
-                html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
-                html += '</tr>';
-            });
+            // Atualizar totais
+            atualizarTotais(produtosFiltrados);
             
-            html += '</tbody></table>';
-            container.innerHTML = html;
+            // Renderizar tabela
+            container.innerHTML = renderizarTabela(produtosFiltrados);
             
         } catch (erro) {
             console.error('Erro detalhado:', erro);
@@ -612,11 +716,37 @@
                 <div class="error-message">
                     <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
                     Erro ao carregar estoque<br>
-                    <span style="font-size: 0.85rem; display: block; margin-top: 10px;">${erro.message}</span>
-                    <span style="font-size: 0.75rem; display: block; margin-top: 5px;">Verifique o console para mais detalhes</span>
+                    <span style="font-size: 0.85rem;">${erro.message}</span>
                 </div>
             `;
         }
+    }
+    
+    // NOVIDADE: Configurar o evento de pesquisa em tempo real
+    function configurarPesquisa() {
+        const searchInput = document.getElementById('pesquisaEstoque');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const termo = this.value;
+                const produtosFiltrados = filtrarProdutos(termo);
+                
+                // Atualizar totais
+                atualizarTotais(produtosFiltrados);
+                
+                // Atualizar tabela
+                const container = document.getElementById('estoqueContainer');
+                if (container) {
+                    container.innerHTML = renderizarTabela(produtosFiltrados);
+                }
+            });
+        }
+    }
+    
+    // Inicializar a pesquisa quando a página carregar
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', configurarPesquisa);
+    } else {
+        configurarPesquisa();
     }
     
     // ============================================
