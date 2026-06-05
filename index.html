@@ -1,139 +1,764 @@
-Entendi. O cabeçalho da tela (pesquisa, totais, botão) está rolando junto com a tabela em vez de ficar fixo no topo. Isso acontece porque o contêiner que agrupa esses elementos não está com `position: sticky` e `top: 0`. Precisamos corrigir essa estrutura.
-
-Vou passar instruções **muito objetivas** para a desenvolvedora. Ela deve aplicar exatamente o que está abaixo.
-
----
-
-## 📁 Instruções para a desenvolvedora (última tentativa)
-
-```md
-# INSTRUÇÃO DEFINITIVA – CÓDIGO PARA CABEÇALHO ESTÁTICO
-
-Você não conseguiu deixar o cabeçalho da tela de estoque estático. Copie e cole o código abaixo. Não invente.
-
-## Estrutura visual correta
-
-- **Bloco 1 (fixo no topo):**
-  - Botão "Voltar"
-  - Título "Estoque"
-  - Campo de pesquisa
-  - Cards de totais (Valor Total e Quantidade Total)
-  - Botão "Efetuar Nova Venda"
-
-- **Bloco 2 (abaixo, rolável):**
-  - Tabela de produtos com cabeçalho fixo logo abaixo do Bloco 1.
-
-## CSS correto (copie e cole)
-
-```css
-/* Cabeçalho fixo da tela (nunca se move) */
-.estoque-fixed-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: white;
-    padding-bottom: 10px;
-}
-
-/* Container da tabela (rolável) */
-.estoque-container {
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-}
-
-/* Cabeçalho da tabela (fixo dentro do container rolável) */
-.estoque-tabela thead {
-    position: sticky;
-    top: 0;
-    z-index: 9;
-}
-
-/* Ajuste o top do cabeçalho da tabela para ficar logo abaixo do cabeçalho fixo */
-.estoque-tabela thead {
-    top: 0; /* Agora o topo é relativo ao container, que está acima do conteúdo rolável */
-}
-```
-
-**Por que isso funciona:** O `.estoque-fixed-header` fica fixo no topo. O `.estoque-container` começa logo abaixo dele e rola. O `thead` da tabela fica fixo no topo do `.estoque-container` (que é logo abaixo do cabeçalho fixo).
-
-## HTML correto (dentro da tela de estoque)
-
-```html
-<div class="tela" id="telaEstoque" style="display: none;">
-    <div class="card-content" style="display: flex; flex-direction: column; height: 100%;">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>TT DISTRIBUIDOR - Vendas Mobile</title>
+    <!-- APROVADO - NÃO MEXER: Font Awesome 6 (ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ============================================ */
+        /* APROVADO - NÃO MEXER - ESTILOS APROVADOS      */
+        /* ============================================ */
         
-        <!-- Cabeçalho fixo da tela (NUNCA MEXER) -->
-        <div class="estoque-fixed-header">
-            <div class="tela-header">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 0;
+        }
+
+        .tela {
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px 16px 25px 16px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        #telaMenu {
+            justify-content: space-between;
+        }
+
+        .card-content {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- ESTILOS DO MENU INICIAL --- */
+        .logo-area {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            max-width: 90px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .empresa-dados {
+            font-size: 0.65rem;
+            color: #5a6e85;
+            text-align: center;
+            line-height: 1.3;
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .empresa-dados p {
+            margin: 2px 0;
+        }
+
+        .capa-titulo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1E5A99;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .capa-subtitulo {
+            font-size: 0.85rem;
+            color: #2B7BC9;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .data-ref {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e0e6ed;
+        }
+
+        .menu-botao {
+            width: 100%;
+            background: white;
+            border: 2px solid #1E5A99;
+            border-radius: 16px;
+            padding: 0 18px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .menu-botao:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-botao i {
+            font-size: 1.8rem;
+            color: #1E5A99;
+            width: 36px;
+            text-align: center;
+        }
+
+        .menu-botao span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1E5A99;
+            flex: 1;
+        }
+
+        .menu-botao:active {
+            transform: scale(0.97);
+            background: #f0f7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ============================================ */
+        /* ESTILOS DA TELA DE ESTOQUE - CORRIGIDOS      */
+        /* ============================================ */
+        
+        /* Ajuste da tela de estoque para usar toda altura */
+        #telaEstoque {
+            height: 100vh;
+            padding: 0;
+        }
+        
+        #telaEstoque .card-content {
+            height: 100%;
+            padding: 20px 16px 25px 16px;
+        }
+        
+        /* Cabeçalho fixo da tela (NUNCA SE MOVE) */
+        .estoque-fixed-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tela-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .btn-voltar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #1E5A99;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar:active {
+            background: #eef2f8;
+        }
+
+        .tela-header h2 {
+            font-size: 1.4rem;
+            color: #1E5A99;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 8px 0 12px 0;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e0;
+            font-size: 0.9rem;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #1E5A99;
+            box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
+        }
+        
+        .totais-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .total-card {
+            flex: 1;
+            background: linear-gradient(135deg, #1E5A99 0%, #2B7BC9 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .total-card i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .total-label {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+        
+        .total-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .btn-nova-venda-estoque {
+            width: 100%;
+            padding: 12px;
+            background: #1E5A99;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 10px 0 5px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-nova-venda-estoque:active {
+            transform: scale(0.98);
+            background: #0f3e6b;
+        }
+
+        /* Container da tabela (rolável) - OCUPA O RESTO DO ESPAÇO */
+        .estoque-container {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            min-height: 0; /* CRUCIAL para flex funcionar corretamente */
+        }
+        
+        /* Estilos da tabela */
+        .estoque-tabela {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        
+        /* Cabeçalho da tabela - fixo dentro do container rolável */
+        .estoque-tabela thead {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+        
+        .estoque-tabela th {
+            background: #1E5A99;
+            color: white;
+            padding: 10px 6px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .estoque-tabela td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+            background: white;
+        }
+        
+        .estoque-tabela tr:hover td {
+            background: #f7fafc;
+        }
+        
+        /* ESTILOS DAS OUTRAS TELAS */
+        .tela-header-nofixed {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 40px;
+            color: #1E5A99;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #e53e3e;
+            background: #fff5f5;
+            border-radius: 12px;
+        }
+
+        .placeholder-mensagem {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 40px 20px;
+            text-align: center;
+            border: 1px dashed #bdd4e7;
+            color: #4b6b8f;
+            font-size: 0.95rem;
+        }
+
+        .placeholder-mensagem i {
+            font-size: 2.5rem;
+            color: #90aec9;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .tela {
+                padding: 15px 12px 20px 12px;
+            }
+            .capa-titulo {
+                font-size: 1.3rem;
+            }
+            .menu-botao {
+                height: 58px;
+            }
+            .menu-botao i {
+                font-size: 1.5rem;
+            }
+            .menu-botao span {
+                font-size: 0.95rem;
+            }
+            .tela-header h2 {
+                font-size: 1.2rem;
+            }
+            .total-value {
+                font-size: 1rem;
+            }
+        }
+
+        /* Scroll suave */
+        .app-container::-webkit-scrollbar,
+        .estoque-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .app-container::-webkit-scrollbar-track,
+        .estoque-container::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+
+        .app-container::-webkit-scrollbar-thumb,
+        .estoque-container::-webkit-scrollbar-thumb {
+            background: #1E5A99;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- ============================================ -->
+    <!-- TELA 0 - MENU INICIAL (CAPA) - APROVADO      -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaMenu" style="display: flex;">
+        <div class="card-content">
+            <div class="logo-area">
+                <img src="https://i.imgur.com/1BQJhXp.png" alt="Logo TT Distribuidor" class="logo">
+            </div>
+
+            <div class="empresa-dados">
+                <p><strong>TT DISTRIBUIDOR DE ALIMENTOS LTDA</strong></p>
+                <p>CNPJ: 08.381.919/0001-84 | I.E: 194591832</p>
+                <p>Filial 3 - AV. PREFEITO WALL FERRAZ - 17777</p>
+                <p>PEDRA MIUDA - TERESINA - PI - 64038030</p>
+            </div>
+
+            <div class="capa-titulo">Venda de mercadorias mobile – TT DISTRIBUIDOR</div>
+            <div class="capa-subtitulo">Aplicativo de controle e venda de mercadorias por indústrias</div>
+            
+            <div class="data-ref" id="dataAtual"></div>
+
+            <div class="menu-botao" data-tela="telaEstoque">
+                <i class="fas fa-boxes"></i>
+                <span>Consultar Estoque</span>
+            </div>
+            <div class="menu-botao" data-tela="telaVenda">
+                <i class="fas fa-cart-plus"></i>
+                <span>Efetuar Nova Venda</span>
+            </div>
+            <div class="menu-botao" data-tela="telaConfig">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 1 - ESTOQUE - CORRIGIDA DEFINITIVAMENTE -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaEstoque" style="display: none;">
+        <div class="card-content">
+            <!-- Cabeçalho fixo da tela (NUNCA SE MOVE) -->
+            <div class="estoque-fixed-header">
+                <div class="tela-header">
+                    <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2><i class="fas fa-boxes" style="margin-right: 8px;"></i> Estoque</h2>
+                </div>
+                
+                <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+                
+                <div class="totais-container">
+                    <div class="total-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div class="total-label">Valor Total</div>
+                        <div class="total-value" id="valorTotal">R$ 0,00</div>
+                    </div>
+                    <div class="total-card">
+                        <i class="fas fa-boxes"></i>
+                        <div class="total-label">Quantidade Total</div>
+                        <div class="total-value" id="qtTotal">0</div>
+                    </div>
+                </div>
+                
+                <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque">
+                    <i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Efetuar Nova Venda
+                </button>
+            </div>
+
+            <!-- Container rolável da tabela -->
+            <div id="estoqueContainer" class="estoque-container">
+                <div class="placeholder-mensagem">
+                    <i class="fas fa-database"></i>
+                    Carregando estoque...<br>
+                    <span style="font-size: 0.85rem;">Aguarde um momento</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 2 - NOVA VENDA - APROVADO               -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaVenda" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
                 <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <h2><i class="fas fa-boxes"></i> Estoque</h2>
+                <h2><i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Nova Venda</h2>
             </div>
-            <input type="text" id="pesquisaEstoque" placeholder="🔍 Pesquisar por código ou descrição...">
-            <div class="totais-container">
-                <div class="total-card"><div>Valor Total</div><div id="valorTotal">R$ 0,00</div></div>
-                <div class="total-card"><div>Quantidade Total</div><div id="qtTotal">0</div></div>
+            <div class="placeholder-mensagem">
+                <i class="fas fa-receipt"></i>
+                Módulo de vendas em construção<br>
+                <span style="font-size: 0.85rem;">Interface completa em breve</span>
             </div>
-            <button id="btnNovaVendaEstoque">Efetuar Nova Venda</button>
         </div>
+    </div>
 
-        <!-- Container rolável da tabela -->
-        <div id="estoqueContainer" class="estoque-container">
-            <!-- A tabela será gerada por JavaScript -->
+    <!-- ============================================ -->
+    <!-- TELA 3 - CONFIGURAÇÕES - APROVADO           -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaConfig" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-cog" style="margin-right: 8px;"></i> Configurações</h2>
+            </div>
+            <div class="placeholder-mensagem">
+                <i class="fas fa-sliders-h"></i>
+                Ajustes do sistema<br>
+                <span style="font-size: 0.85rem;">Personalização futura</span>
+            </div>
         </div>
-        
     </div>
 </div>
-```
 
-## JavaScript correto (para renderizar a tabela)
-
-```javascript
-function renderizarTabela(produtos) {
-    if (!produtos || produtos.length === 0) {
-        return '<div class="placeholder-mensagem">Nenhum produto encontrado</div>';
+<script>
+    // ============================================
+    // APROVADO - LÓGICA DE TROCAR TELAS
+    // ============================================
+    
+    function mostrarTela(telaId) {
+        const todasTelas = document.querySelectorAll('.tela');
+        todasTelas.forEach(tela => {
+            tela.style.display = 'none';
+        });
+        
+        const telaSelecionada = document.getElementById(telaId);
+        if (telaSelecionada) {
+            telaSelecionada.style.display = 'flex';
+            
+            if (telaId === 'telaEstoque') {
+                const searchInput = document.getElementById('pesquisaEstoque');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                mostrarEstoque();
+            }
+        }
     }
 
-    let html = '<table class="estoque-tabela">';
-    html += '<thead><tr>';
-    html += '<th>Código</th><th>Produto</th><th>Fornecedor</th><th>Preço</th><th>Qtd</th>';
-    html += '</tr></thead><tbody>';
+    function exibirDataAtual() {
+        const dataElement = document.getElementById('dataAtual');
+        if (dataElement) {
+            const hoje = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            dataElement.innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${hoje.toLocaleDateString('pt-BR', options)}`;
+        }
+    }
 
-    produtos.forEach(p => {
-        html += '<tr>';
-        html += `<td>${p.id || '-'}</td>`;
-        html += `<td><strong>${p.nome || '-'}</strong></td>`;
-        html += `<td>${p.fornecedor || '-'}</td>`;
-        html += `<td>R$ ${(typeof p.preco === 'number' ? p.preco : 0).toFixed(2)}</td>`;
-        html += `<td>${p.quantidade || 0}</td>`;
-        html += '</tr>';
-    });
+    function configurarBotoesMenu() {
+        const botoesMenu = document.querySelectorAll('.menu-botao');
+        botoesMenu.forEach(botao => {
+            const novoBotao = botao.cloneNode(true);
+            botao.parentNode.replaceChild(novoBotao, botao);
+            
+            novoBotao.addEventListener('click', function() {
+                const telaDestino = this.getAttribute('data-tela');
+                if (telaDestino) {
+                    mostrarTela(telaDestino);
+                }
+            });
+        });
+    }
 
-    html += '</tbody></table>';
-    return html;
-}
-```
+    function garantirBotoesVoltar() {
+        const botoesVoltar = document.querySelectorAll('.btn-voltar');
+        botoesVoltar.forEach(btn => {
+            if (!btn.hasAttribute('data-listener')) {
+                btn.setAttribute('data-listener', 'true');
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mostrarTela('telaMenu');
+                });
+            }
+        });
+    }
 
-## TESTE OBRIGATÓRIO (SÓ DEPOIS DE TESTAR, ENTREGUE)
+    function configurarBotaoNovaVendaEstoque() {
+        const btnNovaVenda = document.getElementById('btnNovaVendaEstoque');
+        if (btnNovaVenda && !btnNovaVenda.hasAttribute('data-listener')) {
+            btnNovaVenda.setAttribute('data-listener', 'true');
+            btnNovaVenda.addEventListener('click', function() {
+                mostrarTela('telaVenda');
+            });
+        }
+    }
 
-- Abra o app no seu celular ou no navegador.
-- Role a lista de produtos para baixo.
-- **O cabeçalho fixo (pesquisa, totais, botão) NUNCA deve se mover.**
-- **O cabeçalho da tabela deve aparecer logo abaixo do botão "Efetuar Nova Venda".**
-- **Nenhum produto deve sobrepor o cabeçalho da tabela ou o cabeçalho fixo.**
+    function init() {
+        exibirDataAtual();
+        configurarBotoesMenu();
+        garantirBotoesVoltar();
+        configurarBotaoNovaVendaEstoque();
+        mostrarTela('telaMenu');
+    }
 
-**Não entregue se falhar. Eu exijo que o cabeçalho fique estático.**
-```
-
----
-
-## 📝 Resumo para você (usuário)
-
-| Problema | Solução exigida |
-|----------|-----------------|
-| O cabeçalho da tela (pesquisa, totais, botão) rola junto com a tabela | Aplicar `position: sticky; top: 0;` no `.estoque-fixed-header` que envolve esses elementos |
-| O cabeçalho da tabela sobrepõe outros elementos | Manter o cabeçalho da tabela com `position: sticky; top: 0;` dentro do container rolável `.estoque-container` |
-
-**Agora você pode enviar este `.md` para a desenvolvedora.** Ela deve substituir o arquivo `index.html` no GitHub com o código corrigido. Se o problema persistir, avise que você mesmo vai subir o código final.
+    window.addEventListener('DOMContentLoaded', init);
+    
+    // ============================================
+    // INTEGRAÇÃO COM GOOGLE SHEETS
+    // ============================================
+    
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
+    
+    let produtosOriginais = [];
+    
+    async function carregarEstoque() {
+        try {
+            const resposta = await fetch(API_URL);
+            if (!resposta.ok) {
+                throw new Error(`HTTP error! status: ${resposta.status}`);
+            }
+            const dados = await resposta.json();
+            produtosOriginais = dados;
+            return dados;
+        } catch (erro) {
+            console.error('Erro ao carregar estoque:', erro);
+            throw erro;
+        }
+    }
+    
+    function atualizarTotais(produtos) {
+        let valorTotal = 0;
+        let quantidadeTotal = 0;
+        
+        produtos.forEach(produto => {
+            const preco = typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0;
+            const quantidade = typeof produto.quantidade === 'number' ? produto.quantidade : parseInt(produto.quantidade) || 0;
+            valorTotal += preco * quantidade;
+            quantidadeTotal += quantidade;
+        });
+        
+        const valorTotalElement = document.getElementById('valorTotal');
+        const qtTotalElement = document.getElementById('qtTotal');
+        
+        if (valorTotalElement) {
+            valorTotalElement.textContent = `R$ ${valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        if (qtTotalElement) {
+            qtTotalElement.textContent = quantidadeTotal.toLocaleString('pt-BR');
+        }
+    }
+    
+    function filtrarProdutos(termo) {
+        if (!termo || termo.trim() === '') {
+            return produtosOriginais;
+        }
+        
+        const termoLower = termo.toLowerCase().trim();
+        return produtosOriginais.filter(produto => {
+            const id = (produto.id || produto.CODPROD || '').toString().toLowerCase();
+            const nome = (produto.nome || produto.DESCRICAO || '').toString().toLowerCase();
+            return id.includes(termoLower) || nome.includes(termoLower);
+        });
+    }
+    
+    function renderizarTabela(produtos) {
+        if (!produtos || produtos.length === 0) {
+            return `
+                <div class="placeholder-mensagem">
+                    <i class="fas fa-box-open"></i>
+                    Nenhum produto encontrado<br>
+                    <span style="font-size: 0.85rem;">Tente outro termo de pesquisa</span>
+                </div>
+            `;
+        }
+        
+        let html = '<table class="estoque-tabela">';
+        html += '<thead><tr>';
+        html += '<th>Código</th>';
+        html += '<th>Produto</th>';
+        html += '<th>Fornecedor</th>';
+        html += '<th>Preço</th>';
+        html += '<th>Qtd</th>';
+        html += '</tr></thead><tbody>';
+        
+        produtos.forEach(produto => {
+            html += '<tr>';
+            html += `<td>${produto.id || produto.CODPROD || '-'}</td>`;
+            html += `<td><strong>${produto.nome || produto.DESCRICAO || '-'}</strong></td>`;
+            html += `<td>${produto.fornecedor || '-'}</td>`;
+            html += `<td>R$ ${(typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0).toFixed(2)}`;
+            html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table>';
+        return html;
+    }
+    
+    async function mostrarEstoque() {
+        const container = document.getElementById('estoqueContainer');
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="loading-message">
+                <i class="fas fa-spinner fa-pulse" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                Carregando produtos...
+            </div>
+        `;
+        
+        try {
+            if (produtosOriginais.length === 0) {
+                await carregarEstoque();
+            }
+            
+            const searchInput = document.getElementById('pesquisaEstoque');
+            const termo = searchInput ? searchInput.value : '';
+            const produtosFiltrados = filtrarProdutos(termo);
+            
+            atualizarTotais(produtosFiltrados);
+            container.innerHTML = renderizarTabela(produtosFiltrados);
+            
+        } catch (erro) {
+            console.error('Erro detalhado:', erro);
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                    Erro ao carregar estoque<br>
+                    <span style="font-size: 0.85rem;">${erro.message}</span>
+                </div>
+            `;
+        }
+    }
+    
+    function configurarPesquisa() {
+        const searchInput = document.getElementById('pesquisaEstoque');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const termo = this.value;
+                const produtosFiltrados = filtrarProdutos(termo);
+                atualizarTotais(produtosFiltrados);
+                const container = document.getElementById('estoqueContainer');
+                if (container) {
+                    container.innerHTML = renderizarTabela(produtosFiltrados);
+                }
+            });
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', configurarPesquisa);
+    } else {
+        configurarPesquisa();
+    }
+</script>
+</body>
+</html>
