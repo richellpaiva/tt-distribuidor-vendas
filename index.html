@@ -4,13 +4,919 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>TT DISTRIBUIDOR - Vendas Mobile</title>
+    <!-- APROVADO - NÃO MEXER: Font Awesome 6 (ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ============================================ */
+        /* APROVADO - NÃO MEXER - ESTILOS APROVADOS      */
+        /* ============================================ */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 0;
+        }
+
+        .tela {
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px 16px 25px 16px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        #telaMenu {
+            justify-content: space-between;
+        }
+
+        .card-content {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- ESTILOS DO MENU INICIAL --- */
+        .logo-area {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            max-width: 90px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .empresa-dados {
+            font-size: 0.65rem;
+            color: #5a6e85;
+            text-align: center;
+            line-height: 1.3;
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .empresa-dados p {
+            margin: 2px 0;
+        }
+
+        .capa-titulo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1E5A99;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .capa-subtitulo {
+            font-size: 0.85rem;
+            color: #2B7BC9;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .data-ref {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e0e6ed;
+        }
+
+        .menu-botao {
+            width: 100%;
+            background: white;
+            border: 2px solid #1E5A99;
+            border-radius: 16px;
+            padding: 0 18px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .menu-botao:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-botao i {
+            font-size: 1.8rem;
+            color: #1E5A99;
+            width: 36px;
+            text-align: center;
+        }
+
+        .menu-botao span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1E5A99;
+            flex: 1;
+        }
+
+        .menu-botao:active {
+            transform: scale(0.97);
+            background: #f0f7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ============================================ */
+        /* ESTILOS DA TELA DE ESTOQUE (CORRIGIDOS)      */
+        /* ============================================ */
+        
+        #telaEstoque {
+            height: 100vh;
+            padding: 0;
+        }
+        
+        #telaEstoque .card-content {
+            height: 100%;
+            padding: 20px 16px 25px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Cabeçalho fixo da tela de estoque */
+        .estoque-fixed-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .tela-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .btn-voltar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #1E5A99;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar:active {
+            background: #eef2f8;
+        }
+
+        .tela-header h2 {
+            font-size: 1.4rem;
+            color: #1E5A99;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 8px 0 12px 0;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e0;
+            font-size: 0.9rem;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #1E5A99;
+            box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
+        }
+        
+        .totais-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .total-card {
+            flex: 1;
+            background: linear-gradient(135deg, #1E5A99 0%, #2B7BC9 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .total-card i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .total-label {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+        
+        .total-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .btn-nova-venda-estoque {
+            width: 100%;
+            padding: 12px;
+            background: #1E5A99;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 10px 0 5px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-nova-venda-estoque:active {
+            transform: scale(0.98);
+            background: #0f3e6b;
+        }
+
+        /* Container rolável da tabela */
+        .estoque-container {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            min-height: 0;
+        }
+        
+        .estoque-tabela {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        
+        /* Cabeçalho da tabela fixo dentro do container rolável */
+        .estoque-tabela thead {
+            position: sticky;
+            top: 0;
+            z-index: 9;
+            background: #1E5A99;
+        }
+        
+        .estoque-tabela th {
+            background: #1E5A99;
+            color: white;
+            padding: 10px 6px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .estoque-tabela td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+            background: white;
+        }
+        
+        .estoque-tabela tr:hover td {
+            background: #f7fafc;
+        }
+        
+        /* ============================================ */
+        /* ESTILOS DAS TELAS DE VENDAS E CLIENTES       */
+        /* ============================================ */
+        
+        .tela-header-nofixed {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .cliente-selecionado-box {
+            background: #e8f0fe;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #1E5A99;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .btn-pesquisar-cliente {
+            width: 100%;
+            padding: 12px;
+            background: #1E5A99;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        
+        /* Lista de clientes (seleção) */
+        .clientes-lista {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .lista-clientes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .cliente-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .cliente-card:hover {
+            background: #f7fafc;
+            border-color: #1E5A99;
+        }
+        
+        .cliente-info {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+        }
+        
+        .btn-selecionar-cliente {
+            background: #1E5A99;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        
+        /* Formulário de clientes */
+        .form-cliente {
+            margin-top: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1E5A99;
+            margin-bottom: 3px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .botoes-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-form {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-salvar { background: #1E5A99; color: white; }
+        .btn-excluir { background: #dc3545; color: white; }
+        .btn-cancelar { background: #6c757d; color: white; }
+        .btn-novo { background: #2B7BC9; color: white; }
+        
+        /* Placeholders, loading, erro */
+        .loading-message, .error-message, .placeholder-mensagem {
+            text-align: center;
+            padding: 40px;
+            border-radius: 24px;
+        }
+        .loading-message { color: #1E5A99; }
+        .error-message { color: #e53e3e; background: #fff5f5; }
+        .placeholder-mensagem {
+            background: #f8fafc;
+            border: 1px dashed #bdd4e7;
+            color: #4b6b8f;
+        }
+        .placeholder-mensagem i {
+            font-size: 2.5rem;
+            color: #90aec9;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .tela { padding: 15px 12px 20px 12px; }
+            .capa-titulo { font-size: 1.3rem; }
+            .menu-botao { height: 58px; }
+            .form-row { flex-direction: column; gap: 0; }
+            .botoes-form { flex-direction: column; }
+            .cliente-card { flex-direction: column; gap: 10px; text-align: center; }
+            .btn-selecionar-cliente { width: 100%; }
+        }
+        
+        /* Scrollbars */
+        .app-container::-webkit-scrollbar,
+        .estoque-container::-webkit-scrollbar,
+        .clientes-lista::-webkit-scrollbar {
+            width: 5px;
+        }
+        .app-container::-webkit-scrollbar-track,
+        .estoque-container::-webkit-scrollbar-track,
+        .clientes-lista::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        .app-container::-webkit-scrollbar-thumb,
+        .estoque-container::-webkit-scrollbar-thumb,
+        .clientes-lista::-webkit-scrollbar-thumb {
+            background: #1E5A99;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container" id="appContainer">
-        <div id="telasContainer"></div>
+<div class="app-container">
+    <!-- ============================================ -->
+    <!-- TELA 0 - MENU INICIAL (APROVADA)              -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaMenu" style="display: flex;">
+        <div class="card-content">
+            <div class="logo-area">
+                <img src="https://i.imgur.com/1BQJhXp.png" alt="Logo TT Distribuidor" class="logo">
+            </div>
+            <div class="empresa-dados">
+                <p><strong>TT DISTRIBUIDOR DE ALIMENTOS LTDA</strong></p>
+                <p>CNPJ: 08.381.919/0001-84 | I.E: 194591832</p>
+                <p>Filial 3 - AV. PREFEITO WALL FERRAZ - 17777</p>
+                <p>PEDRA MIUDA - TERESINA - PI - 64038030</p>
+            </div>
+            <div class="capa-titulo">Venda de mercadorias mobile – TT DISTRIBUIDOR</div>
+            <div class="capa-subtitulo">Aplicativo de controle e venda de mercadorias por indústrias</div>
+            <div class="data-ref" id="dataAtual"></div>
+            <div class="menu-botao" data-tela="telaEstoque">
+                <i class="fas fa-boxes"></i>
+                <span>Consultar Estoque</span>
+            </div>
+            <div class="menu-botao" data-tela="telaVenda">
+                <i class="fas fa-cart-plus"></i>
+                <span>Efetuar Nova Venda</span>
+            </div>
+            <div class="menu-botao" data-tela="telaConfig">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </div>
+        </div>
     </div>
-    <script src="script.js"></script>
+
+    <!-- ============================================ -->
+    <!-- TELA 1 - ESTOQUE (APROVADA E CORRIGIDA)      -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaEstoque" style="display: none;">
+        <div class="card-content">
+            <div class="estoque-fixed-header">
+                <div class="tela-header">
+                    <button class="btn-voltar" data-voltar="menu">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2><i class="fas fa-boxes"></i> Estoque</h2>
+                </div>
+                <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+                <div class="totais-container">
+                    <div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="valorTotal">R$ 0,00</div></div>
+                    <div class="total-card"><i class="fas fa-boxes"></i><div class="total-label">Quantidade Total</div><div class="total-value" id="qtTotal">0</div></div>
+                </div>
+                <button id="btnNovaVendaEstoque" class="btn-nova-venda-estoque">
+                    <i class="fas fa-cart-plus"></i> Efetuar Nova Venda
+                </button>
+            </div>
+            <div id="estoqueContainer" class="estoque-container">
+                <div class="placeholder-mensagem">Carregando estoque...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 2 - NOVA VENDA (ATUALIZADA)             -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaVenda" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="menu">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-cart-plus"></i> Nova Venda</h2>
+            </div>
+            <div class="cliente-selecionado-box" id="clienteSelecionadoDisplay">
+                <strong>Nenhum cliente selecionado</strong>
+            </div>
+            <button id="btnPesquisarCliente" class="btn-pesquisar-cliente">
+                <i class="fas fa-search"></i> Pesquisar Cliente
+            </button>
+            <div class="placeholder-mensagem" style="margin-top: 20px;">
+                <i class="fas fa-receipt"></i> Adicionar produtos à venda<br><span style="font-size:0.85rem">Em breve</span>
+            </div>
+            <button id="btnFinalizarVenda" class="btn-nova-venda-estoque" style="background:#28a745; margin-top:20px;" disabled>
+                <i class="fas fa-check-circle"></i> Finalizar Venda
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 3 - SELEÇÃO DE CLIENTE                  -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaSelecionarCliente" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="venda">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-users"></i> Selecionar Cliente</h2>
+            </div>
+            <input type="text" id="pesquisaCliente" class="search-box" placeholder="🔍 Pesquisar por Nome, CPF ou Telefone">
+            <div id="listaClientesContainer" class="clientes-lista">
+                <div class="loading-message">Carregando clientes...</div>
+            </div>
+            <button id="btnCadastrarNovoCliente" class="btn-nova-venda-estoque" style="margin-top:15px;">
+                <i class="fas fa-user-plus"></i> Cadastrar Novo Cliente
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 4 - CADASTRO DE CLIENTES                -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaClientes" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="venda">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-users"></i> Cadastro de Clientes</h2>
+            </div>
+            <input type="text" id="pesquisaClientesCadastro" class="search-box" placeholder="🔍 Pesquisar por nome ou CPF">
+            <div id="listaClientesCadastro" class="clientes-lista" style="max-height:200px; margin:10px 0; border:1px solid #e2e8f0; border-radius:12px;">
+                <div class="loading-message">Carregando clientes...</div>
+            </div>
+            <div class="form-cliente">
+                <h3 style="color:#1E5A99; margin-bottom:15px;">Dados do Cliente</h3>
+                <div class="form-group"><label>Nome Completo *</label><input type="text" id="editNomeCliente" placeholder="Digite o nome completo"></div>
+                <div class="form-group"><label>CPF</label><input type="text" id="editCpfCliente" placeholder="000.000.000-00"></div>
+                <div class="form-group"><label>Telefone</label><input type="text" id="editTelefoneCliente" placeholder="(00) 00000-0000"></div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1"><label>UF</label><input type="text" id="editUfCliente" placeholder="PI" maxlength="2"></div>
+                    <div class="form-group" style="flex:2"><label>Cidade</label><input type="text" id="editCidadeCliente" placeholder="Teresina"></div>
+                </div>
+                <div class="form-group"><label>Endereço</label><input type="text" id="editEnderecoCliente" placeholder="Rua, Avenida..."></div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1"><label>Número</label><input type="text" id="editNumeroCliente" placeholder="Número"></div>
+                    <div class="form-group" style="flex:2"><label>Complemento</label><input type="text" id="editComplementoCliente" placeholder="Apto, Bloco..."></div>
+                </div>
+                <div class="form-group"><label>CEP</label><input type="text" id="editCepCliente" placeholder="00000-000"></div>
+                <div class="botoes-form">
+                    <button id="btnCriarNovoCliente" class="btn-form btn-novo"><i class="fas fa-plus"></i> NOVO</button>
+                    <button id="btnSalvarCliente" class="btn-form btn-salvar"><i class="fas fa-save"></i> SALVAR</button>
+                    <button id="btnExcluirCliente" class="btn-form btn-excluir"><i class="fas fa-trash"></i> EXCLUIR</button>
+                    <button id="btnCancelarCliente" class="btn-form btn-cancelar"><i class="fas fa-times"></i> CANCELAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 5 - CONFIGURAÇÕES (PLACEHOLDER)         -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaConfig" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar" data-voltar="menu">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-cog"></i> Configurações</h2>
+            </div>
+            <div class="placeholder-mensagem">
+                <i class="fas fa-sliders-h"></i> Ajustes do sistema<br><span style="font-size:0.85rem">Personalização futura</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // APROVADO - LÓGICA DE TROCAR TELAS
+    // ============================================
+    function mostrarTela(idTela) {
+        document.querySelectorAll('.tela').forEach(tela => tela.style.display = 'none');
+        const tela = document.getElementById(idTela);
+        if (tela) tela.style.display = 'flex';
+    }
+
+    // Configurar botões de voltar (data-voltar)
+    document.querySelectorAll('.btn-voltar').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const destino = btn.getAttribute('data-voltar');
+            if (destino) mostrarTela(destino);
+        });
+    });
+
+    // Navegação do menu
+    document.querySelectorAll('.menu-botao').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tela = btn.getAttribute('data-tela');
+            if (tela) mostrarTela(tela);
+        });
+    });
+
+    // Data atual
+    const hoje = new Date();
+    document.getElementById('dataAtual').innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${hoje.toLocaleDateString('pt-BR', { year:'numeric', month:'long', day:'numeric' })}`;
+
+    // ============================================
+    // FUNÇÕES DE ESTOQUE (CORRIGIDAS)
+    // ============================================
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyRWqOEPPfFPa1amNaTgCzlgpwPPtuTKopebpGLFVtQEBEadNI6iBRj7DsMqw005rqmMA/exec';
+    let produtosOriginais = [];
+    
+    async function carregarEstoque() {
+        const container = document.getElementById('estoqueContainer');
+        container.innerHTML = '<div class="loading-message">Carregando...</div>';
+        try {
+            const res = await fetch(`${API_URL}?tipo=estoque`);
+            produtosOriginais = await res.json();
+            atualizarEstoque();
+        } catch(e) {
+            container.innerHTML = '<div class="error-message">Erro ao carregar estoque</div>';
+        }
+    }
+    
+    function atualizarEstoque() {
+        const termo = document.getElementById('pesquisaEstoque').value.toLowerCase();
+        const filtrados = produtosOriginais.filter(p => 
+            (p.id || '').toString().toLowerCase().includes(termo) || 
+            (p.nome || '').toString().toLowerCase().includes(termo)
+        );
+        let valorTotal = 0, qtdTotal = 0;
+        filtrados.forEach(p => {
+            let preco = parseFloat(p.preco) || 0;
+            let qtd = parseInt(p.quantidade) || 0;
+            valorTotal += preco * qtd;
+            qtdTotal += qtd;
+        });
+        document.getElementById('valorTotal').innerText = `R$ ${valorTotal.toFixed(2)}`;
+        document.getElementById('qtTotal').innerText = qtdTotal;
+        
+        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Fornecedor</th><th>Preço</th><th>Qtd</th></tr></thead><tbody>';
+        filtrados.forEach(p => {
+            html += `<tr><td>${p.id || '-'}</td><td><strong>${p.nome || '-'}</strong></td><td>${p.fornecedor || '-'}</td><td>R$ ${(parseFloat(p.preco)||0).toFixed(2)}</td><td>${p.quantidade||0}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('estoqueContainer').innerHTML = html;
+    }
+    
+    document.getElementById('pesquisaEstoque').addEventListener('input', atualizarEstoque);
+    document.getElementById('btnNovaVendaEstoque').addEventListener('click', () => mostrarTela('telaVenda'));
+    
+    // ============================================
+    // FUNÇÕES DE CLIENTES (NOVAS)
+    // ============================================
+    let clientesOriginais = [];
+    let clienteSelecionado = null;
+    let editandoClienteId = null;
+    
+    // Carregar clientes para seleção e cadastro
+    async function carregarClientes() {
+        try {
+            const res = await fetch(`${API_URL}?tipo=clientes`);
+            clientesOriginais = await res.json();
+            if (document.getElementById('listaClientesContainer')) exibirListaClientes('');
+            if (document.getElementById('listaClientesCadastro')) atualizarListaClientesCadastro();
+        } catch(e) { console.error(e); }
+    }
+    
+    function exibirListaClientes(termo) {
+        const container = document.getElementById('listaClientesContainer');
+        let filtrados = clientesOriginais;
+        if (termo) {
+            const lower = termo.toLowerCase();
+            filtrados = clientesOriginais.filter(c => 
+                (c.nome || '').toLowerCase().includes(lower) ||
+                (c.cpf || '').includes(lower) ||
+                (c.telefone || '').includes(lower)
+            );
+        }
+        if (!filtrados.length) {
+            container.innerHTML = '<div class="placeholder-mensagem">Nenhum cliente encontrado</div>';
+            return;
+        }
+        let html = '<div class="lista-clientes">';
+        filtrados.forEach(c => {
+            html += `<div class="cliente-card">
+                        <div><strong>${c.nome}</strong><br><span class="cliente-info">CPF: ${c.cpf || '-'} | Tel: ${c.telefone || '-'}</span></div>
+                        <button class="btn-selecionar-cliente" data-id="${c.id}" data-nome="${c.nome.replace(/'/g, "\\'")}">Selecionar</button>
+                    </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+        document.querySelectorAll('.btn-selecionar-cliente').forEach(btn => {
+            btn.addEventListener('click', () => {
+                clienteSelecionado = { id: btn.getAttribute('data-id'), nome: btn.getAttribute('data-nome') };
+                mostrarTela('telaVenda');
+                document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${clienteSelecionado.nome} (ID: ${clienteSelecionado.id})`;
+                document.getElementById('btnFinalizarVenda').disabled = false;
+            });
+        });
+    }
+    
+    function atualizarListaClientesCadastro() {
+        const termo = document.getElementById('pesquisaClientesCadastro')?.value || '';
+        let filtrados = clientesOriginais;
+        if (termo) {
+            const lower = termo.toLowerCase();
+            filtrados = clientesOriginais.filter(c => 
+                (c.nome || '').toLowerCase().includes(lower) || (c.cpf || '').includes(lower)
+            );
+        }
+        const container = document.getElementById('listaClientesCadastro');
+        if (!filtrados.length) {
+            container.innerHTML = '<div class="placeholder-mensagem">Nenhum cliente encontrado</div>';
+            return;
+        }
+        let html = '<div class="lista-clientes">';
+        filtrados.forEach(c => {
+            html += `<div class="cliente-card" data-id="${c.id}">
+                        <div><strong>${c.nome}</strong><br><span class="cliente-info">CPF: ${c.cpf || '-'} | ID: ${c.id}</span></div>
+                    </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+        document.querySelectorAll('#listaClientesCadastro .cliente-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = parseInt(card.getAttribute('data-id'));
+                const cliente = clientesOriginais.find(c => c.id == id);
+                if (cliente) preencherFormCliente(cliente);
+            });
+        });
+    }
+    
+    function preencherFormCliente(cliente) {
+        editandoClienteId = cliente.id;
+        document.getElementById('editNomeCliente').value = cliente.nome || '';
+        document.getElementById('editCpfCliente').value = cliente.cpf || '';
+        document.getElementById('editTelefoneCliente').value = cliente.telefone || '';
+        document.getElementById('editUfCliente').value = cliente.uf || '';
+        document.getElementById('editCidadeCliente').value = cliente.cidade || '';
+        document.getElementById('editEnderecoCliente').value = cliente.endereco || '';
+        document.getElementById('editNumeroCliente').value = cliente.numero || '';
+        document.getElementById('editComplementoCliente').value = cliente.complemento || '';
+        document.getElementById('editCepCliente').value = cliente.cep || '';
+    }
+    
+    function limparFormCliente() {
+        editandoClienteId = null;
+        document.querySelectorAll('#telaClientes input[type="text"]').forEach(inp => inp.value = '');
+    }
+    
+    async function salvarCliente() {
+        const cliente = {
+            acao: 'cliente',
+            modo: editandoClienteId ? 'editar' : 'novo',
+            id: editandoClienteId,
+            nome: document.getElementById('editNomeCliente').value,
+            cpf: document.getElementById('editCpfCliente').value,
+            telefone: document.getElementById('editTelefoneCliente').value,
+            uf: document.getElementById('editUfCliente').value,
+            cidade: document.getElementById('editCidadeCliente').value,
+            endereco: document.getElementById('editEnderecoCliente').value,
+            numero: document.getElementById('editNumeroCliente').value,
+            complemento: document.getElementById('editComplementoCliente').value,
+            cep: document.getElementById('editCepCliente').value
+        };
+        if (!cliente.nome) { alert('Nome é obrigatório'); return; }
+        try {
+            const res = await fetch(API_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(cliente) });
+            const data = await res.json();
+            if (data.status === 'ok') {
+                alert('Cliente salvo!');
+                limparFormCliente();
+                await carregarClientes();
+                if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) {
+                    clienteSelecionado.nome = cliente.nome;
+                    document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${cliente.nome} (ID: ${clienteSelecionado.id})`;
+                }
+            } else alert('Erro ao salvar');
+        } catch(e) { alert('Erro de conexão'); }
+    }
+    
+    async function excluirCliente() {
+        if (!editandoClienteId) { alert('Selecione um cliente'); return; }
+        if (!confirm('Excluir permanentemente?')) return;
+        try {
+            const res = await fetch(API_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ acao:'cliente', modo:'excluir', id: editandoClienteId }) });
+            const data = await res.json();
+            if (data.status === 'ok') {
+                alert('Cliente excluído');
+                limparFormCliente();
+                await carregarClientes();
+                if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) {
+                    clienteSelecionado = null;
+                    document.getElementById('clienteSelecionadoDisplay').innerHTML = '<strong>Nenhum cliente selecionado</strong>';
+                    document.getElementById('btnFinalizarVenda').disabled = true;
+                }
+            } else alert('Erro ao excluir');
+        } catch(e) { alert('Erro de conexão'); }
+    }
+    
+    // Eventos das telas de clientes
+    document.getElementById('btnPesquisarCliente').addEventListener('click', () => {
+        mostrarTela('telaSelecionarCliente');
+        carregarClientes();
+    });
+    document.getElementById('btnCadastrarNovoCliente').addEventListener('click', () => mostrarTela('telaClientes'));
+    document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
+    document.getElementById('pesquisaClientesCadastro').addEventListener('input', () => atualizarListaClientesCadastro());
+    document.getElementById('btnCriarNovoCliente').addEventListener('click', limparFormCliente);
+    document.getElementById('btnSalvarCliente').addEventListener('click', salvarCliente);
+    document.getElementById('btnExcluirCliente').addEventListener('click', excluirCliente);
+    document.getElementById('btnCancelarCliente').addEventListener('click', limparFormCliente);
+    
+    // Inicialização
+    carregarEstoque();
+    carregarClientes();
+    mostrarTela('telaMenu');
+</script>
 </body>
 </html>
