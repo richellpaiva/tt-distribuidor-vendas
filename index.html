@@ -189,7 +189,7 @@
        ============================================ */
     
     // URL FINAL DO GOOGLE APPS SCRIPT (FORNECIDO PELO USUÁRIO)
-    const API_URL = 'https://script.google.com/macros/s/AKfycby8NBf7rL-qzotgXvLaSip2um-LRjlekNd7F0U0vcLuLzZzzVtGMw-aczrLEkhjEV8Qkw/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyXnG0kHWy3SQjvSvkfk25GoEh9I8HATz8vy8Dlgj3sGF8raUg5jZgoDnDx_vtTBSaBkg/exec';
     
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
 
@@ -219,7 +219,7 @@
         document.getElementById('qtTotal').innerText = qtdTotal;
         
         // Renderiza tabela com colunas: Código, Produto, Quantidade, Preço
-        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th></tr></thead><tbody>';
+        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th><tr></thead><tbody>';
         filtrados.forEach(p => {
             html += `<tr>
                         <td>${p.CODPROD || '-'}</td>
