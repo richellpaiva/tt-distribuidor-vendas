@@ -2,9 +2,8 @@
 // APROVADO - LÓGICA PRINCIPAL DO APP
 // ============================================
 
-// URLs do Google Apps Script
-const API_ESTOQUE_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
-const API_CLIENTES_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
+// NOVO URL do Google Apps Script (fornecido pelo usuário)
+const API_URL = 'https://script.google.com/macros/s/AKfycbyRWqOEPPfFPa1amNaTgCzlgpwPPtuTKopebpGLFVtQEBEadNI6iBRj7DsMqw005rqmMA/exec';
 
 // Cache das telas carregadas
 const telasCache = {};
@@ -13,6 +12,7 @@ const telasCache = {};
 let produtosOriginais = [];
 let clientesOriginais = [];
 let clienteSelecionado = null;
+let editandoClienteId = null;
 
 // ============================================
 // CARREGAMENTO DE TELAS
@@ -52,7 +52,7 @@ function executarScriptsDaTela(nomeTela) {
             carregarEstoque();
             break;
         case 'venda':
-            configurarBotoesVoltar();
+            configurarBotoesVoltarVenda();
             configurarBotaoPesquisarCliente();
             atualizarDisplayCliente();
             break;
@@ -63,13 +63,13 @@ function executarScriptsDaTela(nomeTela) {
             carregarClientes();
             break;
         case 'clientes':
-            configurarBotoesVoltarClientes();
+            configurarBotaoSairClientes();
             configurarPesquisaClientesCadastro();
             configurarBotoesFormCliente();
             carregarClientesCadastro();
             break;
         case 'config':
-            configurarBotoesVoltar();
+            configurarBotoesVoltarConfig();
             break;
     }
 }
@@ -106,8 +106,12 @@ function configurarBotoesMenu() {
     });
 }
 
+// ============================================
+// FUNÇÕES DA TELA DE ESTOQUE (MANTIDAS)
+// ============================================
+
 function configurarBotoesVoltar() {
-    const botoesVoltar = document.querySelectorAll('#telaVenda .btn-voltar, #telaConfig .btn-voltar');
+    const botoesVoltar = document.querySelectorAll('#telaEstoque .btn-voltar');
     botoesVoltar.forEach(btn => {
         if (!btn.hasAttribute('data-listener')) {
             btn.setAttribute('data-listener', 'true');
@@ -118,23 +122,6 @@ function configurarBotoesVoltar() {
         }
     });
 }
-
-function configurarBotoesVoltarClientes() {
-    const botoesSair = document.querySelectorAll('#telaClientes .btn-sair');
-    botoesSair.forEach(btn => {
-        if (!btn.hasAttribute('data-listener')) {
-            btn.setAttribute('data-listener', 'true');
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                mostrarTela('venda');
-            });
-        }
-    });
-}
-
-// ============================================
-// FUNÇÕES DA TELA DE ESTOQUE (MANTIDAS)
-// ============================================
 
 function configurarBotaoNovaVendaEstoque() {
     const btnNovaVenda = document.getElementById('btnNovaVendaEstoque');
@@ -148,7 +135,7 @@ function configurarBotaoNovaVendaEstoque() {
 
 async function carregarEstoque() {
     try {
-        const resposta = await fetch(API_ESTOQUE_URL);
+        const resposta = await fetch(`${API_URL}?tipo=estoque`);
         const dados = await resposta.json();
         produtosOriginais = dados;
         atualizarListaEstoque();
@@ -239,8 +226,21 @@ function configurarPesquisaEstoque() {
 }
 
 // ============================================
-// FUNÇÕES DA TELA DE VENDAS (NOVAS)
+// FUNÇÕES DA TELA DE VENDAS
 // ============================================
+
+function configurarBotoesVoltarVenda() {
+    const botoesVoltar = document.querySelectorAll('#telaVenda .btn-voltar');
+    botoesVoltar.forEach(btn => {
+        if (!btn.hasAttribute('data-listener')) {
+            btn.setAttribute('data-listener', 'true');
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                mostrarTela('menu');
+            });
+        }
+    });
+}
 
 function configurarBotaoPesquisarCliente() {
     const btnPesquisar = document.getElementById('btnPesquisarCliente');
@@ -253,7 +253,6 @@ function configurarBotaoPesquisarCliente() {
 }
 
 function abrirSelecaoCliente() {
-    // Reset do cliente selecionado ao abrir a seleção? Não, mantém o atual
     mostrarTela('selecionar_cliente');
 }
 
@@ -266,7 +265,6 @@ function atualizarDisplayCliente() {
                 <strong>Cliente:</strong> ${clienteSelecionado.nome}<br>
                 <span style="font-size: 0.75rem;">ID: ${clienteSelecionado.id}</span>
             `;
-            // Habilita o botão de finalizar venda se existir
             const btnFinalizar = document.getElementById('btnFinalizarVenda');
             if (btnFinalizar) {
                 btnFinalizar.disabled = false;
@@ -282,7 +280,7 @@ function atualizarDisplayCliente() {
 }
 
 // ============================================
-// FUNÇÕES DA TELA DE SELEÇÃO DE CLIENTES (NOVAS)
+// FUNÇÕES DA TELA DE SELEÇÃO DE CLIENTES
 // ============================================
 
 function configurarBotaoVoltarSelecao() {
@@ -300,6 +298,8 @@ function configurarBotaoCadastrarCliente() {
     if (btnCadastrar && !btnCadastrar.hasAttribute('data-listener')) {
         btnCadastrar.setAttribute('data-listener', 'true');
         btnCadastrar.addEventListener('click', function() {
+            // Limpar formulário antes de ir para cadastro
+            editandoClienteId = null;
             mostrarTela('clientes');
         });
     }
@@ -312,10 +312,9 @@ async function carregarClientes() {
     container.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-pulse"></i> Carregando clientes...</div>';
     
     try {
-        const resposta = await fetch(`${API_CLIENTES_URL}?tipo=clientes`);
+        const resposta = await fetch(`${API_URL}?tipo=clientes`);
         if (!resposta.ok) throw new Error('Erro ao carregar clientes');
         const dados = await resposta.json();
-        // Garantir que os dados são um array
         clientesOriginais = Array.isArray(dados) ? dados : [];
         exibirListaClientes('');
     } catch (erro) {
@@ -337,9 +336,9 @@ function exibirListaClientes(termo) {
     if (termo && termo.trim() !== '') {
         const termoLower = termo.toLowerCase().trim();
         dadosFiltrados = clientesOriginais.filter(cliente => 
-            (cliente.NOMES_CLIENTES && cliente.NOMES_CLIENTES.toLowerCase().includes(termoLower)) ||
-            (cliente.CPF && cliente.CPF.toLowerCase().includes(termoLower)) ||
-            (cliente.NUM_TELEFONE && cliente.NUM_TELEFONE.includes(termoLower))
+            (cliente.nome && cliente.nome.toLowerCase().includes(termoLower)) ||
+            (cliente.cpf && cliente.cpf.toLowerCase().includes(termoLower)) ||
+            (cliente.telefone && cliente.telefone.includes(termoLower))
         );
     }
     
@@ -350,15 +349,14 @@ function exibirListaClientes(termo) {
     
     let html = '<div class="lista-clientes">';
     dadosFiltrados.forEach(cliente => {
-        // Escapar aspas simples no nome para evitar erro no onclick
-        const nomeEscapado = (cliente.NOMES_CLIENTES || 'Nome não informado').replace(/'/g, "\\'");
+        const nomeEscapado = (cliente.nome || 'Nome não informado').replace(/'/g, "\\'");
         html += `
             <div class="cliente-card">
                 <div>
-                    <strong>${cliente.NOMES_CLIENTES || 'Nome não informado'}</strong><br>
-                    <span class="cliente-info">CPF: ${cliente.CPF || 'Não informado'} | Tel: ${cliente.NUM_TELEFONE || 'Não informado'}</span>
+                    <strong>${cliente.nome || 'Nome não informado'}</strong><br>
+                    <span class="cliente-info">CPF: ${cliente.cpf || 'Não informado'} | Tel: ${cliente.telefone || 'Não informado'}</span>
                 </div>
-                <button class="btn-selecionar-cliente" onclick="selecionarCliente('${cliente.ID_CLIENTE}', '${nomeEscapado}')">
+                <button class="btn-selecionar-cliente" onclick="selecionarCliente('${cliente.id}', '${nomeEscapado}')">
                     <i class="fas fa-check-circle"></i> Selecionar
                 </button>
             </div>
@@ -368,11 +366,9 @@ function exibirListaClientes(termo) {
     container.innerHTML = html;
 }
 
-// Função global chamada pelo onclick do botão Selecionar
 window.selecionarCliente = function(id, nome) {
     clienteSelecionado = { id: id, nome: nome };
     mostrarTela('venda');
-    // Aguardar a tela carregar para atualizar o display
     setTimeout(() => {
         atualizarDisplayCliente();
     }, 100);
@@ -389,8 +385,18 @@ function configurarPesquisaClientes() {
 }
 
 // ============================================
-// FUNÇÕES DA TELA DE CADASTRO DE CLIENTES (MANTIDAS)
+// FUNÇÕES DA TELA DE CADASTRO DE CLIENTES
 // ============================================
+
+function configurarBotaoSairClientes() {
+    const btnSair = document.querySelector('#telaClientes .btn-sair');
+    if (btnSair && !btnSair.hasAttribute('data-listener')) {
+        btnSair.setAttribute('data-listener', 'true');
+        btnSair.addEventListener('click', function() {
+            mostrarTela('venda');
+        });
+    }
+}
 
 async function carregarClientesCadastro() {
     const container = document.getElementById('listaClientesCadastro');
@@ -399,7 +405,7 @@ async function carregarClientesCadastro() {
     container.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-pulse"></i> Carregando clientes...</div>';
     
     try {
-        const resposta = await fetch(`${API_CLIENTES_URL}?tipo=clientes`);
+        const resposta = await fetch(`${API_URL}?tipo=clientes`);
         const dados = await resposta.json();
         clientesOriginais = Array.isArray(dados) ? dados : [];
         atualizarListaClientesCadastro();
@@ -426,8 +432,8 @@ function filtrarClientesCadastro(termo) {
     }
     const termoLower = termo.toLowerCase().trim();
     return clientesOriginais.filter(cliente => {
-        const nome = (cliente.NOMES_CLIENTES || '').toString().toLowerCase();
-        const cpf = (cliente.CPF || '').toString().toLowerCase();
+        const nome = (cliente.nome || '').toString().toLowerCase();
+        const cpf = (cliente.cpf || '').toString().toLowerCase();
         return nome.includes(termoLower) || cpf.includes(termoLower);
     });
 }
@@ -437,46 +443,50 @@ function renderizarListaClientesCadastro(clientes) {
         return `<div class="placeholder-mensagem"><i class="fas fa-users"></i>Nenhum cliente encontrado</div>`;
     }
     
-    let html = '';
+    let html = '<div class="lista-clientes-cadastro">';
     clientes.forEach(cliente => {
         html += `
-            <div class="cliente-item" data-cliente='${JSON.stringify(cliente)}'>
-                <div class="cliente-nome">${cliente.NOMES_CLIENTES || 'Nome não informado'}</div>
-                <div class="cliente-cpf">CPF: ${cliente.CPF || 'Não informado'} | ID: ${cliente.ID_CLIENTE || '-'}</div>
+            <div class="cliente-item-cadastro" data-id="${cliente.id}">
+                <div class="cliente-nome">${cliente.nome || 'Nome não informado'}</div>
+                <div class="cliente-info">CPF: ${cliente.cpf || 'Não informado'} | Tel: ${cliente.telefone || 'Não informado'}</div>
             </div>
         `;
     });
+    html += '</div>';
     return html;
 }
 
 function configurarCliqueClientesCadastro() {
-    const itens = document.querySelectorAll('.cliente-item');
+    const itens = document.querySelectorAll('.cliente-item-cadastro');
     itens.forEach(item => {
         if (!item.hasAttribute('data-listener')) {
             item.setAttribute('data-listener', 'true');
             item.addEventListener('click', function() {
-                const clienteData = JSON.parse(this.getAttribute('data-cliente'));
-                preencherFormCliente(clienteData);
+                const id = parseInt(this.getAttribute('data-id'));
+                const cliente = clientesOriginais.find(c => c.id == id);
+                if (cliente) {
+                    preencherFormCliente(cliente);
+                }
             });
         }
     });
 }
 
 function preencherFormCliente(cliente) {
-    document.getElementById('editIdCliente').value = cliente.ID_CLIENTE || '';
-    document.getElementById('editNomeCliente').value = cliente.NOMES_CLIENTES || '';
-    document.getElementById('editCpfCliente').value = cliente.CPF || '';
-    document.getElementById('editTelefoneCliente').value = cliente.NUM_TELEFONE || '';
-    document.getElementById('editUfCliente').value = cliente.UF || '';
-    document.getElementById('editCidadeCliente').value = cliente.CIDADES || '';
-    document.getElementById('editEnderecoCliente').value = cliente.ENDEREÇO || '';
-    document.getElementById('editNumeroCliente').value = cliente.NÚMERO || '';
-    document.getElementById('editComplementoCliente').value = cliente.COMPLEMENTO || '';
-    document.getElementById('editCepCliente').value = cliente.CEP || '';
+    editandoClienteId = cliente.id;
+    document.getElementById('editNomeCliente').value = cliente.nome || '';
+    document.getElementById('editCpfCliente').value = cliente.cpf || '';
+    document.getElementById('editTelefoneCliente').value = cliente.telefone || '';
+    document.getElementById('editUfCliente').value = cliente.uf || '';
+    document.getElementById('editCidadeCliente').value = cliente.cidade || '';
+    document.getElementById('editEnderecoCliente').value = cliente.endereco || '';
+    document.getElementById('editNumeroCliente').value = cliente.numero || '';
+    document.getElementById('editComplementoCliente').value = cliente.complemento || '';
+    document.getElementById('editCepCliente').value = cliente.cep || '';
 }
 
 function limparFormCliente() {
-    document.getElementById('editIdCliente').value = '';
+    editandoClienteId = null;
     document.getElementById('editNomeCliente').value = '';
     document.getElementById('editCpfCliente').value = '';
     document.getElementById('editTelefoneCliente').value = '';
@@ -490,33 +500,43 @@ function limparFormCliente() {
 
 async function salvarCliente() {
     const cliente = {
-        ID_CLIENTE: document.getElementById('editIdCliente').value || Date.now().toString(),
-        NOMES_CLIENTES: document.getElementById('editNomeCliente').value,
-        CPF: document.getElementById('editCpfCliente').value,
-        NUM_TELEFONE: document.getElementById('editTelefoneCliente').value,
-        UF: document.getElementById('editUfCliente').value,
-        CIDADES: document.getElementById('editCidadeCliente').value,
-        ENDEREÇO: document.getElementById('editEnderecoCliente').value,
-        NÚMERO: document.getElementById('editNumeroCliente').value,
-        COMPLEMENTO: document.getElementById('editComplementoCliente').value,
-        CEP: document.getElementById('editCepCliente').value
+        acao: 'cliente',
+        modo: editandoClienteId ? 'editar' : 'novo',
+        id: editandoClienteId,
+        nome: document.getElementById('editNomeCliente').value,
+        cpf: document.getElementById('editCpfCliente').value,
+        telefone: document.getElementById('editTelefoneCliente').value,
+        uf: document.getElementById('editUfCliente').value,
+        cidade: document.getElementById('editCidadeCliente').value,
+        endereco: document.getElementById('editEnderecoCliente').value,
+        numero: document.getElementById('editNumeroCliente').value,
+        complemento: document.getElementById('editComplementoCliente').value,
+        cep: document.getElementById('editCepCliente').value
     };
     
+    if (!cliente.nome) {
+        alert('Por favor, informe o nome do cliente');
+        return;
+    }
+    
     try {
-        const resposta = await fetch(`${API_CLIENTES_URL}?tipo=salvar`, {
+        const resposta = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(cliente)
         });
         const resultado = await resposta.json();
-        if (resultado.sucesso) {
+        if (resultado.status === 'ok') {
             alert('Cliente salvo com sucesso!');
             limparFormCliente();
-            carregarClientesCadastro();
-            // Recarregar também os clientes na seleção
-            carregarClientes();
+            await carregarClientesCadastro();
+            await carregarClientes();
+            if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) {
+                clienteSelecionado = { id: resultado.id, nome: cliente.nome };
+                atualizarDisplayCliente();
+            }
         } else {
-            alert('Erro ao salvar cliente');
+            alert('Erro ao salvar cliente: ' + (resultado.erro || 'Erro desconhecido'));
         }
     } catch (erro) {
         console.error('Erro ao salvar cliente:', erro);
@@ -525,26 +545,30 @@ async function salvarCliente() {
 }
 
 async function excluirCliente() {
-    const id = document.getElementById('editIdCliente').value;
-    if (!id) {
+    if (!editandoClienteId) {
         alert('Selecione um cliente para excluir');
         return;
     }
     
-    if (!confirm('Tem certeza que deseja excluir este cliente?')) return;
+    if (!confirm('Tem certeza que deseja excluir este cliente permanentemente?')) return;
     
     try {
-        const resposta = await fetch(`${API_CLIENTES_URL}?tipo=excluir&id=${id}`, {
-            method: 'DELETE'
+        const resposta = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                acao: 'cliente',
+                modo: 'excluir',
+                id: editandoClienteId
+            })
         });
         const resultado = await resposta.json();
-        if (resultado.sucesso) {
+        if (resultado.status === 'ok') {
             alert('Cliente excluído com sucesso!');
             limparFormCliente();
-            carregarClientesCadastro();
-            carregarClientes();
-            // Se o cliente excluído era o selecionado, limpar seleção
-            if (clienteSelecionado && clienteSelecionado.id == id) {
+            await carregarClientesCadastro();
+            await carregarClientes();
+            if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) {
                 clienteSelecionado = null;
                 atualizarDisplayCliente();
             }
@@ -571,6 +595,7 @@ function configurarBotoesFormCliente() {
     const btnSalvar = document.getElementById('btnSalvarCliente');
     const btnExcluir = document.getElementById('btnExcluirCliente');
     const btnCancelar = document.getElementById('btnCancelarCliente');
+    const btnCriarNovo = document.getElementById('btnCriarNovoCliente');
     
     if (btnSalvar && !btnSalvar.hasAttribute('data-listener')) {
         btnSalvar.setAttribute('data-listener', 'true');
@@ -586,6 +611,28 @@ function configurarBotoesFormCliente() {
         btnCancelar.setAttribute('data-listener', 'true');
         btnCancelar.addEventListener('click', limparFormCliente);
     }
+    
+    if (btnCriarNovo && !btnCriarNovo.hasAttribute('data-listener')) {
+        btnCriarNovo.setAttribute('data-listener', 'true');
+        btnCriarNovo.addEventListener('click', limparFormCliente);
+    }
+}
+
+// ============================================
+// FUNÇÕES DA TELA DE CONFIGURAÇÃO
+// ============================================
+
+function configurarBotoesVoltarConfig() {
+    const botoesVoltar = document.querySelectorAll('#telaConfig .btn-voltar');
+    botoesVoltar.forEach(btn => {
+        if (!btn.hasAttribute('data-listener')) {
+            btn.setAttribute('data-listener', 'true');
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                mostrarTela('menu');
+            });
+        }
+    });
 }
 
 // ============================================
