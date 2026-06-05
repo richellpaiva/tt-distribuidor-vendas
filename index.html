@@ -169,9 +169,28 @@
 </div>
 
 <script>
-    // ========== APROVADO - NÃO MEXER ==========
-    // URL FINAL DO GOOGLE APPS SCRIPT
+    /* ============================================
+       MÓDULO DE ESTOQUE - BACKEND
+       ============================================
+       Este módulo depende do Google Apps Script que lê a aba 'PL_ESTOQUE'.
+    
+       O fluxo de dados é:
+       1. Frontend faz `fetch` para o endpoint do Apps Script.
+       2. Apps Script lê a planilha, mapeia pelas colunas e retorna JSON.
+       3. Frontend renderiza a tabela com base nos dados recebidos.
+    
+       As propriedades recebidas são: `CODPROD`, `DESCRICAO`, `QT`, `VLCMVCUSTO`, `FORNECEDOR`.
+    
+       PARA MANTER O FUNCIONAMENTO:
+       - Não altere os nomes das propriedades no frontend ou no backend sem sincronizar ambos.
+       - Se o URL da API mudar, atualize a variável `API_URL`.
+       - Mantenha a função de pesquisa por `CODPROD` e `DESCRICAO` como está.
+    
+       ============================================ */
+    
+    // URL FINAL DO GOOGLE APPS SCRIPT (CORS CORRIGIDO)
     const API_URL = 'https://script.google.com/macros/s/AKfycbzEkdEzBocQl9CTDvDMP3kEVvhFUZ9xBKd90UqutbakkCXOHjFYr0MPjPPH7QCpamHiig/exec';
+    
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
 
     function mostrarTela(id) { document.querySelectorAll('.tela').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'flex'; }
@@ -179,7 +198,7 @@
     document.querySelectorAll('.menu-botao').forEach(btn => btn.addEventListener('click', () => mostrarTela(btn.getAttribute('data-tela'))));
     document.getElementById('dataAtual').innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${new Date().toLocaleDateString('pt-BR', { year:'numeric', month:'long', day:'numeric' })}`;
 
-    // ESTOQUE
+    // ========== ESTOQUE ==========
     async function carregarEstoque() {
         const container = document.getElementById('estoqueContainer');
         container.innerHTML = '<div class="loading-message">Carregando...</div>';
@@ -189,13 +208,17 @@
             atualizarEstoque();
         } catch(e) { container.innerHTML = '<div class="error-message">Erro ao carregar estoque</div>'; }
     }
+    
     function atualizarEstoque() {
         const termo = document.getElementById('pesquisaEstoque').value.toLowerCase();
+        // Filtra por CODPROD ou DESCRICAO
         const filtrados = produtosOriginais.filter(p => (p.CODPROD || '').toString().toLowerCase().includes(termo) || (p.DESCRICAO || '').toString().toLowerCase().includes(termo));
         let valorTotal = 0, qtdTotal = 0;
         filtrados.forEach(p => { let preco = parseFloat(p.VLCMVCUSTO) || 0; let qtd = parseInt(p.QT) || 0; valorTotal += preco * qtd; qtdTotal += qtd; });
         document.getElementById('valorTotal').innerText = `R$ ${valorTotal.toFixed(2)}`;
         document.getElementById('qtTotal').innerText = qtdTotal;
+        
+        // Renderiza tabela com colunas: Código, Produto, Quantidade, Preço
         let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th></tr></thead><tbody>';
         filtrados.forEach(p => {
             html += `<tr>
@@ -208,10 +231,11 @@
         html += '</tbody></table>';
         document.getElementById('estoqueContainer').innerHTML = html;
     }
+    
     document.getElementById('pesquisaEstoque').addEventListener('input', atualizarEstoque);
     document.getElementById('btnNovaVendaEstoque').addEventListener('click', () => mostrarTela('telaVenda'));
 
-    // CLIENTES - seleção
+    // ========== CLIENTES - seleção e cadastro ==========
     async function carregarClientes() {
         try {
             const res = await fetch(`${API_URL}?tipo=clientes`);
@@ -220,6 +244,7 @@
             if (document.getElementById('listaClientesCadastro')) atualizarListaClientesCadastro();
         } catch(e) { console.error(e); }
     }
+    
     function exibirListaClientes(termo) {
         const container = document.getElementById('listaClientesContainer');
         let filtrados = clientesOriginais;
@@ -233,11 +258,12 @@
             btn.addEventListener('click', () => { clienteSelecionado = { id: btn.dataset.id, nome: btn.dataset.nome }; mostrarTela('telaVenda'); document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${clienteSelecionado.nome} (ID: ${clienteSelecionado.id})`; document.getElementById('btnFinalizarVenda').disabled = false; });
         });
     }
+    
     document.getElementById('btnPesquisarCliente').addEventListener('click', () => { mostrarTela('telaSelecionarCliente'); carregarClientes(); });
     document.getElementById('btnCadastrarNovoCliente').addEventListener('click', () => mostrarTela('telaClientes'));
     document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
 
-    // CLIENTES - cadastro
+    // Funções de cadastro de clientes (CRUD)
     function atualizarListaClientesCadastro() {
         const termo = document.getElementById('pesquisaClientesCadastro')?.value || '';
         let filtrados = clientesOriginais;
@@ -252,6 +278,7 @@
             card.addEventListener('click', () => { const id = parseInt(card.dataset.id); const cliente = clientesOriginais.find(c => c.id == id); if (cliente) preencherFormCliente(cliente); });
         });
     }
+    
     function preencherFormCliente(cliente) {
         editandoClienteId = cliente.id;
         document.getElementById('editNomeCliente').value = cliente.nome || '';
@@ -264,7 +291,9 @@
         document.getElementById('editComplementoCliente').value = cliente.complemento || '';
         document.getElementById('editCepCliente').value = cliente.cep || '';
     }
+    
     function limparFormCliente() { editandoClienteId = null; document.querySelectorAll('#telaClientes input[type="text"]').forEach(inp => inp.value = ''); }
+    
     async function salvarCliente() {
         const cliente = { acao: 'cliente', modo: editandoClienteId ? 'editar' : 'novo', id: editandoClienteId, nome: document.getElementById('editNomeCliente').value, cpf: document.getElementById('editCpfCliente').value, telefone: document.getElementById('editTelefoneCliente').value, uf: document.getElementById('editUfCliente').value, cidade: document.getElementById('editCidadeCliente').value, endereco: document.getElementById('editEnderecoCliente').value, numero: document.getElementById('editNumeroCliente').value, complemento: document.getElementById('editComplementoCliente').value, cep: document.getElementById('editCepCliente').value };
         if (!cliente.nome) { alert('Nome é obrigatório'); return; }
@@ -275,6 +304,7 @@
             else alert('Erro ao salvar');
         } catch(e) { alert('Erro de conexão'); }
     }
+    
     async function excluirCliente() {
         if (!editandoClienteId) { alert('Selecione um cliente'); return; }
         if (!confirm('Excluir permanentemente?')) return;
@@ -285,6 +315,7 @@
             else alert('Erro ao excluir');
         } catch(e) { alert('Erro de conexão'); }
     }
+    
     document.getElementById('pesquisaClientesCadastro').addEventListener('input', () => atualizarListaClientesCadastro());
     document.getElementById('btnCriarNovoCliente').addEventListener('click', limparFormCliente);
     document.getElementById('btnSalvarCliente').addEventListener('click', salvarCliente);
