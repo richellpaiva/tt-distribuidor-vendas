@@ -189,7 +189,7 @@
        ============================================ */
     
     // URL FINAL DO GOOGLE APPS SCRIPT (FORNECIDO PELO USUÁRIO)
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyXnG0kHWy3SQjvSvkfk25GoEh9I8HATz8vy8Dlgj3sGF8raUg5jZgoDnDx_vtTBSaBkg/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwCC3cN-zvxGjGw5QmlFsC7KMmFjgJFiBq6y6RikxExv_N7SqSDoewvzVIdn1NzF0Lfsw/exec';
     
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
 
@@ -219,7 +219,7 @@
         document.getElementById('qtTotal').innerText = qtdTotal;
         
         // Renderiza tabela com colunas: Código, Produto, Quantidade, Preço
-        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th><tr></thead><tbody>';
+        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th></tr></thead><tbody>';
         filtrados.forEach(p => {
             html += `<tr>
                         <td>${p.CODPROD || '-'}</td>
@@ -263,7 +263,7 @@
     document.getElementById('btnCadastrarNovoCliente').addEventListener('click', () => mostrarTela('telaClientes'));
     document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
 
-    // Funções de cadastro de clientes (CRUD)
+    // Funções de cadastro de clientes (CRUD) - CORRIGIDAS PARA USAR FormData
     function atualizarListaClientesCadastro() {
         const termo = document.getElementById('pesquisaClientesCadastro')?.value || '';
         let filtrados = clientesOriginais;
@@ -298,7 +298,9 @@
         const cliente = { acao: 'cliente', modo: editandoClienteId ? 'editar' : 'novo', id: editandoClienteId, nome: document.getElementById('editNomeCliente').value, cpf: document.getElementById('editCpfCliente').value, telefone: document.getElementById('editTelefoneCliente').value, uf: document.getElementById('editUfCliente').value, cidade: document.getElementById('editCidadeCliente').value, endereco: document.getElementById('editEnderecoCliente').value, numero: document.getElementById('editNumeroCliente').value, complemento: document.getElementById('editComplementoCliente').value, cep: document.getElementById('editCepCliente').value };
         if (!cliente.nome) { alert('Nome é obrigatório'); return; }
         try {
-            const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cliente) });
+            const formData = new FormData();
+            formData.append('dados', JSON.stringify(cliente));
+            const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.status === 'ok') { alert('Cliente salvo!'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado.nome = cliente.nome; document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${cliente.nome} (ID: ${clienteSelecionado.id})`; } }
             else alert('Erro ao salvar');
@@ -309,7 +311,9 @@
         if (!editandoClienteId) { alert('Selecione um cliente'); return; }
         if (!confirm('Excluir permanentemente?')) return;
         try {
-            const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'cliente', modo: 'excluir', id: editandoClienteId }) });
+            const formData = new FormData();
+            formData.append('dados', JSON.stringify({ acao: 'cliente', modo: 'excluir', id: editandoClienteId }));
+            const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.status === 'ok') { alert('Cliente excluído'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado = null; document.getElementById('clienteSelecionadoDisplay').innerHTML = '<strong>Nenhum cliente selecionado</strong>'; document.getElementById('btnFinalizarVenda').disabled = true; } }
             else alert('Erro ao excluir');
