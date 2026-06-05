@@ -4,7 +4,7 @@
 
 // URLs do Google Apps Script
 const API_ESTOQUE_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
-const API_CLIENTES_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec'; // Mesmo URL com parâmetros diferentes
+const API_CLIENTES_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
 
 // Cache das telas carregadas
 const telasCache = {};
@@ -53,7 +53,12 @@ function executarScriptsDaTela(nomeTela) {
             break;
         case 'venda':
             configurarBotoesVoltar();
-            configurarBotaoInserirCliente();
+            configurarBotaoPesquisarCliente();
+            atualizarDisplayCliente();
+            break;
+        case 'selecionar_cliente':
+            configurarBotaoVoltarSelecao();
+            configurarBotaoCadastrarCliente();
             configurarPesquisaClientes();
             carregarClientes();
             break;
@@ -69,13 +74,13 @@ function executarScriptsDaTela(nomeTela) {
     }
 }
 
-// ============================================
-// FUNÇÕES GLOBAIS
-// ============================================
-
 function mostrarTela(telaId) {
     carregarTela(telaId);
 }
+
+// ============================================
+// FUNÇÕES GLOBAIS
+// ============================================
 
 function exibirDataAtual() {
     const dataElement = document.getElementById('dataAtual');
@@ -102,7 +107,7 @@ function configurarBotoesMenu() {
 }
 
 function configurarBotoesVoltar() {
-    const botoesVoltar = document.querySelectorAll('.btn-voltar');
+    const botoesVoltar = document.querySelectorAll('#telaVenda .btn-voltar, #telaConfig .btn-voltar');
     botoesVoltar.forEach(btn => {
         if (!btn.hasAttribute('data-listener')) {
             btn.setAttribute('data-listener', 'true');
@@ -115,7 +120,7 @@ function configurarBotoesVoltar() {
 }
 
 function configurarBotoesVoltarClientes() {
-    const botoesSair = document.querySelectorAll('.btn-sair');
+    const botoesSair = document.querySelectorAll('#telaClientes .btn-sair');
     botoesSair.forEach(btn => {
         if (!btn.hasAttribute('data-listener')) {
             btn.setAttribute('data-listener', 'true');
@@ -128,7 +133,7 @@ function configurarBotoesVoltarClientes() {
 }
 
 // ============================================
-// FUNÇÕES DA TELA DE ESTOQUE
+// FUNÇÕES DA TELA DE ESTOQUE (MANTIDAS)
 // ============================================
 
 function configurarBotaoNovaVendaEstoque() {
@@ -214,7 +219,7 @@ function renderizarTabelaEstoque(produtos) {
         html += `<td>${produto.id || produto.CODPROD || '-'}</td>`;
         html += `<td><strong>${produto.nome || produto.DESCRICAO || '-'}</strong></td>`;
         html += `<td>${produto.fornecedor || '-'}</td>`;
-        html += `<td>R$ ${(typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0).toFixed(2)}</td>`;
+        html += `<td>R$ ${(typeof produto.preco === 'number' ? produto.preco : parseFloat(produto.preco) || 0).toFixed(2)}`;
         html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
         html += '</tr>';
     });
@@ -234,46 +239,188 @@ function configurarPesquisaEstoque() {
 }
 
 // ============================================
-// FUNÇÕES DA TELA DE VENDAS (CLIENTES)
+// FUNÇÕES DA TELA DE VENDAS (NOVAS)
 // ============================================
 
-function configurarBotaoInserirCliente() {
-    const btnInserir = document.getElementById('btnInserirCliente');
-    if (btnInserir && !btnInserir.hasAttribute('data-listener')) {
-        btnInserir.setAttribute('data-listener', 'true');
-        btnInserir.addEventListener('click', function() {
+function configurarBotaoPesquisarCliente() {
+    const btnPesquisar = document.getElementById('btnPesquisarCliente');
+    if (btnPesquisar && !btnPesquisar.hasAttribute('data-listener')) {
+        btnPesquisar.setAttribute('data-listener', 'true');
+        btnPesquisar.addEventListener('click', function() {
+            abrirSelecaoCliente();
+        });
+    }
+}
+
+function abrirSelecaoCliente() {
+    // Reset do cliente selecionado ao abrir a seleção? Não, mantém o atual
+    mostrarTela('selecionar_cliente');
+}
+
+function atualizarDisplayCliente() {
+    const clienteDisplay = document.getElementById('clienteSelecionadoDisplay');
+    if (clienteDisplay) {
+        if (clienteSelecionado && clienteSelecionado.nome) {
+            clienteDisplay.innerHTML = `
+                <i class="fas fa-user-check" style="margin-right: 8px;"></i>
+                <strong>Cliente:</strong> ${clienteSelecionado.nome}<br>
+                <span style="font-size: 0.75rem;">ID: ${clienteSelecionado.id}</span>
+            `;
+            // Habilita o botão de finalizar venda se existir
+            const btnFinalizar = document.getElementById('btnFinalizarVenda');
+            if (btnFinalizar) {
+                btnFinalizar.disabled = false;
+            }
+        } else {
+            clienteDisplay.innerHTML = '<strong><i class="fas fa-user"></i> Nenhum cliente selecionado</strong>';
+            const btnFinalizar = document.getElementById('btnFinalizarVenda');
+            if (btnFinalizar) {
+                btnFinalizar.disabled = true;
+            }
+        }
+    }
+}
+
+// ============================================
+// FUNÇÕES DA TELA DE SELEÇÃO DE CLIENTES (NOVAS)
+// ============================================
+
+function configurarBotaoVoltarSelecao() {
+    const btnVoltar = document.querySelector('#telaSelecionarCliente .btn-voltar');
+    if (btnVoltar && !btnVoltar.hasAttribute('data-listener')) {
+        btnVoltar.setAttribute('data-listener', 'true');
+        btnVoltar.addEventListener('click', function() {
+            mostrarTela('venda');
+        });
+    }
+}
+
+function configurarBotaoCadastrarCliente() {
+    const btnCadastrar = document.getElementById('btnCadastrarNovoCliente');
+    if (btnCadastrar && !btnCadastrar.hasAttribute('data-listener')) {
+        btnCadastrar.setAttribute('data-listener', 'true');
+        btnCadastrar.addEventListener('click', function() {
             mostrarTela('clientes');
         });
     }
 }
 
 async function carregarClientes() {
+    const container = document.getElementById('listaClientesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-pulse"></i> Carregando clientes...</div>';
+    
+    try {
+        const resposta = await fetch(`${API_CLIENTES_URL}?tipo=clientes`);
+        if (!resposta.ok) throw new Error('Erro ao carregar clientes');
+        const dados = await resposta.json();
+        // Garantir que os dados são um array
+        clientesOriginais = Array.isArray(dados) ? dados : [];
+        exibirListaClientes('');
+    } catch (erro) {
+        console.error('Erro ao carregar clientes:', erro);
+        container.innerHTML = `<div class="error-message">Erro ao carregar clientes: ${erro.message}</div>`;
+    }
+}
+
+function exibirListaClientes(termo) {
+    const container = document.getElementById('listaClientesContainer');
+    if (!container) return;
+    
+    if (!clientesOriginais || clientesOriginais.length === 0) {
+        container.innerHTML = '<div class="placeholder-mensagem"><i class="fas fa-users"></i>Nenhum cliente cadastrado<br><span style="font-size: 0.85rem;">Clique em "Cadastrar Novo Cliente"</span></div>';
+        return;
+    }
+    
+    let dadosFiltrados = clientesOriginais;
+    if (termo && termo.trim() !== '') {
+        const termoLower = termo.toLowerCase().trim();
+        dadosFiltrados = clientesOriginais.filter(cliente => 
+            (cliente.NOMES_CLIENTES && cliente.NOMES_CLIENTES.toLowerCase().includes(termoLower)) ||
+            (cliente.CPF && cliente.CPF.toLowerCase().includes(termoLower)) ||
+            (cliente.NUM_TELEFONE && cliente.NUM_TELEFONE.includes(termoLower))
+        );
+    }
+    
+    if (dadosFiltrados.length === 0) {
+        container.innerHTML = '<div class="placeholder-mensagem"><i class="fas fa-search"></i>Nenhum cliente encontrado com esse termo</div>';
+        return;
+    }
+    
+    let html = '<div class="lista-clientes">';
+    dadosFiltrados.forEach(cliente => {
+        // Escapar aspas simples no nome para evitar erro no onclick
+        const nomeEscapado = (cliente.NOMES_CLIENTES || 'Nome não informado').replace(/'/g, "\\'");
+        html += `
+            <div class="cliente-card">
+                <div>
+                    <strong>${cliente.NOMES_CLIENTES || 'Nome não informado'}</strong><br>
+                    <span class="cliente-info">CPF: ${cliente.CPF || 'Não informado'} | Tel: ${cliente.NUM_TELEFONE || 'Não informado'}</span>
+                </div>
+                <button class="btn-selecionar-cliente" onclick="selecionarCliente('${cliente.ID_CLIENTE}', '${nomeEscapado}')">
+                    <i class="fas fa-check-circle"></i> Selecionar
+                </button>
+            </div>
+        `;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Função global chamada pelo onclick do botão Selecionar
+window.selecionarCliente = function(id, nome) {
+    clienteSelecionado = { id: id, nome: nome };
+    mostrarTela('venda');
+    // Aguardar a tela carregar para atualizar o display
+    setTimeout(() => {
+        atualizarDisplayCliente();
+    }, 100);
+};
+
+function configurarPesquisaClientes() {
+    const searchInput = document.getElementById('pesquisaCliente');
+    if (searchInput && !searchInput.hasAttribute('data-listener')) {
+        searchInput.setAttribute('data-listener', 'true');
+        searchInput.addEventListener('input', function() {
+            exibirListaClientes(this.value);
+        });
+    }
+}
+
+// ============================================
+// FUNÇÕES DA TELA DE CADASTRO DE CLIENTES (MANTIDAS)
+// ============================================
+
+async function carregarClientesCadastro() {
+    const container = document.getElementById('listaClientesCadastro');
+    if (!container) return;
+    
+    container.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-pulse"></i> Carregando clientes...</div>';
+    
     try {
         const resposta = await fetch(`${API_CLIENTES_URL}?tipo=clientes`);
         const dados = await resposta.json();
-        clientesOriginais = dados;
-        atualizarListaClientes();
+        clientesOriginais = Array.isArray(dados) ? dados : [];
+        atualizarListaClientesCadastro();
     } catch (erro) {
         console.error('Erro ao carregar clientes:', erro);
-        const container = document.getElementById('listaClientes');
-        if (container) {
-            container.innerHTML = `<div class="error-message">Erro ao carregar clientes</div>`;
-        }
+        container.innerHTML = `<div class="error-message">Erro ao carregar clientes</div>`;
     }
 }
 
-function atualizarListaClientes() {
-    const searchInput = document.getElementById('pesquisaClientes');
+function atualizarListaClientesCadastro() {
+    const searchInput = document.getElementById('pesquisaClientesCadastro');
     const termo = searchInput ? searchInput.value : '';
-    const clientesFiltrados = filtrarClientes(termo);
-    const container = document.getElementById('listaClientes');
+    const clientesFiltrados = filtrarClientesCadastro(termo);
+    const container = document.getElementById('listaClientesCadastro');
     if (container) {
-        container.innerHTML = renderizarListaClientes(clientesFiltrados);
-        configurarCliqueClientes();
+        container.innerHTML = renderizarListaClientesCadastro(clientesFiltrados);
+        configurarCliqueClientesCadastro();
     }
 }
 
-function filtrarClientes(termo) {
+function filtrarClientesCadastro(termo) {
     if (!termo || termo.trim() === '') {
         return clientesOriginais;
     }
@@ -285,81 +432,6 @@ function filtrarClientes(termo) {
     });
 }
 
-function renderizarListaClientes(clientes) {
-    if (!clientes || clientes.length === 0) {
-        return `<div class="placeholder-mensagem"><i class="fas fa-users"></i>Nenhum cliente encontrado</div>`;
-    }
-    
-    let html = '';
-    clientes.forEach(cliente => {
-        html += `
-            <div class="cliente-item" data-id="${cliente.ID_CLIENTE}" data-nome="${cliente.NOMES_CLIENTES}" data-cpf="${cliente.CPF}">
-                <div class="cliente-nome">${cliente.NOMES_CLIENTES}</div>
-                <div class="cliente-cpf">CPF: ${cliente.CPF || 'Não informado'}</div>
-            </div>
-        `;
-    });
-    return html;
-}
-
-function configurarCliqueClientes() {
-    const itens = document.querySelectorAll('.cliente-item');
-    itens.forEach(item => {
-        if (!item.hasAttribute('data-listener')) {
-            item.setAttribute('data-listener', 'true');
-            item.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const nome = this.getAttribute('data-nome');
-                clienteSelecionado = { id, nome };
-                const divCliente = document.getElementById('clienteSelecionado');
-                if (divCliente) {
-                    divCliente.innerHTML = `<strong>Cliente selecionado:</strong> ${nome} (ID: ${id})`;
-                }
-            });
-        }
-    });
-}
-
-function configurarPesquisaClientes() {
-    const searchInput = document.getElementById('pesquisaClientes');
-    if (searchInput && !searchInput.hasAttribute('data-listener')) {
-        searchInput.setAttribute('data-listener', 'true');
-        searchInput.addEventListener('input', function() {
-            atualizarListaClientes();
-        });
-    }
-}
-
-// ============================================
-// FUNÇÕES DA TELA DE CADASTRO DE CLIENTES
-// ============================================
-
-async function carregarClientesCadastro() {
-    try {
-        const resposta = await fetch(`${API_CLIENTES_URL}?tipo=clientes`);
-        const dados = await resposta.json();
-        clientesOriginais = dados;
-        atualizarListaClientesCadastro();
-    } catch (erro) {
-        console.error('Erro ao carregar clientes:', erro);
-        const container = document.getElementById('listaClientesCadastro');
-        if (container) {
-            container.innerHTML = `<div class="error-message">Erro ao carregar clientes</div>`;
-        }
-    }
-}
-
-function atualizarListaClientesCadastro() {
-    const searchInput = document.getElementById('pesquisaClientesCadastro');
-    const termo = searchInput ? searchInput.value : '';
-    const clientesFiltrados = filtrarClientes(termo);
-    const container = document.getElementById('listaClientesCadastro');
-    if (container) {
-        container.innerHTML = renderizarListaClientesCadastro(clientesFiltrados);
-        configurarCliqueClientesCadastro();
-    }
-}
-
 function renderizarListaClientesCadastro(clientes) {
     if (!clientes || clientes.length === 0) {
         return `<div class="placeholder-mensagem"><i class="fas fa-users"></i>Nenhum cliente encontrado</div>`;
@@ -369,8 +441,8 @@ function renderizarListaClientesCadastro(clientes) {
     clientes.forEach(cliente => {
         html += `
             <div class="cliente-item" data-cliente='${JSON.stringify(cliente)}'>
-                <div class="cliente-nome">${cliente.NOMES_CLIENTES}</div>
-                <div class="cliente-cpf">CPF: ${cliente.CPF || 'Não informado'} | ID: ${cliente.ID_CLIENTE}</div>
+                <div class="cliente-nome">${cliente.NOMES_CLIENTES || 'Nome não informado'}</div>
+                <div class="cliente-cpf">CPF: ${cliente.CPF || 'Não informado'} | ID: ${cliente.ID_CLIENTE || '-'}</div>
             </div>
         `;
     });
@@ -418,7 +490,7 @@ function limparFormCliente() {
 
 async function salvarCliente() {
     const cliente = {
-        ID_CLIENTE: document.getElementById('editIdCliente').value,
+        ID_CLIENTE: document.getElementById('editIdCliente').value || Date.now().toString(),
         NOMES_CLIENTES: document.getElementById('editNomeCliente').value,
         CPF: document.getElementById('editCpfCliente').value,
         NUM_TELEFONE: document.getElementById('editTelefoneCliente').value,
@@ -441,6 +513,8 @@ async function salvarCliente() {
             alert('Cliente salvo com sucesso!');
             limparFormCliente();
             carregarClientesCadastro();
+            // Recarregar também os clientes na seleção
+            carregarClientes();
         } else {
             alert('Erro ao salvar cliente');
         }
@@ -468,6 +542,12 @@ async function excluirCliente() {
             alert('Cliente excluído com sucesso!');
             limparFormCliente();
             carregarClientesCadastro();
+            carregarClientes();
+            // Se o cliente excluído era o selecionado, limpar seleção
+            if (clienteSelecionado && clienteSelecionado.id == id) {
+                clienteSelecionado = null;
+                atualizarDisplayCliente();
+            }
         } else {
             alert('Erro ao excluir cliente');
         }
