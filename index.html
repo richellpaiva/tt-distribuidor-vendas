@@ -65,7 +65,8 @@
         .form-cliente { margin-top: 15px; }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #1E5A99; margin-bottom: 3px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 8px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 8px; background: #f8fafc; }
+        .form-group input:disabled { background: #f0f2f5; color: #6c757d; cursor: not-allowed; }
         .form-row { display: flex; gap: 10px; }
         .botoes-form { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
         .btn-form { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
@@ -73,6 +74,7 @@
         .btn-excluir { background: #dc3545; color: white; }
         .btn-cancelar { background: #6c757d; color: white; }
         .btn-novo { background: #2B7BC9; color: white; }
+        .btn-editar { background: #28a745; color: white; }
         .loading-message, .error-message, .placeholder-mensagem { text-align: center; padding: 40px; border-radius: 24px; }
         .loading-message { color: #1E5A99; }
         .error-message { color: #e53e3e; background: #fff5f5; }
@@ -131,7 +133,7 @@
         </div>
     </div>
 
-    <!-- VENDA (REFINADA COM CORREÇÕES) -->
+    <!-- VENDA (REFINADA) -->
     <div class="tela" id="telaVenda" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed">
@@ -139,17 +141,14 @@
                 <h2 style="color: #1E5A99;"><i class="fas fa-cart-plus"></i> Nova Venda</h2>
             </div>
             <div class="cliente-selecionado-box" id="clienteSelecionadoDisplay"><strong>Nenhum cliente selecionado</strong></div>
-            <!-- Ações da venda -->
             <div class="acoes-venda">
                 <button id="btnAdicionarVenda" class="btn-form btn-novo"><i class="fas fa-plus"></i> Adicionar</button>
                 <button id="btnEditarVenda" class="btn-form btn-salvar"><i class="fas fa-edit"></i> Editar</button>
                 <button id="btnExcluirVenda" class="btn-form btn-excluir"><i class="fas fa-trash"></i> Excluir</button>
                 <button id="btnCancelarVenda" class="btn-form btn-cancelar"><i class="fas fa-times"></i> Cancelar</button>
             </div>
-            <!-- Botões principais (Lançar Produtos no topo, como solicitado) -->
             <button id="btnLancarProdutos" class="btn-nova-venda-estoque"><i class="fas fa-cube"></i> Lançar Produtos</button>
             <button id="btnPesquisarVendas" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-search"></i> Pesquisar Vendas</button>
-            <!-- Botão Cadastrar Cliente adicionado -->
             <button id="btnCadastrarClienteVenda" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-user-plus"></i> Cadastrar Cliente</button>
         </div>
     </div>
@@ -164,7 +163,7 @@
         </div>
     </div>
 
-    <!-- CADASTRO DE CLIENTES (APROVADO) -->
+    <!-- CADASTRO DE CLIENTES (COM CAMPOS TRAVADOS POR PADRÃO) -->
     <div class="tela" id="telaClientes" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
@@ -172,14 +171,20 @@
             <div id="listaClientesCadastro" class="clientes-lista" style="max-height:200px; margin:10px 0; border:1px solid #e2e8f0; border-radius:12px;"><div class="loading-message">Carregando clientes...</div></div>
             <div class="form-cliente">
                 <h3 style="color:#1E5A99; margin-bottom:15px;">Dados do Cliente</h3>
-                <div class="form-group"><label>Nome Completo *</label><input type="text" id="editNomeCliente" placeholder="Digite o nome completo"></div>
-                <div class="form-group"><label>CPF</label><input type="text" id="editCpfCliente" placeholder="000.000.000-00"></div>
-                <div class="form-group"><label>Telefone</label><input type="text" id="editTelefoneCliente" placeholder="(00) 00000-0000"></div>
-                <div class="form-row"><div class="form-group" style="flex:1"><label>UF</label><input type="text" id="editUfCliente" placeholder="PI" maxlength="2"></div><div class="form-group" style="flex:2"><label>Cidade</label><input type="text" id="editCidadeCliente" placeholder="Teresina"></div></div>
-                <div class="form-group"><label>Endereço</label><input type="text" id="editEnderecoCliente" placeholder="Rua, Avenida..."></div>
-                <div class="form-row"><div class="form-group" style="flex:1"><label>Número</label><input type="text" id="editNumeroCliente" placeholder="Número"></div><div class="form-group" style="flex:2"><label>Complemento</label><input type="text" id="editComplementoCliente" placeholder="Apto, Bloco..."></div></div>
-                <div class="form-group"><label>CEP</label><input type="text" id="editCepCliente" placeholder="00000-000"></div>
-                <div class="botoes-form"><button id="btnCriarNovoCliente" class="btn-form btn-novo"><i class="fas fa-plus"></i> NOVO</button><button id="btnSalvarCliente" class="btn-form btn-salvar"><i class="fas fa-save"></i> SALVAR</button><button id="btnExcluirCliente" class="btn-form btn-excluir"><i class="fas fa-trash"></i> EXCLUIR</button><button id="btnCancelarCliente" class="btn-form btn-cancelar"><i class="fas fa-times"></i> CANCELAR</button></div>
+                <div class="form-group"><label>Nome Completo *</label><input type="text" id="editNomeCliente" placeholder="Digite o nome completo" disabled></div>
+                <div class="form-group"><label>CPF</label><input type="text" id="editCpfCliente" placeholder="000.000.000-00" disabled></div>
+                <div class="form-group"><label>Telefone</label><input type="text" id="editTelefoneCliente" placeholder="(00) 00000-0000" disabled></div>
+                <div class="form-row"><div class="form-group" style="flex:1"><label>UF</label><input type="text" id="editUfCliente" placeholder="PI" maxlength="2" disabled></div><div class="form-group" style="flex:2"><label>Cidade</label><input type="text" id="editCidadeCliente" placeholder="Teresina" disabled></div></div>
+                <div class="form-group"><label>Endereço</label><input type="text" id="editEnderecoCliente" placeholder="Rua, Avenida..." disabled></div>
+                <div class="form-row"><div class="form-group" style="flex:1"><label>Número</label><input type="text" id="editNumeroCliente" placeholder="Número" disabled></div><div class="form-group" style="flex:2"><label>Complemento</label><input type="text" id="editComplementoCliente" placeholder="Apto, Bloco..." disabled></div></div>
+                <div class="form-group"><label>CEP</label><input type="text" id="editCepCliente" placeholder="00000-000" disabled></div>
+                <div class="botoes-form">
+                    <button id="btnCriarNovoCliente" class="btn-form btn-novo"><i class="fas fa-plus"></i> NOVO</button>
+                    <button id="btnEditarCliente" class="btn-form btn-editar"><i class="fas fa-edit"></i> EDITAR</button>
+                    <button id="btnSalvarCliente" class="btn-form btn-salvar"><i class="fas fa-save"></i> SALVAR</button>
+                    <button id="btnExcluirCliente" class="btn-form btn-excluir"><i class="fas fa-trash"></i> EXCLUIR</button>
+                    <button id="btnCancelarCliente" class="btn-form btn-cancelar"><i class="fas fa-times"></i> CANCELAR</button>
+                </div>
             </div>
         </div>
     </div>
@@ -193,7 +198,7 @@
     </div>
 
     <!-- ========== NOVAS TELAS ========== -->
-    <!-- LANÇAR PRODUTOS (com coluna DTVAL) -->
+    <!-- LANÇAR PRODUTOS (TOTAIS NO TOPO) -->
     <div class="tela" id="telaLancarProdutos" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed">
@@ -201,12 +206,13 @@
                 <h2 style="color: #1E5A99;"><i class="fas fa-cube"></i> Lançar Produtos</h2>
             </div>
             <input type="text" id="pesquisaProdutoLancamento" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
-            <div class="estoque-container" id="tabelaLancamentoContainer">
-                <div class="loading-message">Carregando produtos...</div>
-            </div>
-            <div class="totais-container" id="totaisLancamento" style="margin-top: 10px;">
+            <!-- TOTAIS NO TOPO -->
+            <div class="totais-container" id="totaisLancamento" style="margin-bottom: 10px;">
                 <div class="total-card"><i class="fas fa-boxes"></i><div class="total-label">Qtde Total</div><div class="total-value" id="lancQtdeTotal">0</div></div>
                 <div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="lancValorTotal">R$ 0,00</div></div>
+            </div>
+            <div class="estoque-container" id="tabelaLancamentoContainer">
+                <div class="loading-message">Carregando produtos...</div>
             </div>
         </div>
     </div>
@@ -237,27 +243,32 @@
 
     // ========== TROCA DE TELAS (APROVADO) ==========
     function mostrarTela(id) {
-        document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
         const tela = document.getElementById(id);
-        if (tela) tela.style.display = 'flex';
+        if (!tela) {
+            console.error('Tela não encontrada:', id);
+            return;
+        }
+        document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
+        tela.style.display = 'flex';
     }
 
-    // ========== DELEGAÇÃO DE EVENTOS - RESOLVE TODOS OS CLICK ==========
+    // ========== DELEGAÇÃO DE EVENTOS ROBUSTA ==========
     document.addEventListener('click', function(e) {
-        // Botões de voltar (qualquer elemento com a classe .btn-voltar)
-        if (e.target.closest('.btn-voltar')) {
-            const btn = e.target.closest('.btn-voltar');
-            const destino = btn.getAttribute('data-voltar');
+        // Botões de voltar (classe .btn-voltar)
+        const voltarBtn = e.target.closest('.btn-voltar');
+        if (voltarBtn) {
+            e.preventDefault();
+            const destino = voltarBtn.getAttribute('data-voltar');
             if (destino) {
                 mostrarTela(destino);
-                return;
             }
+            return;
         }
 
         // Botões do menu principal
-        if (e.target.closest('.menu-botao')) {
-            const btn = e.target.closest('.menu-botao');
-            const destino = btn.getAttribute('data-tela');
+        const menuBtn = e.target.closest('.menu-botao');
+        if (menuBtn) {
+            const destino = menuBtn.getAttribute('data-tela');
             if (destino) mostrarTela(destino);
             return;
         }
@@ -269,7 +280,8 @@
             if (id && nome) {
                 clienteSelecionado = { id: id, nome: nome };
                 mostrarTela('telaVenda');
-                document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${nome} (ID: ${id})`;
+                const displayDiv = document.getElementById('clienteSelecionadoDisplay');
+                if (displayDiv) displayDiv.innerHTML = `<strong>Cliente:</strong> ${nome} (ID: ${id})`;
             }
             return;
         }
@@ -284,20 +296,21 @@
             return;
         }
 
-        // Tela de Venda (ações principais)
+        // Tela de Venda
         if (e.target.id === 'btnLancarProdutos') {
             mostrarTela('telaLancarProdutos');
-            setTimeout(() => { carregarProdutosLancamento(); }, 100);
+            setTimeout(() => carregarProdutosLancamento(), 100);
             return;
         }
         if (e.target.id === 'btnPesquisarVendas') {
             mostrarTela('telaHistoricoVendas');
-            setTimeout(() => { carregarHistoricoVendas(); }, 100);
+            setTimeout(() => carregarHistoricoVendas(), 100);
             return;
         }
         if (e.target.id === 'btnCadastrarClienteVenda') {
             editandoClienteId = null;
             limparFormCliente();
+            habilitarEdicao(false);
             mostrarTela('telaClientes');
             return;
         }
@@ -311,6 +324,7 @@
         if (e.target.id === 'btnCadastrarNovoCliente') {
             editandoClienteId = null;
             limparFormCliente();
+            habilitarEdicao(false);
             mostrarTela('telaClientes');
             return;
         }
@@ -318,6 +332,16 @@
         // Tela de Cadastro de Cliente
         if (e.target.id === 'btnCriarNovoCliente') {
             limparFormCliente();
+            habilitarEdicao(true);
+            editandoClienteId = null;
+            return;
+        }
+        if (e.target.id === 'btnEditarCliente') {
+            if (!editandoClienteId) {
+                alert('Selecione um cliente na lista para editar.');
+                return;
+            }
+            habilitarEdicao(true);
             return;
         }
         if (e.target.id === 'btnSalvarCliente') {
@@ -329,11 +353,12 @@
             return;
         }
         if (e.target.id === 'btnCancelarCliente') {
+            habilitarEdicao(false);
             limparFormCliente();
             return;
         }
 
-        // Ações placeholder da venda (futuro)
+        // Ações placeholder da venda
         if (e.target.id === 'btnAdicionarVenda') {
             alert('Funcionalidade "Adicionar venda" em desenvolvimento');
             return;
@@ -352,10 +377,17 @@
         }
     });
 
+    // Função para habilitar/desabilitar campos do formulário de clientes
+    function habilitarEdicao(habilitar) {
+        document.querySelectorAll('#telaClientes input[type="text"]').forEach(input => {
+            input.disabled = !habilitar;
+        });
+    }
+
     // Data atual
     document.getElementById('dataAtual').innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${new Date().toLocaleDateString('pt-BR', { year:'numeric', month:'long', day:'numeric' })}`;
 
-    // ========== ESTOQUE (APROVADO) ==========
+    // ========== ESTOQUE ==========
     async function carregarEstoque() {
         const container = document.getElementById('estoqueContainer');
         container.innerHTML = '<div class="loading-message">Carregando...</div>';
@@ -435,10 +467,7 @@
         URL.revokeObjectURL(url);
     }
 
-    // Evento de pesquisa do estoque (input)
     document.getElementById('pesquisaEstoque').addEventListener('input', () => { sortStateEstoque = { col: -1, asc: true }; atualizarEstoque(); });
-
-    // Função global para ordenação
     window.ordenarTabelaEstoque = ordenarTabelaEstoque;
 
     // ========== CLIENTES ==========
@@ -488,9 +517,14 @@
         document.getElementById('editNumeroCliente').value = cliente.numero || '';
         document.getElementById('editComplementoCliente').value = cliente.complemento || '';
         document.getElementById('editCepCliente').value = cliente.cep || '';
+        habilitarEdicao(false); // Mantém travado, só libera via botão EDITAR
     }
 
-    function limparFormCliente() { editandoClienteId = null; document.querySelectorAll('#telaClientes input[type="text"]').forEach(inp => inp.value = ''); }
+    function limparFormCliente() { 
+        editandoClienteId = null; 
+        document.querySelectorAll('#telaClientes input[type="text"]').forEach(inp => inp.value = ''); 
+        habilitarEdicao(false);
+    }
 
     async function salvarCliente() {
         const cliente = { acao: 'cliente', modo: editandoClienteId ? 'editar' : 'novo', id: editandoClienteId, nome: document.getElementById('editNomeCliente').value, cpf: document.getElementById('editCpfCliente').value, telefone: document.getElementById('editTelefoneCliente').value, uf: document.getElementById('editUfCliente').value, cidade: document.getElementById('editCidadeCliente').value, endereco: document.getElementById('editEnderecoCliente').value, numero: document.getElementById('editNumeroCliente').value, complemento: document.getElementById('editComplementoCliente').value, cep: document.getElementById('editCepCliente').value };
@@ -500,8 +534,15 @@
             formData.append('dados', JSON.stringify(cliente));
             const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
-            if (data.status === 'ok') { alert('Cliente salvo!'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado.nome = cliente.nome; document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${cliente.nome} (ID: ${clienteSelecionado.id})`; } }
-            else alert('Erro ao salvar');
+            if (data.status === 'ok') { 
+                alert('Cliente salvo!'); 
+                limparFormCliente(); 
+                await carregarClientes(); 
+                if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { 
+                    clienteSelecionado.nome = cliente.nome; 
+                    document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${cliente.nome} (ID: ${clienteSelecionado.id})`; 
+                } 
+            } else alert('Erro ao salvar');
         } catch(e) { alert('Erro de conexão'); }
     }
 
@@ -520,8 +561,7 @@
 
     document.getElementById('pesquisaClientesCadastro').addEventListener('input', () => atualizarListaClientesCadastro());
 
-    // ========== NOVAS FUNCIONALIDADES ==========
-    // Tela: Lançar Produtos (com coluna DTVAL)
+    // ========== TELA: LANÇAR PRODUTOS ==========
     async function carregarProdutosLancamento() {
         const container = document.getElementById('tabelaLancamentoContainer');
         if (!container) return;
@@ -550,7 +590,7 @@
             const dtval = p.DTVAL || '-';
             const qtd = Number(p.QT).toLocaleString('pt-BR');
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            html += `<td><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${dtval}</td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
+            html += `<tr><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${dtval}</td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
@@ -568,7 +608,7 @@
         if (window.produtosLancamento) renderizarTabelaLancamento(window.produtosLancamento, e.target.value);
     });
 
-    // Tela: Histórico de Vendas (exemplo com dados fictícios)
+    // ========== TELA: HISTÓRICO DE VENDAS ==========
     async function carregarHistoricoVendas() {
         const container = document.getElementById('tabelaHistoricoContainer');
         if (!container) return;
@@ -597,7 +637,7 @@
         let html = '<table class="estoque-tabela"><thead><tr><th>ID Venda</th><th>Data</th><th>Cliente</th><th>Valor Total</th><th>Ações</th></tr></thead><tbody>';
         filtrados.forEach(v => {
             const valorFormatado = Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            html += `<tr><td style="white-space:nowrap">${v.id}</td><td style="white-space:nowrap">${v.data}</td><td style="white-space:nowrap">${v.cliente}</td><td style="white-space:nowrap">${valorFormatado}</td><td style="white-space:nowrap"><button class="btn-ver-detalhes" data-id="${v.id}">Ver Detalhes</button></td></tr>`;
+            html += `<td><td style="white-space:nowrap">${v.id}</td><td style="white-space:nowrap">${v.data}</td><td style="white-space:nowrap">${v.cliente}</td><td style="white-space:nowrap">${valorFormatado}</td><td style="white-space:nowrap"><button class="btn-ver-detalhes" data-id="${v.id}">Ver Detalhes</button></td></tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
