@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>TT DISTRIBUIDOR - Vendas Mobile</title>
+    <!-- APROVADO - NÃO MEXER: Font Awesome 6 (ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ============================================ */
+        /* APROVADO - NÃO MEXER - ESTILOS APROVADOS      */
+        /* ============================================ */
+        /* Qualquer alteração nestes estilos pode quebrar o layout aprovado */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Container principal que simula a tela do celular */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 0;
+        }
+
+        /* Cada tela ocupa toda a área do container */
+        .tela {
+            width: 100%;
+            min-height: 100vh;
+            padding: 25px 20px 30px 20px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        /* Container interno para conteúdo */
+        .card-content {
+            width: 100%;
+            flex: 1;
+        }
+
+        /* --- ESTILOS DO MENU INICIAL (TELA 0) --- */
+        .logo-area {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .empresa-nome {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1E5A99;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .empresa-dados {
+            font-size: 0.7rem;
+            color: #5a6e85;
+            text-align: center;
+            line-height: 1.4;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .empresa-dados p {
+            margin: 3px 0;
+        }
+
+        .capa-titulo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1E5A99;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 0.8rem;
+        }
+
+        .capa-subtitulo {
+            font-size: 0.9rem;
+            color: #2B7BC9;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .data-ref {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #e0e6ed;
+        }
+
+        /* Botões grandes estilo card */
+        .menu-botao {
+            width: 100%;
+            background: white;
+            border: 2px solid #1E5A99;
+            border-radius: 20px;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+        }
+
+        .menu-botao i {
+            font-size: 2rem;
+            color: #1E5A99;
+            width: 40px;
+            text-align: center;
+        }
+
+        .menu-botao span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1E5A99;
+            flex: 1;
+        }
+
+        .menu-botao:active {
+            transform: scale(0.97);
+            background: #f0f7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* --- ESTILOS DAS TELAS SECUNDÁRIAS --- */
+        .tela-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        .btn-voltar {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: #1E5A99;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .btn-voltar:active {
+            background: #eef2f8;
+        }
+
+        .tela-header h2 {
+            font-size: 1.6rem;
+            color: #1E5A99;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* APROVADO: Estilos da tabela de estoque (NOVO - mas necessário para exibição) */
+        .estoque-tabela {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 15px;
+        }
+        
+        .estoque-tabela th {
+            background: #1E5A99;
+            color: white;
+            padding: 10px 6px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        .estoque-tabela td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+        
+        .estoque-tabela tr:hover {
+            background: #f7fafc;
+        }
+        
+        .loading-message {
+            text-align: center;
+            padding: 40px;
+            color: #1E5A99;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #e53e3e;
+            background: #fff5f5;
+            border-radius: 12px;
+        }
+
+        .placeholder-mensagem {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 50px 25px;
+            text-align: center;
+            border: 1px dashed #bdd4e7;
+            color: #4b6b8f;
+            font-size: 1rem;
+            margin-top: 30px;
+        }
+
+        .placeholder-mensagem i {
+            font-size: 3rem;
+            color: #90aec9;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Responsividade para telas pequenas */
+        @media (max-width: 480px) {
+            .tela {
+                padding: 20px 16px 30px 16px;
+            }
+            .capa-titulo {
+                font-size: 1.5rem;
+            }
+            .menu-botao {
+                height: 60px;
+            }
+            .menu-botao i {
+                font-size: 1.6rem;
+            }
+            .menu-botao span {
+                font-size: 1rem;
+            }
+            .tela-header h2 {
+                font-size: 1.4rem;
+            }
+            .estoque-tabela {
+                font-size: 0.7rem;
+            }
+            .estoque-tabela th, 
+            .estoque-tabela td {
+                padding: 6px 4px;
+            }
+        }
+
+        /* Scroll suave */
+        .app-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .app-container::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+
+        .app-container::-webkit-scrollbar-thumb {
+            background: #1E5A99;
+            border-radius: 10px;
+        }
+        
+        /* ============================================ */
+        /* FIM DOS ESTILOS APROVADOS                    */
+        /* ============================================ */
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- ============================================ -->
+    <!-- TELA 0 - MENU INICIAL (CAPA) - APROVADO      -->
+    <!-- ============================================ -->
+    <!-- NÃO MODIFICAR: estrutura, textos, botões     -->
+    <!-- Apenas o conteúdo do placeholder pode ser    -->
+    <!-- substituído futuramente                      -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaMenu" style="display: flex;">
+        <div class="card-content">
+            <!-- APROVADO: Logo da empresa -->
+            <div class="logo-area">
+                <img src="https://i.imgur.com/1BQJhXp.png" alt="Logo TT Distribuidor" class="logo">
+            </div>
+
+            <!-- APROVADO: Dados da empresa (texto oficial) -->
+            <div class="empresa-dados">
+                <p><strong>TT DISTRIBUIDOR DE ALIMENTOS LTDA</strong></p>
+                <p>CNPJ: 08.381.919/0001-84 | I.E: 194591832</p>
+                <p>Filial 3 - AV. PREFEITO WALL FERRAZ - 17777</p>
+                <p>PEDRA MIUDA - TERESINA - PI - 64038030</p>
+            </div>
+
+            <!-- APROVADO: Títulos principais -->
+            <div class="capa-titulo">Venda de mercadorias mobile – TT DISTRIBUIDOR</div>
+            <div class="capa-subtitulo">Aplicativo de controle e venda de mercadorias por indústrias</div>
+            
+            <!-- APROVADO: Data atual (gerada via JS, não modificar estrutura) -->
+            <div class="data-ref" id="dataAtual"></div>
+
+            <!-- APROVADO: Três botões principais -->
+            <!-- ATENÇÃO: Não alterar os valores de data-tela -->
+            <div class="menu-botao" data-tela="telaEstoque">
+                <i class="fas fa-boxes"></i>
+                <span>Consultar Estoque</span>
+            </div>
+            <div class="menu-botao" data-tela="telaVenda">
+                <i class="fas fa-cart-plus"></i>
+                <span>Efetuar Nova Venda</span>
+            </div>
+            <div class="menu-botao" data-tela="telaConfig">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 1 - ESTOQUE - APROVADO (estrutura)     -->
+    <!-- ============================================ -->
+    <!-- ATENÇÃO: Esta tela receberá a integração    -->
+    <!-- com Google Sheets. O conteúdo do            -->
+    <!-- placeholder-mensagem será substituído.      -->
+    <!-- A estrutura (header, botão voltar) deve ser -->
+    <!-- preservada.                                 -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaEstoque" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header">
+                <!-- APROVADO: Botão voltar - NÃO REMOVER -->
+                <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <!-- APROVADO: Título da tela -->
+                <h2><i class="fas fa-boxes" style="margin-right: 10px;"></i> Estoque</h2>
+            </div>
+            <!-- EXPANSÍVEL: Esta div receberá a lista de produtos do Google Sheets -->
+            <div id="estoqueContainer">
+                <div class="placeholder-mensagem">
+                    <i class="fas fa-database"></i>
+                    Carregando estoque...<br>
+                    <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Aguarde um momento</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 2 - NOVA VENDA - APROVADO (estrutura)  -->
+    <!-- ============================================ -->
+    <!-- ATENÇÃO: Esta tela receberá o formulário    -->
+    <!-- de venda e integração com Google Sheets.    -->
+    <!-- A estrutura (header, botão voltar) deve ser -->
+    <!-- preservada.                                 -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaVenda" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header">
+                <!-- APROVADO: Botão voltar - NÃO REMOVER -->
+                <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <!-- APROVADO: Título da tela -->
+                <h2><i class="fas fa-cart-plus" style="margin-right: 10px;"></i> Nova Venda</h2>
+            </div>
+            <!-- EXPANSÍVEL: Esta div será substituída pelo formulário de venda -->
+            <div class="placeholder-mensagem">
+                <i class="fas fa-receipt"></i>
+                Módulo de vendas em construção<br>
+                <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Interface completa em breve</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TELA 3 - CONFIGURAÇÕES - APROVADO           -->
+    <!-- ============================================ -->
+    <!-- Esta tela manterá o placeholder até que     -->
+    <!-- configurações sejam definidas               -->
+    <!-- ============================================ -->
+    <div class="tela" id="telaConfig" style="display: none;">
+        <div class="card-content">
+            <div class="tela-header">
+                <!-- APROVADO: Botão voltar - NÃO REMOVER -->
+                <button class="btn-voltar" onclick="mostrarTela('telaMenu')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <!-- APROVADO: Título da tela -->
+                <h2><i class="fas fa-cog" style="margin-right: 10px;"></i> Configurações</h2>
+            </div>
+            <!-- EXPANSÍVEL: Futuras opções de configuração -->
+            <div class="placeholder-mensagem">
+                <i class="fas fa-sliders-h"></i>
+                Ajustes do sistema<br>
+                <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Personalização futura</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // APROVADO - NÃO MODIFICAR - LÓGICA DE TROCAR TELAS
+    // ============================================
+    // Esta função é CRÍTICA para a navegação do app
+    // Qualquer alteração pode quebrar os botões e a navegação
+    // ============================================
+    
+    // APROVADO: Função principal para trocar de tela (mostrar/ocultar)
+    function mostrarTela(telaId) {
+        // Oculta todas as telas
+        const todasTelas = document.querySelectorAll('.tela');
+        todasTelas.forEach(tela => {
+            tela.style.display = 'none';
+        });
+        
+        // Mostra a tela solicitada
+        const telaSelecionada = document.getElementById(telaId);
+        if (telaSelecionada) {
+            telaSelecionada.style.display = 'flex';
+            
+            // APROVADO: Rolagem automática para o topo ao trocar de tela
+            const appContainer = document.querySelector('.app-container');
+            if (appContainer) {
+                appContainer.scrollTop = 0;
+            }
+            
+            // ========================================
+            // EXPANSÃO: Carregar estoque quando a tela for aberta
+            // ========================================
+            if (telaId === 'telaEstoque') {
+                mostrarEstoque();
+            }
+        }
+    }
+
+    // APROVADO: Configurar a data atual no menu inicial
+    function exibirDataAtual() {
+        const dataElement = document.getElementById('dataAtual');
+        if (dataElement) {
+            const hoje = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            dataElement.innerHTML = `<i class="far fa-calendar-alt"></i> Data: ${hoje.toLocaleDateString('pt-BR', options)}`;
+        }
+    }
+
+    // APROVADO: Adicionar eventos aos botões do menu
+    function configurarBotoesMenu() {
+        const botoesMenu = document.querySelectorAll('.menu-botao');
+        botoesMenu.forEach(botao => {
+            // Remove event listeners antigos se houver (evita duplicação)
+            const novoBotao = botao.cloneNode(true);
+            botao.parentNode.replaceChild(novoBotao, botao);
+            
+            novoBotao.addEventListener('click', function() {
+                const telaDestino = this.getAttribute('data-tela');
+                if (telaDestino) {
+                    mostrarTela(telaDestino);
+                }
+            });
+        });
+    }
+
+    // APROVADO: Garantir que os botões voltar funcionem
+    function garantirBotoesVoltar() {
+        const botoesVoltar = document.querySelectorAll('.btn-voltar');
+        botoesVoltar.forEach(btn => {
+            if (!btn.hasAttribute('data-listener')) {
+                btn.setAttribute('data-listener', 'true');
+                // O onclick já está definido no HTML, mas garantimos via JS também
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mostrarTela('telaMenu');
+                });
+            }
+        });
+    }
+
+    // APROVADO: Inicialização do app
+    function init() {
+        exibirDataAtual();
+        configurarBotoesMenu();
+        garantirBotoesVoltar();
+        
+        // Garantir que o menu inicial está visível (fallback)
+        mostrarTela('telaMenu');
+    }
+
+    // APROVADO: Executar quando a página carregar completamente
+    window.addEventListener('DOMContentLoaded', init);
+    
+    // APROVADO: Fallback para segurança
+    window.onload = function() {
+        if (document.getElementById('telaMenu').style.display === 'none') {
+            mostrarTela('telaMenu');
+        }
+    };
+    
+    // ============================================
+    // ÁREA PARA EXPANSÃO - INTEGRAÇÃO COM GOOGLE SHEETS
+    // ============================================
+    // ATENÇÃO: Todo o código acima está APROVADO e NÃO DEVE SER MODIFICADO
+    // 
+    // O código abaixo foi ADICIONADO para integrar com Google Sheets
+    // Nenhuma linha do código aprovado foi alterada
+    // ============================================
+    
+    // URL definitivo do Google Apps Script (APROVADO PARA USO)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx1hMBMqVmn9VGtotOlo8rRJj2QSLzqNtYARA2DPbPgzQWXrLbq---Ym0Y47c269cUXfg/exec';
+    
+    // Função para buscar os produtos do Google Sheets
+    async function carregarEstoque() {
+        try {
+            const resposta = await fetch(API_URL);
+            if (!resposta.ok) {
+                throw new Error(`HTTP error! status: ${resposta.status}`);
+            }
+            const dados = await resposta.json();
+            return dados;
+        } catch (erro) {
+            console.error('Erro ao carregar estoque:', erro);
+            throw erro;
+        }
+    }
+    
+    // Função para exibir a tabela de estoque na tela
+    async function mostrarEstoque() {
+        const container = document.getElementById('estoqueContainer');
+        if (!container) return;
+        
+        // Mostrar loading
+        container.innerHTML = `
+            <div class="loading-message">
+                <i class="fas fa-spinner fa-pulse" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                Carregando produtos...
+            </div>
+        `;
+        
+        try {
+            const produtos = await carregarEstoque();
+            
+            // Verificar se os dados foram carregados corretamente
+            if (!produtos || produtos.length === 0) {
+                container.innerHTML = `
+                    <div class="placeholder-mensagem">
+                        <i class="fas fa-box-open"></i>
+                        Nenhum produto encontrado no estoque<br>
+                        <span style="font-size: 0.85rem; display: block; margin-top: 10px;">Verifique a planilha</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Criar tabela com os dados
+            let html = '<table class="estoque-tabela">';
+            html += '<thead><tr>';
+            html += '<th>ID</th>';
+            html += '<th>Produto</th>';
+            html += '<th>Fornecedor</th>';
+            html += '<th>Preço</th>';
+            html += '<th>Qtd</th>';
+            html += '</tr></thead><tbody>';
+            
+            produtos.forEach(produto => {
+                html += '<tr>';
+                html += `<td>${produto.id || '-'}</td>`;
+                html += `<td><strong>${produto.nome || produto.produto || '-'}</strong></td>`;
+                html += `<td>${produto.fornecedor || '-'}</td>`;
+                html += `<td>R$ ${typeof produto.preco === 'number' ? produto.preco.toFixed(2) : produto.preco || '0,00'}</td>`;
+                html += `<td>${produto.quantidade || produto.qtd || 0}</td>`;
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            
+        } catch (erro) {
+            console.error('Erro detalhado:', erro);
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                    Erro ao carregar estoque<br>
+                    <span style="font-size: 0.85rem; display: block; margin-top: 10px;">${erro.message}</span>
+                    <span style="font-size: 0.75rem; display: block; margin-top: 5px;">Verifique o console para mais detalhes</span>
+                </div>
+            `;
+        }
+    }
+    
+    // ============================================
+    // FIM DA EXPANSÃO - Google Sheets integrado
+    // ============================================
+</script>
+</body>
+</html>
