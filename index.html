@@ -81,13 +81,12 @@
         .placeholder-mensagem { background: #f8fafc; border: 1px dashed #bdd4e7; color: #4b6b8f; }
         .placeholder-mensagem i { font-size: 2.5rem; color: #90aec9; margin-bottom: 12px; display: block; }
 
-        /* Novos estilos para ações da venda */
+        /* Ações da venda */
         .acoes-venda { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .acoes-venda .btn-form { font-size: 0.8rem; padding: 8px; }
 
-        /* Estilos do modal */
-        #modalQuantidade {
-            display: none;
+        /* Modais personalizados */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -97,14 +96,21 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            display: none;
         }
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 90%;
-            width: 300px;
+        .modal-card {
+            background: #1E5A99;
+            padding: 25px;
+            border-radius: 16px;
+            max-width: 85%;
+            width: 350px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
+        .modal-card i { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+        .modal-card p { font-size: 1.1rem; line-height: 1.4; margin-bottom: 20px; }
+        .modal-card button { background: white; color: #1E5A99; border: none; padding: 8px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; }
 
         /* Responsividade */
         @media (max-width: 480px) {
@@ -125,7 +131,7 @@
 </head>
 <body>
 <div class="app-container">
-    <!-- ========== TELAS APROVADAS (MENU, ESTOQUE, CLIENTES, CONFIG) ========== -->
+    <!-- ========== TELAS APROVADAS ========== -->
     <!-- MENU PRINCIPAL -->
     <div class="tela" id="telaMenu" style="display: flex;">
         <div class="card-content">
@@ -140,7 +146,7 @@
         </div>
     </div>
 
-    <!-- ESTOQUE (APROVADO) -->
+    <!-- ESTOQUE -->
     <div class="tela" id="telaEstoque" style="display: none;">
         <div class="card-content">
             <div class="estoque-fixed-header">
@@ -154,7 +160,7 @@
         </div>
     </div>
 
-    <!-- VENDA (REFINADA) -->
+    <!-- VENDA (COM BOTÃO CADASTRAR CLIENTE) -->
     <div class="tela" id="telaVenda" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed">
@@ -170,11 +176,12 @@
             </div>
             <button id="btnLancarProdutos" class="btn-nova-venda-estoque"><i class="fas fa-cube"></i> Lançar Produtos</button>
             <button id="btnPesquisarVendas" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-search"></i> Pesquisar Vendas</button>
+            <!-- Botão Cadastrar Cliente -->
             <button id="btnCadastrarClienteVenda" class="btn-nova-venda-estoque" style="background-color:#2B7BC9;"><i class="fas fa-user-plus"></i> Cadastrar Cliente</button>
         </div>
     </div>
 
-    <!-- SELEÇÃO DE CLIENTE (APROVADO) -->
+    <!-- SELEÇÃO DE CLIENTE -->
     <div class="tela" id="telaSelecionarCliente" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Selecionar Cliente</h2></div>
@@ -184,7 +191,7 @@
         </div>
     </div>
 
-    <!-- CADASTRO DE CLIENTES (COM CAMPOS TRAVADOS) -->
+    <!-- CADASTRO DE CLIENTES -->
     <div class="tela" id="telaClientes" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
@@ -210,7 +217,7 @@
         </div>
     </div>
 
-    <!-- CONFIGURAÇÕES (APROVADO) -->
+    <!-- CONFIGURAÇÕES -->
     <div class="tela" id="telaConfig" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="menu"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-cog"></i> Configurações</h2></div>
@@ -218,14 +225,13 @@
         </div>
     </div>
 
-    <!-- LANÇAR PRODUTOS (COM LAYOUT ESTÁTICO) -->
+    <!-- LANÇAR PRODUTOS (LAYOUT ESTÁTICO) -->
     <div class="tela" id="telaLancarProdutos" style="display: none;">
         <div class="card-content" style="height: 100%; display: flex; flex-direction: column;">
             <div class="tela-header-nofixed">
                 <button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button>
                 <h2 style="color: #1E5A99;"><i class="fas fa-cube"></i> Lançar Produtos</h2>
             </div>
-            <!-- ÁREA ESTÁTICA NO TOPO -->
             <div style="flex-shrink: 0;">
                 <input type="text" id="pesquisaProdutoLancamento" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
                 <div class="totais-container" id="totaisLancamento" style="margin-bottom: 10px;">
@@ -233,7 +239,6 @@
                     <div class="total-card"><i class="fas fa-dollar-sign"></i><div class="total-label">Valor Total</div><div class="total-value" id="lancValorTotal">R$ 0,00</div></div>
                 </div>
             </div>
-            <!-- ÁREA ROLÁVEL (TABELA) -->
             <div class="estoque-container" id="tabelaLancamentoContainer" style="flex: 1; overflow-y: auto;">
                 <div class="loading-message">Carregando produtos...</div>
             </div>
@@ -255,31 +260,58 @@
     </div>
 
     <!-- MODAL DE QUANTIDADE -->
-    <div id="modalQuantidade" style="display: none;">
-        <div class="modal-content">
-            <h4 style="color:#1E5A99; margin-bottom:10px;">Informe a quantidade</h4>
-            <input type="number" id="inputQuantidade" min="1" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px;">
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button id="btnConfirmarLancamento" class="btn-form btn-salvar">Confirmar</button>
-                <button id="btnCancelarLancamento" class="btn-form btn-cancelar">Cancelar</button>
+    <div id="modalQuantidade" class="modal-overlay">
+        <div class="modal-card">
+            <i class="fas fa-boxes"></i>
+            <p>Informe a quantidade</p>
+            <input type="number" id="inputQuantidade" min="1" style="width:100%; padding:8px; border:none; border-radius:6px; margin-bottom:15px;">
+            <div style="display:flex; gap:10px;">
+                <button id="btnConfirmarLancamento" style="flex:1; background:white; color:#1E5A99; border:none; padding:8px; border-radius:25px; font-weight:bold;">Confirmar</button>
+                <button id="btnCancelarLancamento" style="flex:1; background:white; color:#1E5A99; border:none; padding:8px; border-radius:25px; font-weight:bold;">Cancelar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL PERSONALIZADO PARA ALERTAS -->
+    <div id="modalAlertaCustom" class="modal-overlay">
+        <div class="modal-card">
+            <i class="fas fa-info-circle"></i>
+            <p id="mensagemAlertaCustom">Mensagem</p>
+            <button id="btnFecharAlertaCustom">OK</button>
         </div>
     </div>
 </div>
 
 <script>
     /* ============================================
-       APROVADO - NÃO MEXER: CONFIGURAÇÕES GLOBAIS
+       CONFIGURAÇÕES GLOBAIS
        ============================================ */
-    // NOVA URL DO APPS SCRIPT
     const API_URL = 'https://script.google.com/macros/s/AKfycbzaUReQ2E9c_HRnXVuZKBjhVODWdrtbWcH_woZwRLCQN506U8VIgbYBdRJWyOLkZxarAA/exec';
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
     let sortStateEstoque = { col: -1, asc: true };
     let produtosFiltradosAtuais = [];
+    let produtoSelecionado = null, estoqueAtual = 0;
 
-    // Variáveis para o modal de lançamento
-    let produtoSelecionado = null;
-    let estoqueAtual = 0;
+    // ========== FUNÇÃO PARA FORMATAÇÃO DE DATA (ISO -> dd/mm/aaaa) ==========
+    function formatarDataISO(dataISO) {
+        if (!dataISO) return '-';
+        const data = new Date(dataISO);
+        if (isNaN(data.getTime())) return '-';
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    // ========== MODAL PERSONALIZADO ==========
+    function exibirAlertaCustom(mensagem) {
+        document.getElementById('mensagemAlertaCustom').innerText = mensagem;
+        document.getElementById('modalAlertaCustom').style.display = 'flex';
+    }
+
+    function fecharAlertaCustom() {
+        document.getElementById('modalAlertaCustom').style.display = 'none';
+    }
 
     // ========== TROCA DE TELAS ==========
     function mostrarTela(id) {
@@ -294,6 +326,18 @@
 
     // ========== DELEGAÇÃO DE EVENTOS ==========
     document.addEventListener('click', function(e) {
+        // Fechar modal de alerta
+        if (e.target.id === 'btnFecharAlertaCustom') {
+            fecharAlertaCustom();
+            return;
+        }
+        // Fechar modal de quantidade (cancelar)
+        if (e.target.id === 'btnCancelarLancamento') {
+            document.getElementById('modalQuantidade').style.display = 'none';
+            produtoSelecionado = null;
+            estoqueAtual = 0;
+            return;
+        }
         // Botões de voltar
         const voltarBtn = e.target.closest('.btn-voltar');
         if (voltarBtn) {
@@ -321,10 +365,10 @@
             }
             return;
         }
-        // Tela de Estoque
+        // Estoque
         if (e.target.id === 'btnNovaVendaEstoque') mostrarTela('telaVenda');
         if (e.target.id === 'btnExportarExcel') exportarParaExcel();
-        // Tela de Venda
+        // Venda
         if (e.target.id === 'btnLancarProdutos') {
             mostrarTela('telaLancarProdutos');
             setTimeout(() => carregarProdutosLancamento(), 100);
@@ -336,10 +380,11 @@
         if (e.target.id === 'btnCadastrarClienteVenda') {
             editandoClienteId = null;
             limparFormCliente();
-            habilitarEdicao(false);
+            habilitarEdicao(true);
             mostrarTela('telaClientes');
+            return;
         }
-        // Tela de Seleção de Cliente
+        // Seleção de cliente (tela própria)
         if (e.target.id === 'btnPesquisarCliente') {
             mostrarTela('telaSelecionarCliente');
             carregarClientes();
@@ -350,7 +395,7 @@
             habilitarEdicao(false);
             mostrarTela('telaClientes');
         }
-        // Tela de Cadastro de Cliente
+        // Cadastro de cliente
         if (e.target.id === 'btnCriarNovoCliente') {
             limparFormCliente();
             habilitarEdicao(true);
@@ -358,7 +403,7 @@
         }
         if (e.target.id === 'btnEditarCliente') {
             if (!editandoClienteId) {
-                alert('Selecione um cliente na lista para editar.');
+                exibirAlertaCustom('Selecione um cliente na lista para editar.');
                 return;
             }
             habilitarEdicao(true);
@@ -370,10 +415,10 @@
             limparFormCliente();
         }
         // Ações placeholder da venda
-        if (e.target.id === 'btnAdicionarVenda') alert('Funcionalidade "Adicionar venda" em desenvolvimento');
-        if (e.target.id === 'btnEditarVenda') alert('Funcionalidade "Editar venda" em desenvolvimento');
-        if (e.target.id === 'btnExcluirVenda') alert('Funcionalidade "Excluir venda" em desenvolvimento');
-        if (e.target.id === 'btnCancelarVenda') alert('Funcionalidade "Cancelar venda" em desenvolvimento');
+        if (e.target.id === 'btnAdicionarVenda') exibirAlertaCustom('Funcionalidade "Adicionar venda" em desenvolvimento');
+        if (e.target.id === 'btnEditarVenda') exibirAlertaCustom('Funcionalidade "Editar venda" em desenvolvimento');
+        if (e.target.id === 'btnExcluirVenda') exibirAlertaCustom('Funcionalidade "Excluir venda" em desenvolvimento');
+        if (e.target.id === 'btnCancelarVenda') exibirAlertaCustom('Funcionalidade "Cancelar venda" em desenvolvimento');
     });
 
     // ========== FUNÇÕES AUXILIARES ==========
@@ -444,12 +489,12 @@
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             html += `<tr><td style="white-space:nowrap">${cod}</td><td style="white-space:normal; word-break:break-word"><strong>${desc}</strong></td><td style="white-space:nowrap">${qtd}</td><td style="white-space:nowrap">${preco}</td></tr>`;
         });
-        html += '</tbody></td>';
+        html += '</tbody></table>';
         return html;
     }
 
     function exportarParaExcel() {
-        if (!produtosFiltradosAtuais || produtosFiltradosAtuais.length === 0) { alert('Nenhum dado para exportar.'); return; }
+        if (!produtosFiltradosAtuais || produtosFiltradosAtuais.length === 0) { exibirAlertaCustom('Nenhum dado para exportar.'); return; }
         let csv = 'Código;Produto;Quantidade;Preço (R$)\n';
         produtosFiltradosAtuais.forEach(p => {
             csv += `"${p.CODPROD || ''}";"${p.DESCRICAO || ''}";${p.QT || 0};${(parseFloat(p.VLCMVCUSTO) || 0).toFixed(2).replace('.', ',')}\n`;
@@ -524,40 +569,40 @@
 
     async function salvarCliente() {
         const cliente = { acao: 'cliente', modo: editandoClienteId ? 'editar' : 'novo', id: editandoClienteId, nome: document.getElementById('editNomeCliente').value, cpf: document.getElementById('editCpfCliente').value, telefone: document.getElementById('editTelefoneCliente').value, uf: document.getElementById('editUfCliente').value, cidade: document.getElementById('editCidadeCliente').value, endereco: document.getElementById('editEnderecoCliente').value, numero: document.getElementById('editNumeroCliente').value, complemento: document.getElementById('editComplementoCliente').value, cep: document.getElementById('editCepCliente').value };
-        if (!cliente.nome) { alert('Nome é obrigatório'); return; }
+        if (!cliente.nome) { exibirAlertaCustom('Nome é obrigatório'); return; }
         try {
             const formData = new FormData();
             formData.append('dados', JSON.stringify(cliente));
             const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.status === 'ok') { 
-                alert('Cliente salvo!'); 
+                exibirAlertaCustom('Cliente salvo!'); 
                 limparFormCliente(); 
                 await carregarClientes(); 
                 if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { 
                     clienteSelecionado.nome = cliente.nome; 
                     document.getElementById('clienteSelecionadoDisplay').innerHTML = `<strong>Cliente:</strong> ${cliente.nome} (ID: ${clienteSelecionado.id})`; 
                 } 
-            } else alert('Erro ao salvar');
-        } catch(e) { alert('Erro de conexão'); }
+            } else exibirAlertaCustom('Erro ao salvar cliente');
+        } catch(e) { exibirAlertaCustom('Erro de conexão'); }
     }
 
     async function excluirCliente() {
-        if (!editandoClienteId) { alert('Selecione um cliente'); return; }
+        if (!editandoClienteId) { exibirAlertaCustom('Selecione um cliente'); return; }
         if (!confirm('Excluir permanentemente?')) return;
         try {
             const formData = new FormData();
             formData.append('dados', JSON.stringify({ acao: 'cliente', modo: 'excluir', id: editandoClienteId }));
             const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
-            if (data.status === 'ok') { alert('Cliente excluído'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado = null; document.getElementById('clienteSelecionadoDisplay').innerHTML = '<strong>Nenhum cliente selecionado</strong>'; } }
-            else alert('Erro ao excluir');
-        } catch(e) { alert('Erro de conexão'); }
+            if (data.status === 'ok') { exibirAlertaCustom('Cliente excluído'); limparFormCliente(); await carregarClientes(); if (clienteSelecionado && clienteSelecionado.id == editandoClienteId) { clienteSelecionado = null; document.getElementById('clienteSelecionadoDisplay').innerHTML = '<strong>Nenhum cliente selecionado</strong>'; } }
+            else exibirAlertaCustom('Erro ao excluir cliente');
+        } catch(e) { exibirAlertaCustom('Erro de conexão'); }
     }
 
     document.getElementById('pesquisaClientesCadastro').addEventListener('input', () => atualizarListaClientesCadastro());
 
-    // ========== TELA: LANÇAR PRODUTOS ==========
+    // ========== LANÇAR PRODUTOS ==========
     async function carregarProdutosLancamento() {
         const container = document.getElementById('tabelaLancamentoContainer');
         if (!container) return;
@@ -586,7 +631,7 @@
         filtrados.forEach((p, idx) => {
             const cod = p.CODPROD || '-';
             const desc = p.DESCRICAO || '-';
-            const dtval = p.DTVAL || '-';
+            const dtval = formatarDataISO(p.DTVAL); // DATA FORMATADA
             const qtd = Number(p.QT).toLocaleString('pt-BR');
             const preco = Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-descricao="${p.DESCRICAO}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
@@ -601,7 +646,7 @@
         container.innerHTML = html;
         atualizarTotaisLancamento(filtrados);
 
-        // Adicionar evento de clique nas linhas da tabela
+        // Adiciona evento de clique nas linhas
         document.querySelectorAll('#tabelaLancamento tbody tr').forEach(row => {
             row.addEventListener('click', function() {
                 const codprod = this.getAttribute('data-codprod');
@@ -627,41 +672,32 @@
         if (window.produtosLancamento) renderizarTabelaLancamento(window.produtosLancamento, e.target.value);
     });
 
-    // ========== MODAL DE QUANTIDADE ==========
-    function fecharModal() {
-        document.getElementById('modalQuantidade').style.display = 'none';
-        produtoSelecionado = null;
-        estoqueAtual = 0;
-    }
-
-    document.getElementById('btnCancelarLancamento').addEventListener('click', fecharModal);
-
+    // ========== MODAL DE QUANTIDADE (CONFIRMAR) ==========
     document.getElementById('btnConfirmarLancamento').addEventListener('click', async function() {
         const quantidade = parseInt(document.getElementById('inputQuantidade').value);
         if (isNaN(quantidade) || quantidade <= 0) {
-            alert('Informe uma quantidade válida.');
+            exibirAlertaCustom('Informe uma quantidade válida.');
             return;
         }
         if (quantidade > estoqueAtual) {
-            alert(`Estoque insuficiente! Saldo disponível: ${estoqueAtual}`);
+            exibirAlertaCustom(`Estoque insuficiente! Saldo disponível: ${estoqueAtual}`);
             return;
         }
         if (!clienteSelecionado) {
-            alert('Nenhum cliente selecionado. Volte para a tela de vendas e selecione um cliente.');
-            fecharModal();
+            exibirAlertaCustom('Nenhum cliente selecionado. Volte para a tela de vendas e selecione um cliente.');
+            document.getElementById('modalQuantidade').style.display = 'none';
             mostrarTela('telaVenda');
             return;
         }
-        // Enviar venda para o backend
         const venda = {
             acao: 'venda',
             cliente_id: clienteSelecionado.id,
             cliente_nome: clienteSelecionado.nome,
-            produto_codprod: produtoSelecionado.codprod,
-            produto_descricao: produtoSelecionado.descricao,
+            produtoId: produtoSelecionado.codprod,
+            produtoDescricao: produtoSelecionado.descricao,
             quantidade: quantidade,
-            preco_unitario: produtoSelecionado.preco,
-            valor_total: quantidade * produtoSelecionado.preco
+            valorUnitario: produtoSelecionado.preco,
+            valorTotal: quantidade * produtoSelecionado.preco
         };
         try {
             const formData = new FormData();
@@ -669,21 +705,19 @@
             const res = await fetch(API_URL, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.status === 'ok') {
-                alert(`Produto adicionado à venda!\nQuantidade: ${quantidade}\nValor: R$ ${(quantidade * produtoSelecionado.preco).toFixed(2)}`);
-                // Marcar visualmente o produto como "vendido" (opcional: mudar a cor da linha)
-                fecharModal();
-                // Recarregar a lista de produtos para mostrar o novo estoque
-                await carregarProdutosLancamento();
+                exibirAlertaCustom(`Produto adicionado à venda!\nQuantidade: ${quantidade}\nValor: R$ ${(quantidade * produtoSelecionado.preco).toFixed(2)}`);
+                document.getElementById('modalQuantidade').style.display = 'none';
+                await carregarProdutosLancamento(); // recarrega tabela (estoque atualizado)
             } else {
-                alert('Erro ao registrar venda: ' + (data.erro || 'desconhecido'));
+                exibirAlertaCustom('Erro ao registrar venda: ' + (data.erro || 'desconhecido'));
             }
         } catch(e) {
-            alert('Erro de conexão ao registrar venda.');
+            exibirAlertaCustom('Erro de conexão ao registrar venda.');
             console.error(e);
         }
     });
 
-    // ========== TELA: HISTÓRICO DE VENDAS ==========
+    // ========== HISTÓRICO DE VENDAS ==========
     async function carregarHistoricoVendas() {
         const container = document.getElementById('tabelaHistoricoContainer');
         if (!container) return;
@@ -728,7 +762,7 @@
         if (venda) {
             let msg = `Itens da venda ${venda.id}:\n`;
             venda.itens.forEach(i => { msg += `- ${i.produto}: ${i.qtd} x R$ ${i.preco.toFixed(2)} = R$ ${(i.qtd*i.preco).toFixed(2)}\n`; });
-            alert(msg);
+            exibirAlertaCustom(msg);
         }
     }
 
