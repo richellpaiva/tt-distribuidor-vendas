@@ -171,7 +171,7 @@
 <script>
     // ========== APROVADO - NÃO MEXER ==========
     // URL FINAL DO GOOGLE APPS SCRIPT (CORS CORRIGIDO)
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyv9c8y6YyGfVlVkNyz6DLeYUAQ50W2G4nPHov3gGPngngUGuTsyr3PZZzcjMlGOePxqA/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyoVBniYnx6Vn9yTXfWXwuDaQzQU4VPL_ZRq0owZ8dJruUzGAMSG-_XbsmY7hH6z2bbRw/exec';
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
 
     function mostrarTela(id) { document.querySelectorAll('.tela').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'flex'; }
@@ -191,13 +191,20 @@
     }
     function atualizarEstoque() {
         const termo = document.getElementById('pesquisaEstoque').value.toLowerCase();
-        const filtrados = produtosOriginais.filter(p => (p.id || '').toString().toLowerCase().includes(termo) || (p.nome || '').toString().toLowerCase().includes(termo));
+        const filtrados = produtosOriginais.filter(p => (p.CODPROD || '').toString().toLowerCase().includes(termo) || (p.DESCRICAO || '').toString().toLowerCase().includes(termo));
         let valorTotal = 0, qtdTotal = 0;
-        filtrados.forEach(p => { let preco = parseFloat(p.preco) || 0, qtd = parseInt(p.quantidade) || 0; valorTotal += preco * qtd; qtdTotal += qtd; });
+        filtrados.forEach(p => { let preco = parseFloat(p.VLCMVCUSTO) || 0; let qtd = parseInt(p.QT) || 0; valorTotal += preco * qtd; qtdTotal += qtd; });
         document.getElementById('valorTotal').innerText = `R$ ${valorTotal.toFixed(2)}`;
         document.getElementById('qtTotal').innerText = qtdTotal;
-        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Fornecedor</th><th>Preço</th><th>Qtd</th></tr></thead><tbody>';
-        filtrados.forEach(p => { html += `<tr><td>${p.id || '-'}</td><td><strong>${p.nome || '-'}</strong></td><td>${p.fornecedor || '-'}</td><td>R$ ${(parseFloat(p.preco)||0).toFixed(2)}</td><td>${p.quantidade||0}</td></tr>`; });
+        let html = '<table class="estoque-tabela"><thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Preço</th></tr></thead><tbody>';
+        filtrados.forEach(p => {
+            html += `<tr>
+                        <td>${p.CODPROD || '-'}</td>
+                        <td><strong>${p.DESCRICAO || '-'}</strong></td>
+                        <td>${p.QT || 0}</td>
+                        <td>R$ ${(parseFloat(p.VLCMVCUSTO) || 0).toFixed(2)}</td>
+                    </tr>`;
+        });
         html += '</tbody></table>';
         document.getElementById('estoqueContainer').innerHTML = html;
     }
