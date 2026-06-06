@@ -161,19 +161,27 @@ function inicializarEventosTela(arquivo) {
 }
 
 /* ============================================
-   LOGIN
+   LOGIN CORRIGIDO
    ============================================ */
 async function fazerLogin() {
-    const usuario = document.getElementById('usuarioLogin').value;
-    const senha = document.getElementById('senhaLogin').value;
-    if (!usuario || !senha) {
+    const usuarioInput = document.getElementById('usuarioLogin').value.trim();
+    const senhaInput = document.getElementById('senhaLogin').value.trim();
+
+    if (!usuarioInput || !senhaInput) {
         exibirAlertaCustom('Preencha todos os campos.');
         return;
     }
+
     try {
         const resposta = await fetch(`${API_URL}?tipo=usuarios`);
         const usuarios = await resposta.json();
-        const encontrado = usuarios.find(u => u.usuario === usuario && u.senha === senha);
+
+        // A busca agora usa a chave 'nome' que o backend retorna e adiciona 'trim()' para evitar erros de espaço
+        const encontrado = usuarios.find(u => 
+            u.nome && u.nome.trim() === usuarioInput && 
+            u.senha && u.senha.trim() === senhaInput
+        );
+
         if (encontrado) {
             localStorage.setItem('usuarioLogado', JSON.stringify(encontrado));
             navegarPara('tela_menu.html');
@@ -181,6 +189,7 @@ async function fazerLogin() {
             exibirAlertaCustom('Usuário ou senha incorretos.');
         }
     } catch (erro) {
+        console.error('Erro no login:', erro);
         exibirAlertaCustom('Erro ao conectar ao servidor.');
     }
 }
@@ -480,7 +489,7 @@ async function carregarUsuarios(termo = '') {
         let filtrados = usuariosOriginais;
         if (termo) {
             const low = termo.toLowerCase();
-            filtrados = usuariosOriginais.filter(u => u.usuario.toLowerCase().includes(low));
+            filtrados = usuariosOriginais.filter(u => u.nome.toLowerCase().includes(low));
         }
         if (!filtrados.length) {
             container.innerHTML = '<div class="placeholder-mensagem">Nenhum usuário encontrado</div>';
@@ -488,7 +497,7 @@ async function carregarUsuarios(termo = '') {
         }
         let html = '<table class="data-table"><thead><tr><th>USUÁRIOS</th><th>SENHAS</th><th>NÍVEIS</th></tr></thead><tbody>';
         filtrados.forEach(u => {
-            html += `<tr data-id="${u.id}"><td>${u.usuario}<td>******<\/td><td>${u.nivel || 'Vendedor'}<\/td></tr>`;
+            html += `<tr data-id="${u.id}"><td>${u.nome}<td>******<\/td><td>${u.nivel || 'Vendedor'}<\/td></tr>`;
         });
         html += '</tbody></table>';
         container.innerHTML = html;
@@ -506,7 +515,7 @@ async function carregarUsuarios(termo = '') {
 
 function preencherFormUsuario(usuario) {
     usuarioSelecionadoId = usuario.id;
-    document.getElementById('editUsuario').value = usuario.usuario || '';
+    document.getElementById('editUsuario').value = usuario.nome || '';
     document.getElementById('editSenha').value = '';
     document.getElementById('editNivel').value = usuario.nivel || 'Vendedor';
     habilitarEdicaoUsuario(false);
@@ -531,11 +540,11 @@ async function salvarUsuario() {
         acao: 'usuario',
         modo: usuarioSelecionadoId ? 'editar' : 'novo',
         id: usuarioSelecionadoId,
-        usuario: document.getElementById('editUsuario').value,
+        nome: document.getElementById('editUsuario').value,
         senha: document.getElementById('editSenha').value,
         nivel: document.getElementById('editNivel').value
     };
-    if (!usuario.usuario) {
+    if (!usuario.nome) {
         exibirAlertaCustom('Usuário é obrigatório');
         return;
     }
@@ -622,7 +631,7 @@ function renderizarTabelaLancamento(produtos, termo = '') {
         atualizarTotaisLancamento([]);
         return;
     }
-    let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
+    let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th><tr></thead><tbody>';
     filtrados.forEach((p, idx) => {
         html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
                     <td style="white-space:nowrap">${p.CODPROD || '-'}</td>
