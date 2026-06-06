@@ -41,7 +41,6 @@ body {
     flex-direction: column;
 }
 
-/* Logo e cabeçalho */
 .logo-area {
     text-align: center;
     margin-bottom: 12px;
@@ -83,7 +82,6 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Menu principal */
 .menu-botao {
     width: 100%;
     background: white;
@@ -122,7 +120,6 @@ body {
     background: #f0f7ff;
 }
 
-/* Cabeçalho geral */
 .tela-header-nofixed {
     display: flex;
     align-items: center;
@@ -156,7 +153,6 @@ body {
     margin: 0;
 }
 
-/* Barra de pesquisa */
 .search-box {
     width: 100%;
     padding: 10px 12px;
@@ -173,7 +169,6 @@ body {
     box-shadow: 0 0 0 3px rgba(30,90,153,0.1);
 }
 
-/* Cards de totais */
 .totais-container {
     display: flex;
     gap: 12px;
@@ -205,7 +200,6 @@ body {
     font-weight: bold;
 }
 
-/* Botões primários */
 .btn-primary {
     width: 100%;
     padding: 12px;
@@ -228,7 +222,6 @@ body {
     background: #2B7BC9 !important;
 }
 
-/* Barra de ferramentas */
 .toolbar {
     display: flex;
     gap: 8px;
@@ -281,7 +274,6 @@ body {
     color: white;
 }
 
-/* Tabela padrão */
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -317,7 +309,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* Formulários */
 .form-group {
     margin-bottom: 12px;
 }
@@ -352,7 +343,6 @@ body {
     margin-top: 15px;
 }
 
-/* Tela de login */
 .form-login {
     margin-top: 20px;
 }
@@ -366,7 +356,6 @@ body {
     font-size: 1rem;
 }
 
-/* Placeholders e mensagens */
 .loading-message,
 .error-message,
 .placeholder-mensagem {
@@ -397,7 +386,6 @@ body {
     display: block;
 }
 
-/* Modais */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -461,9 +449,7 @@ body {
     cursor: pointer;
 }
 
-/* ============================================
-   ESTILOS ESPECÍFICOS DO ESTOQUE
-   ============================================ */
+/* Estilos específicos do estoque */
 #telaEstoque {
     height: 100vh;
     padding: 0;
@@ -526,9 +512,6 @@ body {
     word-break: break-word;
 }
 
-/* ============================================
-   ESTILOS CLIENTES E VENDAS
-   ============================================ */
 .cliente-selecionado-box {
     background: #e8f0fe;
     padding: 12px;
@@ -571,10 +554,17 @@ body {
 }
 
 /* ============================================
-   NOVOS ESTILOS PARA CADASTRO DE USUÁRIOS
+   LAYOUT ESPECÍFICO DO CADASTRO DE USUÁRIOS
    ============================================ */
-.input-large,
-.select-large {
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.input-large {
     width: 100%;
     padding: 15px;
     border: 2px solid #1E5A99;
@@ -582,18 +572,37 @@ body {
     font-size: 1rem;
     box-sizing: border-box;
     background: white;
+    color: #2d3748;
 }
 
-.input-large:disabled,
-.select-large:disabled {
-    background: #f8f9fa;
+.input-large:disabled {
+    background: #f8fafc;
     color: #6c757d;
     border-color: #d1d5db;
 }
 
+.search-box-large {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 2px solid #1E5A99;
+    border-radius: 12px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E5A99' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'%3e%3c/circle%3e%3cline x1='21' y1='21' x2='16.65' y2='16.65'%3e%3c/line%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-size: 20px;
+}
+
 .select-large {
+    width: 100%;
+    padding: 15px;
     background-color: #1E5A99;
     color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -601,6 +610,12 @@ body {
     background-repeat: no-repeat;
     background-position: right 15px center;
     background-size: 20px;
+    cursor: pointer;
+}
+
+.select-large:disabled {
+    background-color: #87a2c0;
+    cursor: not-allowed;
 }
 
 .select-large option {
@@ -608,30 +623,46 @@ body {
     color: #333;
 }
 
-.btn-icon {
+/* Botões de Ação no Rodapé */
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    flex: 1;
+    min-width: 50px;
     background: #1E5A99;
     color: white;
     border: none;
     border-radius: 12px;
-    width: 65px;
-    height: 65px;
+    padding: 10px 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 0.8rem;
     transition: 0.2s;
 }
 
-.btn-icon:active {
+.btn-action i {
+    font-size: 1.2rem;
+    margin-bottom: 3px;
+}
+
+.btn-action:active {
     transform: scale(0.95);
     background: #0f3e6b;
 }
 
-/* Zebra na tabela de usuários */
-.data-table tbody tr:nth-child(even) td {
-    background: #f8fafc;
+.btn-action span {
+    font-size: 0.55rem;
+    text-align: center;
+    line-height: 1;
 }
 
 /* Responsividade */
@@ -648,11 +679,18 @@ body {
     .botoes-form {
         flex-direction: column;
     }
-    
-    .btn-icon {
-        width: 55px;
-        height: 55px;
-        font-size: 1.2rem;
+
+    .btn-action {
+        min-width: 40px;
+        padding: 8px 3px;
+    }
+
+    .btn-action i {
+        font-size: 1rem;
+    }
+
+    .btn-action span {
+        font-size: 0.5rem;
     }
 }
 
