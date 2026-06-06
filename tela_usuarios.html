@@ -1,55 +1,38 @@
 <div class="tela" id="telaUsuarios">
-    <div class="card-content">
-        <!-- Cabeçalho com título e logo -->
-        <div class="tela-header-nofixed" style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <button class="btn-voltar"><i class="fas fa-arrow-left"></i></button>
-                <h2 style="color: #1E5A99; margin: 0;">Cadastro de usuários</h2>
+    <div class="card-content" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="tela-header-nofixed" style="flex-shrink: 0;">
+            <button class="btn-voltar"><i class="fas fa-arrow-left"></i></button>
+            <h2 style="color: #1E5A99; margin: 0;"><i class="fas fa-users"></i> Cadastro de usuários</h2>
+        </div>
+
+        <!-- Formulário -->
+        <div style="flex-shrink: 0; margin-top: 15px;">
+            <div class="form-group"><label>Usuário *</label><input type="text" id="editUsuario" placeholder="Digite o nome de usuário" disabled></div>
+            <div class="form-group"><label>Senha</label><input type="password" id="editSenha" placeholder="Digite a senha" disabled></div>
+            <div class="form-group"><label>Nível de Acesso</label>
+                <select id="editNivel" disabled>
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="Vendedor">Vendedor</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Desenvolvedor">Desenvolvedor</option>
+                </select>
             </div>
-            <img src="https://i.imgur.com/1BQJhXp.png" style="max-width: 60px; height: auto;">
+            <input type="text" id="pesquisaUsuario" class="search-box" placeholder="🔍 Pesquisar por nome de usuário...">
         </div>
 
-        <!-- Formulário (Inputs e Dropdown) -->
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
-            <input type="text" id="editUsuario" placeholder="Usuário" class="input-large" disabled>
-            <input type="password" id="editSenha" placeholder="Senha" class="input-large" disabled>
-            <select id="editNivel" class="select-large" disabled>
-                <option value="" disabled selected>Selecione o nível de acesso</option>
-                <option value="Vendedor">Vendedor</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Desenvolvedor">Desenvolvedor</option>
-            </select>
+        <!-- Tabela (Rolável) -->
+        <div id="listaUsuariosContainer" style="flex: 1; overflow-y: auto; margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <!-- A tabela será gerada aqui -->
         </div>
 
-        <!-- Barra de Pesquisa -->
-        <div style="position: relative; margin: 20px 0;">
-            <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #1E5A99; font-size: 1.2rem;"></i>
-            <input type="text" id="pesquisaUsuario" placeholder="Pesquisar" style="width: 100%; padding: 12px 12px 12px 45px; border: 2px solid #1E5A99; border-radius: 12px; font-size: 1rem; box-sizing: border-box;">
-        </div>
-
-        <!-- Tabela -->
-        <div class="table-container" style="flex: 1; overflow-y: auto;">
-            <table class="data-table" id="listaUsuariosTable">
-                <thead>
-                    <tr>
-                        <th>USUÁRIOS</th>
-                        <th>SENHAS</th>
-                        <th>NÍVEIS DE ACESSO</th>
-                    </tr>
-                </thead>
-                <tbody id="listaUsuariosContainer">
-                    <tr><td colspan="3" style="text-align: center; padding: 20px; color: #6c757d;">Nenhum usuário encontrado</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Botões de Ação no Rodapé -->
-        <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-            <button id="btnAdicionarUsuario" class="btn-icon" title="Adicionar"><i class="fas fa-plus"></i><span style="font-size: 0.6rem; display: block; margin-top: 2px;">Adicionar</span></button>
-            <button id="btnEditarUsuario" class="btn-icon" title="Editar"><i class="fas fa-pen"></i><span style="font-size: 0.6rem; display: block; margin-top: 2px;">Editar</span></button>
-            <button id="btnExcluirUsuario" class="btn-icon" title="Excluir"><i class="fas fa-trash"></i><span style="font-size: 0.6rem; display: block; margin-top: 2px;">Excluir</span></button>
-            <button id="btnCancelarUsuario" class="btn-icon" title="Cancelar"><i class="fas fa-times"></i><span style="font-size: 0.6rem; display: block; margin-top: 2px;">Cancelar</span></button>
-            <button id="btnSalvarUsuario" class="btn-icon" title="Salvar"><i class="fas fa-save"></i><span style="font-size: 0.6rem; display: block; margin-top: 2px;">Salvar</span></button>
+        <!-- Botões de Ação (Estáticos no Final) -->
+        <div class="botoes-form" style="flex-shrink: 0; margin-top: 15px; justify-content: space-between;">
+            <button id="btnAdicionarUsuario" class="btn-form btn-novo"><i class="fas fa-plus"></i> Adicionar</button>
+            <button id="btnEditarUsuario" class="btn-form btn-editar"><i class="fas fa-edit"></i> Editar</button>
+            <button id="btnExcluirUsuario" class="btn-form btn-excluir"><i class="fas fa-trash"></i> Excluir</button>
+            <button id="btnSalvarUsuario" class="btn-form btn-salvar"><i class="fas fa-save"></i> Salvar</button>
+            <button id="btnCancelarUsuario" class="btn-form btn-cancelar"><i class="fas fa-times"></i> Cancelar</button>
+            <button id="btnMenuUsuarios" class="btn-form btn-menu"><i class="fas fa-bars"></i> Menu</button>
         </div>
     </div>
 </div>
