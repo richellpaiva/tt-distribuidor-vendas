@@ -637,4 +637,140 @@ function renderizarTabelaLancamento(produtos, termo = '') {
     filtrados.forEach((p, idx) => {
         html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
                     <td style="white-space:nowrap">${p.CODPROD || '-'}</td>
-                    <td style="white-space:normal; word-break:break-word"><strong>${p.DESCRICAO
+                    <td style="white-space:normal; word-break:break-word"><strong>${p.DESCRICAO || '-'}</strong></td>
+                    <td style="white-space:nowrap">${formatarDataISO(p.DTVAL)}<\/td>
+                    <td style="white-space:nowrap">${Number(p.QT).toLocaleString('pt-BR')}<\/td>
+                    <td style="white-space:nowrap">${Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<\/td>
+                  </td>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    atualizarTotaisLancamento(filtrados);
+    document.querySelectorAll('#tabelaLancamento tbody tr').forEach(row => {
+        row.addEventListener('click', function() {
+            produtoSelecionado = {
+                codprod: this.dataset.codprod,
+                estoque: parseInt(this.dataset.estoque) || 0,
+                preco: parseFloat(this.dataset.preco) || 0
+            };
+            estoqueAtual = produtoSelecionado.estoque;
+            document.getElementById('inputQuantidade').value = 1;
+            document.getElementById('modalQuantidade').style.display = 'flex';
+        });
+    });
+}
+
+function atualizarTotaisLancamento(produtos) {
+    let qtdeTotal = 0, valorTotal = 0;
+    produtos.forEach(p => {
+        qtdeTotal += parseInt(p.QT) || 0;
+        valorTotal += (parseFloat(p.VLCMVCUSTO) || 0) * (parseInt(p.QT) || 0);
+    });
+    document.getElementById('lancQtdeTotal').innerText = qtdeTotal.toLocaleString('pt-BR');
+    document.getElementById('lancValorTotal').innerText = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+async function confirmarLancamento() {
+    const quantidade = parseInt(document.getElementById('inputQuantidade').value);
+    if (isNaN(quantidade) || quantidade <= 0) {
+        exibirAlertaCustom('Informe uma quantidade válida.');
+        return;
+    }
+    if (quantidade > estoqueAtual) {
+        exibirAlertaCustom(`Estoque insuficiente! Saldo disponível: ${estoqueAtual}`);
+        return;
+    }
+    if (!clienteSelecionado) {
+        exibirAlertaCustom('Nenhum cliente selecionado.');
+        return;
+    }
+    const venda = {
+        acao: 'venda',
+        cliente_id: clienteSelecionado.id,
+        cliente_nome: clienteSelecionado.nome,
+        produtoId: produtoSelecionado.codprod,
+        quantidade: quantidade,
+        valorUnitario: produtoSelecionado.preco,
+        valorTotal: quantidade * produtoSelecionado.preco
+    };
+    try {
+        const formData = new FormData();
+        formData.append('dados', JSON.stringify(venda));
+        const res = await fetch(API_URL, { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            exibirAlertaCustom(`Produto adicionado à venda! Valor: R$ ${(quantidade * produtoSelecionado.preco).toFixed(2)}`);
+            document.getElementById('modalQuantidade').style.display = 'none';
+            await carregarProdutosLancamento();
+        } else {
+            exibirAlertaCustom('Erro ao registrar venda');
+        }
+    } catch (e) {
+        exibirAlertaCustom('Erro de conexão');
+    }
+}
+
+/* ============================================
+   HISTÓRICO DE VENDAS
+   ============================================ */
+async function carregarHistoricoVendas() {
+    const container = document.getElementById('tabelaHistoricoContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="loading-message">Carregando histórico...</div>';
+    try {
+        const vendas = [
+            { id: 1, data: '15/06/2024', cliente: 'João Silva', valorTotal: 1250.90, itens: [{ produto: 'Produto A', qtd: 2, preco: 50.00 }] },
+            { id: 2, data: '14/06/2024', cliente: 'Maria Oliveira', valorTotal: 89.50, itens: [{ produto: 'Produto B', qtd: 1, preco: 89.50 }] },
+            { id: 3, data: '13/06/2024', cliente: 'Carlos Souza', valorTotal: 350.00, itens: [{ produto: 'Produto C', qtd: 5, preco: 70.00 }] }
+        ];
+        window.vendasHistorico = vendas;
+        renderizarHistoricoVendas(vendas);
+    } catch (e) {
+        container.innerHTML = '<div class="error-message">Erro ao carregar histórico</div>';
+    }
+}
+
+function renderizarHistoricoVendas(vendas, termo = '') {
+    const container = document.getElementById('tabelaHistoricoContainer');
+    let filtrados = vendas;
+    if (termo) {
+        const low = termo.toLowerCase();
+        filtrados = vendas.filter(v =>
+            v.id.toString().includes(low) ||
+            v.cliente.toLowerCase().includes(low) ||
+            v.data.includes(low)
+        );
+    }
+    if (!filtrados.length) {
+        container.innerHTML = '<div class="placeholder-mensagem">Nenhuma venda encontrada</div>';
+        return;
+    }
+    let html = '<table class="data-table"><thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Valor Total</th><th>Ações</th></tr></thead><tbody>';
+    filtrados.forEach(v => {
+        html += `<tr>
+                    <td>${v.id}</td>
+                    <td>${v.data}</td>
+                    <td>${v.cliente}</td>
+                    <td>${Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<\/td>
+                    <td><button class="btn-ver-detalhes" data-id="${v.id}" style="background:#1E5A99; color:white; border:none; padding:5px 10px; border-radius:5px;">Ver</button></td>
+                  </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    document.querySelectorAll('.btn-ver-detalhes').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = parseInt(btn.dataset.id);
+            const venda = window.vendasHistorico.find(v => v.id === id);
+            if (venda) {
+                let msg = `Itens da venda ${venda.id}:\n`;
+                venda.itens.forEach(i => {
+                    msg += `- ${i.produto}: ${i.qtd} x R$ ${i.preco.toFixed(2)}\n`;
+                });
+                exibirAlertaCustom(msg);
+            }
+        });
+    });
+}
+
+// Inicializar
+navegarPara('tela_login.html');
