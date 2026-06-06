@@ -485,26 +485,44 @@ async function carregarUsuarios(termo = '') {
     container.innerHTML = '<div class="loading-message">Carregando...</div>';
     try {
         const res = await fetch(`${API_URL}?tipo=usuarios`);
-        usuariosOriginais = await res.json();
-        let filtrados = usuariosOriginais;
+        const usuarios = await res.json();
+        let filtrados = usuarios;
         if (termo) {
             const low = termo.toLowerCase();
-            filtrados = usuariosOriginais.filter(u => u.nome.toLowerCase().includes(low));
+            filtrados = usuarios.filter(u => u.nome.toLowerCase().includes(low));
         }
         if (!filtrados.length) {
             container.innerHTML = '<div class="placeholder-mensagem">Nenhum usuário encontrado</div>';
             return;
         }
-        let html = '<table class="data-table"><thead><tr><th>USUÁRIOS</th><th>SENHAS</th><th>NÍVEIS DE ACESSO</th></tr></thead><tbody>';
+        let html = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>USUÁRIOS</th>
+                        <th>SENHAS</th>
+                        <th>NÍVEIS DE ACESSO</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
         filtrados.forEach(u => {
-            html += `<tr data-id="${u.id}"><td>${u.nome}<td>******<\/td><td>${u.nivelAcesso || 'Vendedor'}<\/td></tr>`;
+            html += `
+                <tr data-id="${u.id}">
+                    <td>${u.nome}</td>
+                    <td>*****<\/td>
+                    <td>${u.nivelAcesso || 'Não definido'}<\/td>
+                </tr>
+            `;
         });
-        html += '</tbody></table>';
+        html += `</tbody></table>`;
         container.innerHTML = html;
-        document.querySelectorAll('#listaUsuariosContainer tbody tr').forEach(row => {
+
+        // Adiciona evento de clique nas linhas da tabela para selecionar o usuário
+        container.querySelectorAll('tbody tr').forEach(row => {
             row.addEventListener('click', () => {
                 const id = parseInt(row.dataset.id);
-                const usuario = usuariosOriginais.find(u => u.id == id);
+                const usuario = usuarios.find(u => u.id == id);
                 if (usuario) preencherFormUsuario(usuario);
             });
         });
@@ -517,8 +535,10 @@ function preencherFormUsuario(usuario) {
     usuarioSelecionadoId = usuario.id;
     document.getElementById('editUsuario').value = usuario.nome || '';
     document.getElementById('editSenha').value = '';
+
     const selectNivel = document.getElementById('editNivel');
-    selectNivel.value = usuario.nivelAcesso || 'Vendedor';
+    // Define o valor do select, removendo a seleção padrão
+    selectNivel.value = usuario.nivelAcesso || '';
     habilitarEdicaoUsuario(false);
 }
 
@@ -526,8 +546,7 @@ function limparFormUsuario() {
     usuarioSelecionadoId = null;
     document.getElementById('editUsuario').value = '';
     document.getElementById('editSenha').value = '';
-    const selectNivel = document.getElementById('editNivel');
-    if (selectNivel) selectNivel.value = '';
+    document.getElementById('editNivel').value = '';
     habilitarEdicaoUsuario(false);
 }
 
@@ -538,22 +557,32 @@ function habilitarEdicaoUsuario(habilitar) {
 }
 
 async function salvarUsuario() {
+    const nome = document.getElementById('editUsuario').value.trim();
+    const senha = document.getElementById('editSenha').value.trim();
+    const nivelAcesso = document.getElementById('editNivel').value;
+
+    if (!nome) {
+        exibirAlertaCustom('Usuário é obrigatório');
+        return;
+    }
+    if (!senha && !usuarioSelecionadoId) {
+        exibirAlertaCustom('Senha é obrigatória');
+        return;
+    }
+    if (!nivelAcesso) {
+        exibirAlertaCustom('Selecione um nível de acesso');
+        return;
+    }
+
     const usuario = {
         acao: 'usuario',
         modo: usuarioSelecionadoId ? 'editar' : 'novo',
         id: usuarioSelecionadoId,
-        nome: document.getElementById('editUsuario').value,
-        senha: document.getElementById('editSenha').value,
-        nivelAcesso: document.getElementById('editNivel').value
+        nome: nome,
+        senha: senha,
+        nivelAcesso: nivelAcesso
     };
-    if (!usuario.nome) {
-        exibirAlertaCustom('Usuário é obrigatório');
-        return;
-    }
-    if (!usuario.senha && !usuarioSelecionadoId) {
-        exibirAlertaCustom('Senha é obrigatória');
-        return;
-    }
+
     try {
         const formData = new FormData();
         formData.append('dados', JSON.stringify(usuario));
@@ -564,7 +593,7 @@ async function salvarUsuario() {
             limparFormUsuario();
             carregarUsuarios();
         } else {
-            exibirAlertaCustom('Erro ao salvar usuário');
+            exibirAlertaCustom('Erro ao salvar usuário: ' + (data.erro || 'Erro desconhecido'));
         }
     } catch (e) {
         exibirAlertaCustom('Erro de conexão');
@@ -633,7 +662,7 @@ function renderizarTabelaLancamento(produtos, termo = '') {
         atualizarTotaisLancamento([]);
         return;
     }
-    let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
+    let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><td><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
     filtrados.forEach((p, idx) => {
         html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
                     <td style="white-space:nowrap">${p.CODPROD || '-'}</td>
@@ -755,7 +784,7 @@ function renderizarHistoricoVendas(vendas, termo = '') {
                     <td><button class="btn-ver-detalhes" data-id="${v.id}" style="background:#1E5A99; color:white; border:none; padding:5px 10px; border-radius:5px;">Ver</button></td>
                   </tr>`;
     });
-    html += '</tbody></table>';
+    html += '</tbody></tr>';
     container.innerHTML = html;
     document.querySelectorAll('.btn-ver-detalhes').forEach(btn => {
         btn.addEventListener('click', () => {
