@@ -1,7 +1,7 @@
 <div class="tela" id="telaUsuarios">
     <div class="card-content" style="display: flex; flex-direction: column; height: 100%;">
-        <!-- Cabeçalho com título e logo -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <!-- Cabeçalho -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <button class="btn-voltar"><i class="fas fa-arrow-left"></i></button>
                 <h2 style="color: #1E5A99; margin: 0; font-size: 1.4rem;">Cadastro de usuários</h2>
@@ -9,32 +9,26 @@
             <img src="https://i.imgur.com/1BQJhXp.png" style="max-width: 60px; height: auto;">
         </div>
 
-        <!-- Inputs (Estilo Cartão) -->
-        <div class="input-group">
+        <!-- Formulário (Inputs e Dropdown) - flex-shrink: 0 para não encolher -->
+        <div style="flex-shrink: 0; margin-top: 15px;">
             <input type="text" id="editUsuario" placeholder="Usuário" class="input-large" disabled>
             <input type="password" id="editSenha" placeholder="Senha" class="input-large" disabled>
-        </div>
-
-        <!-- Dropdown (Estilo Azul Escuro) -->
-        <div class="form-group">
             <select id="editNivel" class="select-large" disabled>
                 <option value="" disabled selected>Nível de acesso</option>
                 <option value="Vendedor">Vendedor</option>
                 <option value="Administrador">Administrador</option>
                 <option value="Desenvolvedor">Desenvolvedor</option>
             </select>
+            <input type="text" id="pesquisaUsuario" class="search-box-large" placeholder="🔍 Pesquisar">
         </div>
 
-        <!-- Barra de Pesquisa -->
-        <input type="text" id="pesquisaUsuario" class="search-box-large" placeholder="🔍 Pesquisar">
-
-        <!-- Tabela (Rolável) -->
-        <div id="listaUsuariosContainer" style="flex: 1; overflow-y: auto; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <!-- Tabela (Rolável) - flex: 1 e overflow-y: auto -->
+        <div id="listaUsuariosContainer" style="flex: 1; overflow-y: auto; margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 8px;">
             <!-- A tabela será gerada aqui -->
         </div>
 
-        <!-- Botões de Ação (Estáticos no Final) -->
-        <div class="action-buttons">
+        <!-- Botões (Estáticos no Final) - flex-shrink: 0 -->
+        <div class="action-buttons" style="flex-shrink: 0; margin-top: 10px;">
             <button id="btnAdicionarUsuario" class="btn-action"><i class="fas fa-plus"></i><span>Adicionar</span></button>
             <button id="btnEditarUsuario" class="btn-action"><i class="fas fa-pen"></i><span>Editar</span></button>
             <button id="btnExcluirUsuario" class="btn-action"><i class="fas fa-trash"></i><span>Excluir</span></button>
