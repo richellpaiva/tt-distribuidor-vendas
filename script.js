@@ -1,7 +1,7 @@
 /* ============================================
    CONFIGURAÇÕES GLOBAIS
    ============================================ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbzFzi9oYzDGS3_dnVzm2H_Y-vDFyxf6_MCho977kbyMqhoSymsb8-mwc_lSeJJy_p1VZQ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwYBa0k2iBAHjn9zE0fY3clM4jRFldoIq_rE_ompK5OSvdYsuxqWuMpAI_XPUaRi72QFA/exec';
 
 let historicoNavegacao = ['tela_login.html'];
 let produtosOriginais = [];
@@ -271,9 +271,9 @@ function renderizarTabelaEstoque(produtos) {
     }
     let html = '<table class="estoque-tabela"><thead><tr><th onclick="ordenarTabelaEstoque(0)">Código <i class="fas fa-sort"></i></th><th onclick="ordenarTabelaEstoque(1)">Produto <i class="fas fa-sort"></i></th><th onclick="ordenarTabelaEstoque(2)">Quantidade <i class="fas fa-sort"></i></th><th onclick="ordenarTabelaEstoque(3)">Preço <i class="fas fa-sort"></i></th></tr></thead><tbody>';
     produtos.forEach(p => {
-        html += `<tr><td style="white-space:nowrap">${p.CODPROD || '-'}</td><td style="white-space:normal; word-break:break-word"><strong>${p.DESCRICAO || '-'}</strong></td><td style="white-space:nowrap">${Number(p.QT).toLocaleString('pt-BR')}</td><td style="white-space:nowrap">${Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td></tr>`;
+        html += `<tr><td style="white-space:nowrap">${p.CODPROD || '-'}</td><td style="white-space:normal; word-break:break-word"><strong>${p.DESCRICAO || '-'}</strong></td><td style="white-space:nowrap">${Number(p.QT).toLocaleString('pt-BR')}</td><td style="white-space:nowrap">${Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<\/td></tr>`;
     });
-    html += '</tbody></table>';
+    html += '</tbody><tr>';
     return html;
 }
 
@@ -501,7 +501,7 @@ async function carregarUsuarios(termo = '') {
         filtrados.forEach(u => {
             html += `<tr data-id="${u.id}"><td>${u.nome}<td>******<\/td><td>${u.nivel || 'Vendedor'}<\/td></tr>`;
         });
-        html += '</tbody></table>';
+        html += '</tbody><tr>';
         container.innerHTML = html;
         document.querySelectorAll('#listaUsuariosContainer tbody tr').forEach(row => {
             row.addEventListener('click', () => {
@@ -638,9 +638,9 @@ function renderizarTabelaLancamento(produtos, termo = '') {
         html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
                     <td style="white-space:nowrap">${p.CODPROD || '-'}</td>
                     <td style="white-space:normal; word-break:break-word"><strong>${p.DESCRICAO || '-'}</strong></td>
-                    <td style="white-space:nowrap">${formatarDataISO(p.DTVAL)}</td>
-                    <td style="white-space:nowrap">${Number(p.QT).toLocaleString('pt-BR')}</td>
-                    <td style="white-space:nowrap">${Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td style="white-space:nowrap">${formatarDataISO(p.DTVAL)}<\/td>
+                    <td style="white-space:nowrap">${Number(p.QT).toLocaleString('pt-BR')}<\/td>
+                    <td style="white-space:nowrap">${Number(p.VLCMVCUSTO).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<\/td>
                   </tr>`;
     });
     html += '</tbody></table>';
@@ -751,9 +751,9 @@ function renderizarHistoricoVendas(vendas, termo = '') {
                     <td>${v.id}</td>
                     <td>${v.data}</td>
                     <td>${v.cliente}</td>
-                    <td>${Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td>${Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}<\/td>
                     <td><button class="btn-ver-detalhes" data-id="${v.id}" style="background:#1E5A99; color:white; border:none; padding:5px 10px; border-radius:5px;">Ver</button></td>
-                 <tr>`;
+                  </table>`;
     });
     html += '</tbody></table>';
     container.innerHTML = html;
