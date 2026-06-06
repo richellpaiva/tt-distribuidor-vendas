@@ -161,7 +161,7 @@ function inicializarEventosTela(arquivo) {
 }
 
 /* ============================================
-   LOGIN CORRIGIDO
+   LOGIN (CORRIGIDO PARA TRATAR DADOS DO BACKEND)
    ============================================ */
 async function fazerLogin() {
     const usuarioInput = document.getElementById('usuarioLogin').value.trim();
@@ -176,11 +176,13 @@ async function fazerLogin() {
         const resposta = await fetch(`${API_URL}?tipo=usuarios`);
         const usuarios = await resposta.json();
 
-        // A busca agora usa a chave 'nome' que o backend retorna e adiciona 'trim()' para evitar erros de espaço
-        const encontrado = usuarios.find(u => 
-            u.nome && u.nome.trim() === usuarioInput && 
-            u.senha && u.senha.trim() === senhaInput
-        );
+        // Busca o usuário comparando os dados (com conversão para string e trim)
+        const encontrado = usuarios.find(u => {
+            // Converte o nome e a senha para string, garantindo que não seja null ou número
+            const nomeUsuario = String(u.nome || '').trim();
+            const senhaUsuario = String(u.senha || '').trim();
+            return nomeUsuario === usuarioInput && senhaUsuario === senhaInput;
+        });
 
         if (encontrado) {
             localStorage.setItem('usuarioLogado', JSON.stringify(encontrado));
@@ -631,7 +633,7 @@ function renderizarTabelaLancamento(produtos, termo = '') {
         atualizarTotaisLancamento([]);
         return;
     }
-    let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th><tr></thead><tbody>';
+    let html = '<table class="estoque-tabela" id="tabelaLancamento"><thead><tr><th>Código</th><th>Produto</th><th>Validade</th><th>Quantidade</th><th>Preço Unit.</th></tr></thead><tbody>';
     filtrados.forEach((p, idx) => {
         html += `<tr data-idx="${idx}" data-codprod="${p.CODPROD}" data-estoque="${p.QT}" data-preco="${p.VLCMVCUSTO}">
                     <td style="white-space:nowrap">${p.CODPROD || '-'}</td>
@@ -751,7 +753,7 @@ function renderizarHistoricoVendas(vendas, termo = '') {
                     <td>${v.cliente}</td>
                     <td>${Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td><button class="btn-ver-detalhes" data-id="${v.id}" style="background:#1E5A99; color:white; border:none; padding:5px 10px; border-radius:5px;">Ver</button></td>
-                 </tr>`;
+                 <tr>`;
     });
     html += '</tbody></table>';
     container.innerHTML = html;
