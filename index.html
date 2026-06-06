@@ -151,7 +151,7 @@
         </div>
     </div>
 
-    <!-- ESTOQUE (data-voltar="menu") -->
+    <!-- ESTOQUE -->
     <div class="tela" id="telaEstoque" style="display: none;">
         <div class="card-content">
             <div class="estoque-fixed-header">
@@ -193,7 +193,7 @@
         </div>
     </div>
 
-    <!-- SELEÇÃO DE CLIENTES (COM TABELA, data-voltar="venda") -->
+    <!-- SELEÇÃO DE CLIENTES (COM TABELA) -->
     <div class="tela" id="telaSelecionarCliente" style="display: none;">
         <div class="card-content" style="height: 100%; display: flex; flex-direction: column;">
             <div class="tela-header-nofixed">
@@ -212,7 +212,7 @@
         </div>
     </div>
 
-    <!-- CADASTRO DE CLIENTES (data-voltar="venda") -->
+    <!-- CADASTRO DE CLIENTES -->
     <div class="tela" id="telaClientes" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed"><button class="btn-voltar" data-voltar="venda"><i class="fas fa-arrow-left"></i></button><h2 style="color: #1E5A99;"><i class="fas fa-users"></i> Cadastro de Clientes</h2></div>
@@ -246,7 +246,7 @@
         </div>
     </div>
 
-    <!-- LANÇAR PRODUTOS (data-voltar="venda") -->
+    <!-- LANÇAR PRODUTOS -->
     <div class="tela" id="telaLancarProdutos" style="display: none;">
         <div class="card-content" style="height: 100%; display: flex; flex-direction: column;">
             <div class="tela-header-nofixed">
@@ -266,7 +266,7 @@
         </div>
     </div>
 
-    <!-- HISTÓRICO DE VENDAS (data-voltar="venda") -->
+    <!-- HISTÓRICO DE VENDAS -->
     <div class="tela" id="telaHistoricoVendas" style="display: none;">
         <div class="card-content">
             <div class="tela-header-nofixed">
@@ -307,7 +307,9 @@
     /* ============================================
        CONFIGURAÇÕES GLOBAIS
        ============================================ */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzaUReQ2E9c_HRnXVuZKBjhVODWdrtbWcH_woZwRLCQN506U8VIgbYBdRJWyOLkZxarAA/exec';
+    // NOVO URL DO GOOGLE APPS SCRIPT
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzFzi9oYzDGS3_dnVzm2H_Y-vDFyxf6_MCho977kbyMqhoSymsb8-mwc_lSeJJy_p1VZQ/exec';
+    
     let produtosOriginais = [], clientesOriginais = [], clienteSelecionado = null, editandoClienteId = null;
     let sortStateEstoque = { col: -1, asc: true };
     let produtosFiltradosAtuais = [];
@@ -589,7 +591,6 @@
         } catch(e) { console.error(e); }
     }
 
-    // Função exibirListaClientes (tabela para seleção)
     function exibirListaClientes(termo) {
         const container = document.getElementById('listaClientesContainer');
         if (!container) return;
@@ -619,13 +620,12 @@
                 </td>
             </tr>`;
         });
-        html += '</tbody></table>';
+        html += '</tbody><tr>';
         container.innerHTML = html;
     }
 
     document.getElementById('pesquisaCliente').addEventListener('input', (e) => exibirListaClientes(e.target.value));
 
-    // Função atualizarListaClientesCadastro (para a tela de cadastro) - CORRIGIDA: pesquisa por Nome e Telefone
     function atualizarListaClientesCadastro() {
         const termo = document.getElementById('pesquisaClientesCadastro')?.value || '';
         let filtrados = clientesOriginais;
@@ -699,7 +699,7 @@
         try {
             const res = await fetch(`${API_URL}?tipo=estoque`);
             const produtos = await res.json();
-            window.produtosLancamento = produtos;
+            window.produtosLancamento = produits;
             renderizarTabelaLancamento(produtos);
         } catch(e) { container.innerHTML = '<div class="error-message">Erro ao carregar produtos</div>'; }
     }
@@ -824,7 +824,7 @@
             filtrados = vendas.filter(v => v.id.toString().includes(low) || v.cliente.toLowerCase().includes(low) || v.data.includes(low));
         }
         if (!filtrados.length) { container.innerHTML = '<div class="placeholder-mensagem">Nenhuma venda encontrada</div>'; return; }
-        let html = '<table class="estoque-tabela"><thead></tr><th>ID Venda</th><th>Data</th><th>Cliente</th><th>Valor Total</th><th>Ações</th><tr></thead><tbody>';
+        let html = '<table class="estoque-tabela"><thead><tr><th>ID Venda</th><th>Data</th><th>Cliente</th><th>Valor Total</th><th>Ações</th></tr></thead><tbody>';
         filtrados.forEach(v => {
             const valorFormatado = Number(v.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             html += `<tr><td style="white-space:nowrap">${v.id}</td><td style="white-space:nowrap">${v.data}</td><td style="white-space:nowrap">${v.cliente}</td><td style="white-space:nowrap">${valorFormatado}</td><td style="white-space:nowrap"><button class="btn-ver-detalhes" data-id="${v.id}">Ver Detalhes</button></td></tr>`;
@@ -853,7 +853,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         carregarEstoque();
         carregarClientes();
-        // Inicializa o histórico e navega para o menu
         historicoNavegacao = ['telaMenu'];
         mostrarTela('telaMenu');
     });
