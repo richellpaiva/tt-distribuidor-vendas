@@ -1,0 +1,28 @@
+<div class="tela" id="telaEstoque">
+    <div class="card-content">
+        <div class="estoque-fixed-header">
+            <div class="tela-header-nofixed">
+                <button class="btn-voltar"><i class="fas fa-arrow-left"></i></button>
+                <h2><i class="fas fa-boxes"></i> Estoque</h2>
+            </div>
+            <input type="text" id="pesquisaEstoque" class="search-box" placeholder="🔍 Pesquisar por código ou descrição...">
+            <div class="totais-container">
+                <div class="total-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="total-label">Valor Total</div>
+                    <div class="total-value" id="valorTotal">R$ 0,00</div>
+                </div>
+                <div class="total-card">
+                    <i class="fas fa-boxes"></i>
+                    <div class="total-label">Quantidade Total</div>
+                    <div class="total-value" id="qtTotal">0</div>
+                </div>
+            </div>
+            <button id="btnExportarExcel" class="btn-primary btn-secondary"><i class="fas fa-file-excel"></i> Exportar para Excel</button>
+            <button id="btnNovaVendaEstoque" class="btn-primary"><i class="fas fa-cart-plus"></i> Efetuar Nova Venda</button>
+        </div>
+        <div id="estoqueContainer" class="estoque-container">
+            <div class="loading-message">Carregando estoque...</div>
+        </div>
+    </div>
+</div>

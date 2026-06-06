@@ -1,0 +1,38 @@
+<div class="tela" id="telaUsuarios">
+    <div class="card-content">
+        <div class="tela-header-nofixed">
+            <button class="btn-voltar"><i class="fas fa-arrow-left"></i></button>
+            <h2><i class="fas fa-users"></i> Usuários</h2>
+        </div>
+
+        <div class="toolbar">
+            <button id="btnAdicionarUsuario" class="btn-form btn-novo"><i class="fas fa-plus"></i> Adicionar</button>
+            <button id="btnEditarUsuario" class="btn-form btn-editar"><i class="fas fa-edit"></i> Editar</button>
+            <button id="btnExcluirUsuario" class="btn-form btn-excluir"><i class="fas fa-trash"></i> Excluir</button>
+            <button id="btnPesquisarUsuario" class="btn-form btn-pesquisar"><i class="fas fa-search"></i> Pesquisar</button>
+            <button id="btnMenuUsuarios" class="btn-form btn-menu"><i class="fas fa-bars"></i> Menu</button>
+        </div>
+
+        <input type="text" id="pesquisaUsuario" class="search-box" placeholder="🔍 Pesquisar por nome de usuário...">
+
+        <div class="table-container" id="listaUsuariosContainer">
+            <div class="loading-message">Carregando usuários...</div>
+        </div>
+
+        <div style="margin-top:15px;">
+            <h3 style="color:#1E5A99; margin-bottom:15px;">Dados do Usuário</h3>
+            <div class="form-group"><label>Usuário *</label><input type="text" id="editUsuario" placeholder="Digite o nome de usuário" disabled></div>
+            <div class="form-group"><label>Senha</label><input type="password" id="editSenha" placeholder="Digite a senha" disabled></div>
+            <div class="form-group"><label>Nível de Acesso</label>
+                <select id="editNivel" disabled>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Vendedor">Vendedor</option>
+                </select>
+            </div>
+            <div class="botoes-form">
+                <button id="btnSalvarUsuario" class="btn-form btn-salvar">SALVAR</button>
+                <button id="btnCancelarUsuario" class="btn-form btn-cancelar">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+</div>

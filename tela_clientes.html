@@ -1,0 +1,42 @@
+<div class="tela" id="telaClientes">
+    <div class="card-content">
+        <div class="tela-header-nofixed">
+            <button class="btn-voltar"><i class="fas fa-arrow-left"></i></button>
+            <h2><i class="fas fa-users"></i> Cadastro de Clientes</h2>
+        </div>
+
+        <div class="toolbar">
+            <button id="btnCriarNovoCliente" class="btn-form btn-novo"><i class="fas fa-plus"></i> NOVO</button>
+            <button id="btnEditarCliente" class="btn-form btn-editar"><i class="fas fa-edit"></i> EDITAR</button>
+            <button id="btnExcluirCliente" class="btn-form btn-excluir"><i class="fas fa-trash"></i> EXCLUIR</button>
+            <button id="btnMenuClientes" class="btn-form btn-menu"><i class="fas fa-bars"></i> MENU</button>
+        </div>
+
+        <input type="text" id="pesquisaClientesCadastro" class="search-box" placeholder="🔍 Pesquisar por nome ou telefone...">
+
+        <div id="listaClientesCadastro" class="lista-clientes" style="max-height:250px; overflow-y:auto; margin-bottom:15px;">
+            <div class="loading-message">Carregando clientes...</div>
+        </div>
+
+        <div style="margin-top:10px;">
+            <h3 style="color:#1E5A99; margin-bottom:15px;">Dados do Cliente</h3>
+            <div class="form-group"><label>Nome Completo *</label><input type="text" id="editNomeCliente" placeholder="Digite o nome completo" disabled></div>
+            <div class="form-group"><label>CPF</label><input type="text" id="editCpfCliente" placeholder="000.000.000-00" disabled></div>
+            <div class="form-group"><label>Telefone</label><input type="text" id="editTelefoneCliente" placeholder="(00) 00000-0000" disabled></div>
+            <div class="form-row" style="display:flex; gap:10px;">
+                <div class="form-group" style="flex:1"><label>UF</label><input type="text" id="editUfCliente" placeholder="PI" maxlength="2" disabled></div>
+                <div class="form-group" style="flex:2"><label>Cidade</label><input type="text" id="editCidadeCliente" placeholder="Teresina" disabled></div>
+            </div>
+            <div class="form-group"><label>Endereço</label><input type="text" id="editEnderecoCliente" placeholder="Rua, Avenida..." disabled></div>
+            <div class="form-row" style="display:flex; gap:10px;">
+                <div class="form-group" style="flex:1"><label>Número</label><input type="text" id="editNumeroCliente" placeholder="Número" disabled></div>
+                <div class="form-group" style="flex:2"><label>Complemento</label><input type="text" id="editComplementoCliente" placeholder="Apto, Bloco..." disabled></div>
+            </div>
+            <div class="form-group"><label>CEP</label><input type="text" id="editCepCliente" placeholder="00000-000" disabled></div>
+            <div class="botoes-form">
+                <button id="btnSalvarCliente" class="btn-form btn-salvar">SALVAR</button>
+                <button id="btnCancelarCliente" class="btn-form btn-cancelar">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+</div>
