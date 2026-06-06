@@ -283,6 +283,8 @@ body {
 .data-table thead {
     background: #1E5A99;
     color: white;
+    position: sticky;
+    top: 0;
 }
 
 .data-table th,
@@ -449,7 +451,9 @@ body {
     cursor: pointer;
 }
 
-/* Estilos específicos do estoque */
+/* ============================================
+   ESTILOS ESPECÍFICOS DO ESTOQUE
+   ============================================ */
 #telaEstoque {
     height: 100vh;
     padding: 0;
@@ -512,6 +516,9 @@ body {
     word-break: break-word;
 }
 
+/* ============================================
+   ESTILOS CLIENTES E VENDAS
+   ============================================ */
 .cliente-selecionado-box {
     background: #e8f0fe;
     padding: 12px;
@@ -556,6 +563,17 @@ body {
 /* ============================================
    LAYOUT ESPECÍFICO DO CADASTRO DE USUÁRIOS
    ============================================ */
+#telaUsuarios {
+    height: 100vh;
+    padding: 0;
+}
+
+#telaUsuarios .card-content {
+    height: 100%;
+    padding: 20px 16px 25px;
+    display: flex;
+    flex-direction: column;
+}
 
 .input-group {
     display: flex;
@@ -589,6 +607,7 @@ body {
     font-size: 1rem;
     box-sizing: border-box;
     margin-bottom: 10px;
+    margin-top: 15px;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E5A99' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'%3e%3c/circle%3e%3cline x1='21' y1='21' x2='16.65' y2='16.65'%3e%3c/line%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: 10px center;
@@ -611,6 +630,8 @@ body {
     background-position: right 15px center;
     background-size: 20px;
     cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .select-large:disabled {
@@ -630,6 +651,7 @@ body {
     gap: 8px;
     flex-wrap: wrap;
     flex-shrink: 0;
+    margin-top: 10px;
 }
 
 .btn-action {
@@ -692,27 +714,38 @@ body {
     .btn-action span {
         font-size: 0.5rem;
     }
+    
+    .input-large {
+        padding: 12px;
+    }
+    
+    .select-large {
+        padding: 12px;
+    }
 }
 
 /* Scrollbars */
 .app-container::-webkit-scrollbar,
 .estoque-container::-webkit-scrollbar,
 .lista-clientes::-webkit-scrollbar,
-.table-container::-webkit-scrollbar {
+.table-container::-webkit-scrollbar,
+#listaUsuariosContainer::-webkit-scrollbar {
     width: 5px;
 }
 
 .app-container::-webkit-scrollbar-track,
 .estoque-container::-webkit-scrollbar-track,
 .lista-clientes::-webkit-scrollbar-track,
-.table-container::-webkit-scrollbar-track {
+.table-container::-webkit-scrollbar-track,
+#listaUsuariosContainer::-webkit-scrollbar-track {
     background: #e2e8f0;
 }
 
 .app-container::-webkit-scrollbar-thumb,
 .estoque-container::-webkit-scrollbar-thumb,
 .lista-clientes::-webkit-scrollbar-thumb,
-.table-container::-webkit-scrollbar-thumb {
+.table-container::-webkit-scrollbar-thumb,
+#listaUsuariosContainer::-webkit-scrollbar-thumb {
     background: #1E5A99;
     border-radius: 10px;
 }
